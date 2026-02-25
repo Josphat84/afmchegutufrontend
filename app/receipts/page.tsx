@@ -403,7 +403,7 @@ const getInitials = (name: string) => {
     .slice(0, 2);
 };
 
-// =============== RECEIPT PDF GENERATOR (New Design) ===============
+// =============== RECEIPT PDF GENERATOR ===============
 const generateReceiptPDF = (payment: Payment) => {
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -1287,6 +1287,9 @@ export default function PaymentsPage() {
   const [selectedMethod, setSelectedMethod] = useState<string>('all');
   const [dateRange, setDateRange] = useState<{ from: Date | null; to: Date | null }>({ from: null, to: null });
   
+  // Date range popover state
+  const [dateRangePopoverOpen, setDateRangePopoverOpen] = useState(false);
+  
   // Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(50);
@@ -1677,8 +1680,8 @@ export default function PaymentsPage() {
                 </SelectContent>
               </Select>
 
-              {/* Date Range Filter */}
-              <Popover>
+              {/* Date Range Filter - Fixed Version */}
+              <Popover open={dateRangePopoverOpen} onOpenChange={setDateRangePopoverOpen}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="bg-white/80 border-purple-200">
                     <CalendarRange className="h-4 w-4 mr-2" />
@@ -1696,12 +1699,51 @@ export default function PaymentsPage() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <CalendarComponent
-                    mode="range"
-                    selected={dateRange}
-                    onSelect={(range: any) => setDateRange(range)}
-                    numberOfMonths={2}
-                  />
+                  <div className="p-4">
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="mb-2 block">Start Date</Label>
+                        <CalendarComponent
+                          mode="single"
+                          selected={dateRange.from || undefined}
+                          onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
+                          initialFocus
+                        />
+                      </div>
+                      <Separator />
+                      <div>
+                        <Label className="mb-2 block">End Date</Label>
+                        <CalendarComponent
+                          mode="single"
+                          selected={dateRange.to || undefined}
+                          onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
+                          initialFocus
+                        />
+                      </div>
+                      <div className="flex justify-between gap-2 pt-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => {
+                            setDateRange({ from: null, to: null });
+                            setDateRangePopoverOpen(false);
+                          }}
+                        >
+                          Clear
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                          onClick={() => {
+                            setDateRangePopoverOpen(false);
+                          }}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </PopoverContent>
               </Popover>
 

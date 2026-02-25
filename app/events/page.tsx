@@ -119,20 +119,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Switch } from '@/components/ui/switch';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
 
 // =============== CONSTANTS ===============
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -289,14 +275,14 @@ async function getEvent(id: string): Promise<Event> {
   return fetchAPI<Event>(`/events/${id}`);
 }
 
-async function createEvent(event: Partial<Event>): Promise<Event> {
+async function createEvent(event: Record<string, any>): Promise<Event> {
   return fetchAPI<Event>('/events/', {
     method: 'POST',
     body: JSON.stringify(event),
   });
 }
 
-async function updateEvent(id: string, event: Partial<Event>): Promise<Event> {
+async function updateEvent(id: string, event: Record<string, any>): Promise<Event> {
   return fetchAPI<Event>(`/events/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(event),
@@ -382,6 +368,7 @@ const formatShortDate = (dateStr?: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
+      year: 'numeric',
     });
   } catch {
     return dateStr;
@@ -432,7 +419,7 @@ const getInitials = (name?: string) => {
     .slice(0, 2);
 };
 
-const validateEventForm = (data: Partial<Event>): string[] => {
+const validateEventForm = (data: Record<string, any>): string[] => {
   const errors: string[] = [];
   
   if (!data.title?.trim()) {
@@ -451,8 +438,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
   onRSVP: (event: Event) => void;
   isAdmin: boolean;
 }) => {
-  const [showShareMenu, setShowShareMenu] = useState(false);
-  
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -465,7 +450,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
         console.log('Share cancelled');
       }
     } else {
-      // Fallback - copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       toast.success('Link copied to clipboard');
     }
@@ -784,7 +768,7 @@ export default function EventsPage() {
   const [formErrors, setFormErrors] = useState<string[]>([]);
   
   // Form state
-  const [formData, setFormData] = useState<Partial<Event>>({
+  const [formData, setFormData] = useState<Record<string, any>>({
     title: '',
     content: '',
     excerpt: '',
@@ -940,7 +924,7 @@ export default function EventsPage() {
     setSaving(true);
     
     try {
-      const cleanedData = { ...formData };
+      const cleanedData: Record<string, any> = { ...formData };
       Object.keys(cleanedData).forEach(key => {
         if (cleanedData[key] === '') {
           delete cleanedData[key];
@@ -1043,7 +1027,7 @@ export default function EventsPage() {
   const handleEdit = (event: Event, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingEvent(event);
-    setFormData(event);
+    setFormData({ ...event });
     setFormErrors([]);
     setDialogOpen(true);
   };
@@ -1590,7 +1574,7 @@ export default function EventsPage() {
                     <Label htmlFor="title">Title *</Label>
                     <Input
                       id="title"
-                      value={formData.title || ''}
+                      value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="Enter title"
                       required
@@ -1625,7 +1609,7 @@ export default function EventsPage() {
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
                     <Select
-                      value={formData.category || ''}
+                      value={formData.category}
                       onValueChange={(v) => setFormData({ ...formData, category: v })}
                     >
                       <SelectTrigger>
@@ -1650,7 +1634,7 @@ export default function EventsPage() {
                     <Label htmlFor="excerpt">Excerpt (Short Description)</Label>
                     <Textarea
                       id="excerpt"
-                      value={formData.excerpt || ''}
+                      value={formData.excerpt}
                       onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                       placeholder="Brief summary of the event/notice"
                       rows={2}
@@ -1661,7 +1645,7 @@ export default function EventsPage() {
                     <Label htmlFor="content">Full Content</Label>
                     <Textarea
                       id="content"
-                      value={formData.content || ''}
+                      value={formData.content}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                       placeholder="Detailed description"
                       rows={4}
@@ -1678,7 +1662,7 @@ export default function EventsPage() {
                     <Input
                       id="event_start_date"
                       type="date"
-                      value={formData.event_start_date || ''}
+                      value={formData.event_start_date}
                       onChange={(e) => setFormData({ ...formData, event_start_date: e.target.value })}
                     />
                   </div>
@@ -1688,7 +1672,7 @@ export default function EventsPage() {
                     <Input
                       id="event_end_date"
                       type="date"
-                      value={formData.event_end_date || ''}
+                      value={formData.event_end_date}
                       onChange={(e) => setFormData({ ...formData, event_end_date: e.target.value })}
                     />
                   </div>
@@ -1698,7 +1682,7 @@ export default function EventsPage() {
                     <Input
                       id="event_start_time"
                       type="time"
-                      value={formData.event_start_time || ''}
+                      value={formData.event_start_time}
                       onChange={(e) => setFormData({ ...formData, event_start_time: e.target.value })}
                     />
                   </div>
@@ -1708,7 +1692,7 @@ export default function EventsPage() {
                     <Input
                       id="event_end_time"
                       type="time"
-                      value={formData.event_end_time || ''}
+                      value={formData.event_end_time}
                       onChange={(e) => setFormData({ ...formData, event_end_time: e.target.value })}
                     />
                   </div>
@@ -1726,7 +1710,7 @@ export default function EventsPage() {
                     <Label htmlFor="location">Location Name</Label>
                     <Input
                       id="location"
-                      value={formData.location || ''}
+                      value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       placeholder="e.g., Main Sanctuary"
                     />
@@ -1736,7 +1720,7 @@ export default function EventsPage() {
                     <Label htmlFor="venue">Venue</Label>
                     <Input
                       id="venue"
-                      value={formData.venue || ''}
+                      value={formData.venue}
                       onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
                       placeholder="e.g., Church Hall"
                     />
@@ -1746,7 +1730,7 @@ export default function EventsPage() {
                     <Label htmlFor="address">Full Address</Label>
                     <Input
                       id="address"
-                      value={formData.address || ''}
+                      value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                       placeholder="Street address, city, etc."
                     />
@@ -1766,7 +1750,7 @@ export default function EventsPage() {
                     <Input
                       id="online_url"
                       type="url"
-                      value={formData.online_url || ''}
+                      value={formData.online_url}
                       onChange={(e) => setFormData({ ...formData, online_url: e.target.value })}
                       placeholder="https://meet.google.com/..."
                     />
@@ -1824,7 +1808,7 @@ export default function EventsPage() {
                     <Label htmlFor="author_name">Author Name</Label>
                     <Input
                       id="author_name"
-                      value={formData.author_name || ''}
+                      value={formData.author_name}
                       onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
                       placeholder="e.g., Pastor John"
                     />
@@ -1835,7 +1819,7 @@ export default function EventsPage() {
                     <Input
                       id="author_email"
                       type="email"
-                      value={formData.author_email || ''}
+                      value={formData.author_email}
                       onChange={(e) => setFormData({ ...formData, author_email: e.target.value })}
                       placeholder="pastor@church.org"
                     />
@@ -1930,7 +1914,7 @@ export default function EventsPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="rsvp_notes">Add Notes (optional)</Label>
+              <Label htmlFor="rsvp_notes">Notes (optional)</Label>
               <Textarea
                 id="rsvp_notes"
                 value={rsvpForm.notes}

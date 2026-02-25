@@ -47,7 +47,6 @@ import {
   X,
   Package,
   Wrench,
-  Tool,
   MapPin,
   Calendar,
   DollarSign,
@@ -64,6 +63,8 @@ import {
   HardHat,
   Hammer,
   Settings,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 
 // =============== IMPORTED COMPONENTS ===============
@@ -289,7 +290,7 @@ export default function EquipmentPage() {
   // Expanded items
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  // Filters - initialize with 'all' instead of empty string
+  // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -415,6 +416,16 @@ export default function EquipmentPage() {
       }
       return newSet;
     });
+  };
+
+  // Expand all items
+  const expandAll = () => {
+    setExpandedItems(new Set(equipment.map(item => item.id)));
+  };
+
+  // Collapse all items
+  const collapseAll = () => {
+    setExpandedItems(new Set());
   };
 
   const clearFilters = () => {
@@ -737,7 +748,29 @@ export default function EquipmentPage() {
                 )}
               </div>
 
-              {/* Category Filter - Fixed: uses 'all' instead of empty string */}
+              {/* Expand/Collapse All */}
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={expandAll}
+                  className="bg-white/80 border-purple-200"
+                >
+                  <Maximize2 className="h-4 w-4 mr-2" />
+                  Expand All
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={collapseAll}
+                  className="bg-white/80 border-purple-200"
+                >
+                  <Minimize2 className="h-4 w-4 mr-2" />
+                  Collapse All
+                </Button>
+              </div>
+
+              {/* Category Filter */}
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-purple-200">
                   <SelectValue placeholder="All Categories" />
@@ -750,7 +783,7 @@ export default function EquipmentPage() {
                 </SelectContent>
               </Select>
 
-              {/* Status Filter - Fixed: uses 'all' instead of empty string */}
+              {/* Status Filter */}
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                 <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-purple-200">
                   <SelectValue placeholder="All Status" />

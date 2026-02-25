@@ -146,12 +146,12 @@ interface UserData {
 
 // =============== PUBLIC CHURCH DATA ===============
 const DEPARTMENTS = [
-  { name: "Ladies Fellowship", icon: Heart, description: "Virtuous women building godly homes.", color: "rose" },
-  { name: "Youth Ministry", icon: Users, description: "Empowering the next generation for Christ.", color: "blue" },
-  { name: "Sunday School", icon: BookOpen, description: "Nurturing children in the way of the Lord.", color: "green" },
-  { name: "Men's Fellowship", icon: HeartHandshake, description: "Raising godly men for the family and church.", color: "purple" },
-  { name: "Choir", icon: Music, description: "Leading the congregation in worship through song.", color: "amber" },
-  { name: "Prayer Team", icon: Heart, description: "Interceding for the church and community.", color: "indigo" },
+  { name: "Ladies Fellowship", icon: Heart, description: "Virtuous women building godly homes.", color: "rose" as ColorType },
+  { name: "Youth Ministry", icon: Users, description: "Empowering the next generation for Christ.", color: "blue" as ColorType },
+  { name: "Sunday School", icon: BookOpen, description: "Nurturing children in the way of the Lord.", color: "green" as ColorType },
+  { name: "Men's Fellowship", icon: HeartHandshake, description: "Raising godly men for the family and church.", color: "purple" as ColorType },
+  { name: "Choir", icon: Music, description: "Leading the congregation in worship through song.", color: "amber" as ColorType },
+  { name: "Prayer Team", icon: Heart, description: "Interceding for the church and community.", color: "indigo" as ColorType },
 ];
 
 const UPCOMING_EVENTS = [
@@ -220,7 +220,7 @@ interface UpcomingEvent {
 
 // Helper for dashboard colors
 function getColorClasses(color: ColorType) {
-  const colorMap = {
+  const colorMap: Record<ColorType, { light: string; icon: string; border: string }> = {
     purple: { light: 'bg-purple-100/70', icon: 'text-purple-700', border: 'border-purple-200/60' },
     blue: { light: 'bg-blue-100/70', icon: 'text-blue-700', border: 'border-blue-200/60' },
     green: { light: 'bg-green-100/70', icon: 'text-green-700', border: 'border-green-200/60' },

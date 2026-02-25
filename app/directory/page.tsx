@@ -78,6 +78,8 @@ import {
   Cake,
   AlertCircle,
   RefreshCw,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 
 // =============== IMPORTED COMPONENTS ===============
@@ -157,7 +159,7 @@ interface MemberStats {
   upcoming_birthdays: number;
 }
 
-// =============== API HELPER FUNCTIONS ===============
+// =============== API FUNCTIONS ===============
 async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit
@@ -173,14 +175,10 @@ async function fetchAPI<T>(
       ...options,
     });
 
-    console.log('Response status:', response.status);
-
-    // First check if response is ok
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
-      // Try to parse as JSON, but if it fails, use the text
       try {
         const errorJson = JSON.parse(errorText);
         throw new Error(errorJson.detail || `API error: ${response.status}`);
@@ -189,72 +187,18 @@ async function fetchAPI<T>(
       }
     }
 
-    // Check if response has content
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
-      console.log('Response data:', data);
       return data;
-    } else {
-      // Handle empty response (like 204 No Content)
-      return {} as T;
     }
+    return {} as T;
   } catch (error) {
-    console.error('Fetch error details:', error);
+    console.error('Fetch error:', error);
     throw error;
   }
 }
 
-// Convert frontend camelCase to backend snake_case
-function toBackend(member: Partial<Member>): Record<string, any> {
-  return {
-    full_name: member.fullName || '',
-    email: member.email || null,
-    phone: member.phone || null,
-    gender: member.gender || null,
-    date_of_birth: member.dateOfBirth || null,
-    id_number: member.idNumber || null,
-    profession: member.profession || null,
-    workplace: member.workplace || null,
-    address: member.address || null,
-    home_address: member.homeAddress || null,
-    next_of_kin: member.nextOfKin || null,
-    spouse_name: member.spouseName || null,
-    parents: member.parents || null,
-    departments: member.departments || [],
-    positions: member.positions || [],
-    baptism_date: member.baptismDate || null,
-    joined_date: member.joinedDate || null,
-  };
-}
-
-// Convert backend snake_case to frontend camelCase
-function toFrontend(data: Record<string, any>): Member {
-  return {
-    id: data.id || '',
-    fullName: data.full_name || '',
-    email: data.email || '',
-    phone: data.phone || '',
-    gender: data.gender || '',
-    dateOfBirth: data.date_of_birth || '',
-    idNumber: data.id_number || '',
-    profession: data.profession || '',
-    workplace: data.workplace || '',
-    address: data.address || '',
-    homeAddress: data.home_address || '',
-    nextOfKin: data.next_of_kin || '',
-    spouseName: data.spouse_name || '',
-    parents: data.parents || '',
-    departments: data.departments || [],
-    positions: data.positions || [],
-    baptismDate: data.baptism_date || '',
-    joinedDate: data.joined_date || '',
-    createdAt: data.created_at,
-    updatedAt: data.updated_at,
-  };
-}
-
-// =============== API FUNCTIONS ===============
 async function getMembers(params?: {
   search?: string;
   gender?: string;
@@ -272,7 +216,7 @@ async function getMembers(params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const data = await fetchAPI<any[]>(`/directory/?${queryParams.toString()}`);
-  return Array.isArray(data) ? data.map(toFrontend) : [];
+  return Array.isArray(data) ? data : [];
 }
 
 async function getMemberCount(params?: {
@@ -302,8 +246,7 @@ async function getMemberStats(): Promise<MemberStats> {
       with_family: data?.with_family || 0,
       upcoming_birthdays: data?.upcoming_birthdays || 0,
     };
-  } catch (error) {
-    console.error('Failed to fetch stats:', error);
+  } catch {
     return {
       total: 0,
       male: 0,
@@ -317,19 +260,17 @@ async function getMemberStats(): Promise<MemberStats> {
 }
 
 async function createMember(member: Partial<Member>): Promise<Member> {
-  const data = await fetchAPI<any>('/directory/', {
+  return fetchAPI<any>('/directory/', {
     method: 'POST',
-    body: JSON.stringify(toBackend(member)),
+    body: JSON.stringify(member),
   });
-  return toFrontend(data);
 }
 
 async function updateMember(id: string, member: Partial<Member>): Promise<Member> {
-  const data = await fetchAPI<any>(`/directory/${id}`, {
+  return fetchAPI<any>(`/directory/${id}`, {
     method: 'PATCH',
-    body: JSON.stringify(toBackend(member)),
+    body: JSON.stringify(member),
   });
-  return toFrontend(data);
 }
 
 async function deleteMember(id: string): Promise<void> {
@@ -338,36 +279,30 @@ async function deleteMember(id: string): Promise<void> {
   });
 }
 
-// =============== ANIMATION STYLES ===============
-const animationStyles = `
-  @keyframes fade-in-up-slow {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+// =============== HELPER FUNCTIONS ===============
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return '—';
+  try {
+    return new Date(dateStr).toLocaleDateString();
+  } catch {
+    return dateStr;
   }
-  @keyframes slide-down {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes pulse-subtle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-  .animate-fade-in-up-slow {
-    animation: fade-in-up-slow 1s ease-out forwards;
-  }
-  .animate-slide-down {
-    animation: slide-down 0.3s ease-out forwards;
-  }
-  .animate-pulse-subtle {
-    animation: pulse-subtle 2s ease-in-out infinite;
-  }
-`;
+};
 
 // =============== MAIN PAGE ===============
 export default function DirectoryPage() {
   const router = useRouter();
   
-  // View mode: 'table' or 'grid'
+  // View mode
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
 
   // Data
@@ -386,7 +321,7 @@ export default function DirectoryPage() {
     upcoming_birthdays: 0,
   });
 
-  // Expanded rows/cards (store IDs of expanded items)
+  // Expanded items
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   // Filters
@@ -400,17 +335,17 @@ export default function DirectoryPage() {
   const [pageSize] = useState(50);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Auth state (for Header)
+  // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [churchName, setChurchName] = useState('Grace Community Church');
 
-  // Form state (add/edit)
+  // Form state
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
-    gender: '',
+    gender: '' as 'male' | 'female' | 'other' | '',
     dateOfBirth: '',
     idNumber: '',
     profession: '',
@@ -443,7 +378,7 @@ export default function DirectoryPage() {
     }
   }, []);
 
-  // Test API connection on mount
+  // Test API connection
   useEffect(() => {
     const testConnection = async () => {
       try {
@@ -463,7 +398,7 @@ export default function DirectoryPage() {
     testConnection();
   }, []);
 
-  // Fetch data on mount and when filters change
+  // Fetch data
   useEffect(() => {
     fetchMembers();
     fetchStats();
@@ -482,7 +417,6 @@ export default function DirectoryPage() {
       });
       setMembers(data);
       
-      // Get total count for pagination
       const count = await getMemberCount({
         search: searchTerm || undefined,
         gender: selectedGender !== 'all' ? selectedGender : undefined,
@@ -507,7 +441,7 @@ export default function DirectoryPage() {
     }
   };
 
-  // Toggle expanded state for an item
+  // Toggle expanded
   const toggleExpanded = (id: string) => {
     setExpandedItems(prev => {
       const newSet = new Set(prev);
@@ -530,7 +464,7 @@ export default function DirectoryPage() {
     setExpandedItems(new Set());
   };
 
-  // Clear all filters
+  // Clear filters
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedGender('all');
@@ -570,10 +504,13 @@ export default function DirectoryPage() {
 
   // Handle select change (gender)
   const handleGenderChange = (value: string) => {
-    setFormData(prev => ({ ...prev, gender: value }));
+    setFormData(prev => ({ 
+      ...prev, 
+      gender: value as 'male' | 'female' | 'other' | '' 
+    }));
   };
 
-  // Toggle department in form
+  // Toggle department
   const toggleDepartment = (dept: Department) => {
     setFormData(prev => ({
       ...prev,
@@ -583,7 +520,7 @@ export default function DirectoryPage() {
     }));
   };
 
-  // Toggle position in form
+  // Toggle position
   const togglePosition = (pos: Position) => {
     setFormData(prev => ({
       ...prev,
@@ -605,11 +542,19 @@ export default function DirectoryPage() {
     }
 
     try {
+      // Prepare data with proper types
+      const memberData = {
+        ...formData,
+        gender: formData.gender,
+        departments: formData.departments,
+        positions: formData.positions,
+      };
+
       if (editingMember) {
-        await updateMember(editingMember.id, formData);
+        await updateMember(editingMember.id, memberData);
         toast.success('Member updated successfully');
       } else {
-        await createMember(formData);
+        await createMember(memberData);
         toast.success('Member added successfully');
       }
       
@@ -631,22 +576,22 @@ export default function DirectoryPage() {
     setEditingMember(member);
     setFormData({
       fullName: member.fullName,
-      email: member.email,
-      phone: member.phone,
+      email: member.email || '',
+      phone: member.phone || '',
       gender: member.gender,
-      dateOfBirth: member.dateOfBirth,
-      idNumber: member.idNumber,
-      profession: member.profession,
-      workplace: member.workplace,
-      address: member.address,
-      homeAddress: member.homeAddress,
-      nextOfKin: member.nextOfKin,
-      spouseName: member.spouseName,
-      parents: member.parents,
-      departments: member.departments as Department[],
-      positions: member.positions as Position[],
-      baptismDate: member.baptismDate,
-      joinedDate: member.joinedDate,
+      dateOfBirth: member.dateOfBirth || '',
+      idNumber: member.idNumber || '',
+      profession: member.profession || '',
+      workplace: member.workplace || '',
+      address: member.address || '',
+      homeAddress: member.homeAddress || '',
+      nextOfKin: member.nextOfKin || '',
+      spouseName: member.spouseName || '',
+      parents: member.parents || '',
+      departments: member.departments || [],
+      positions: member.positions || [],
+      baptismDate: member.baptismDate || '',
+      joinedDate: member.joinedDate || '',
     });
     setDialogOpen(true);
   };
@@ -673,64 +618,6 @@ export default function DirectoryPage() {
     setDialogOpen(true);
   };
 
-  // Export to CSV
-  const exportToCSV = () => {
-    const headers = [
-      'Full Name',
-      'Email',
-      'Phone',
-      'Gender',
-      'Date of Birth',
-      'ID Number',
-      'Profession',
-      'Workplace',
-      'Address',
-      'Home Address',
-      'Next of Kin',
-      'Spouse',
-      'Parents',
-      'Departments',
-      'Positions',
-      'Baptism Date',
-      'Joined Date',
-    ];
-
-    const data = members.map(m => [
-      m.fullName,
-      m.email || '',
-      m.phone || '',
-      m.gender || '',
-      m.dateOfBirth || '',
-      m.idNumber || '',
-      m.profession || '',
-      m.workplace || '',
-      m.address || '',
-      m.homeAddress || '',
-      m.nextOfKin || '',
-      m.spouseName || '',
-      m.parents || '',
-      (m.departments || []).join('; '),
-      (m.positions || []).join('; '),
-      m.baptismDate || '',
-      m.joinedDate || '',
-    ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...data.map(row => row.map(cell => `"${cell}"`).join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'church_members.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   // Logout handler
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -739,41 +626,6 @@ export default function DirectoryPage() {
     setIsLoggedIn(false);
     setUser(null);
     window.location.reload();
-  };
-
-  // Get initials
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  // Format date for display
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return '—';
-    try {
-      return new Date(dateStr).toLocaleDateString();
-    } catch {
-      return dateStr;
-    }
-  };
-
-  // Check if birthday is upcoming (within 30 days)
-  const isUpcomingBirthday = (dateStr: string) => {
-    if (!dateStr) return false;
-    try {
-      const today = new Date();
-      const thirtyDaysFromNow = new Date();
-      thirtyDaysFromNow.setDate(today.getDate() + 30);
-      const bday = new Date(dateStr);
-      const thisYearBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
-      return thisYearBday >= today && thisYearBday <= thirtyDaysFromNow;
-    } catch {
-      return false;
-    }
   };
 
   // Pagination
@@ -785,7 +637,7 @@ export default function DirectoryPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600" />
+          <Loader2 className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600" />
           <p className="text-purple-800 text-sm font-medium">Loading directory...</p>
         </div>
       </div>
@@ -794,7 +646,6 @@ export default function DirectoryPage() {
 
   return (
     <>
-      <style jsx global>{animationStyles}</style>
       <Toaster position="top-right" richColors />
 
       <Header
@@ -813,7 +664,6 @@ export default function DirectoryPage() {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             opacity: 0.9,
-            filter: 'brightness(1.05) contrast(1.1) saturate(1.1)',
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
@@ -821,8 +671,8 @@ export default function DirectoryPage() {
 
       <div className="relative z-10 min-h-screen">
         <main className="container mx-auto py-10 px-4">
-          {/* Header with title, add button, view toggle */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 animate-fade-in-up-slow">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
                 Believers Directory
@@ -831,17 +681,7 @@ export default function DirectoryPage() {
                 Showing {members.length} of {totalCount} members
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={exportToCSV}
-                className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
-                title="Export to CSV"
-                disabled={members.length === 0}
-              >
-                <Download className="h-4 w-4" />
-              </Button>
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="icon"
@@ -872,7 +712,7 @@ export default function DirectoryPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 animate-fade-in-up-slow">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
             <Card className="bg-white/80 backdrop-blur-sm border-purple-200/40">
               <CardContent className="p-3 text-center">
                 <Users className="h-5 w-5 text-purple-700 mx-auto mb-1" />
@@ -918,13 +758,13 @@ export default function DirectoryPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-purple-200/40 shadow-lg animate-fade-in-up-slow">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-purple-200/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Search by name, email, phone, profession, ID..."
+                  placeholder="Search by name, email, phone..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-10 bg-white/80 border-purple-200"
@@ -939,7 +779,7 @@ export default function DirectoryPage() {
                 )}
               </div>
 
-              {/* Expand/Collapse Buttons */}
+              {/* Expand/Collapse All */}
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -947,6 +787,7 @@ export default function DirectoryPage() {
                   onClick={expandAll}
                   className="bg-white/80 border-purple-200"
                 >
+                  <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
                 </Button>
                 <Button
@@ -955,6 +796,7 @@ export default function DirectoryPage() {
                   onClick={collapseAll}
                   className="bg-white/80 border-purple-200"
                 >
+                  <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
                 </Button>
               </div>
@@ -1047,10 +889,10 @@ export default function DirectoryPage() {
             </div>
           </div>
 
-          {/* View: Table or Grid */}
+          {/* Members Grid/Table */}
           {viewMode === 'table' ? (
-            /* ========== TABLE VIEW ========== */
-            <div className="animate-fade-in-up-slow">
+            /* Table View */
+            <div>
               <Card className="border-purple-200/40 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
@@ -1078,7 +920,7 @@ export default function DirectoryPage() {
                             <TableCell colSpan={7} className="text-center py-12 text-gray-500">
                               <div className="flex flex-col items-center gap-2">
                                 <AlertCircle className="h-8 w-8 text-gray-400" />
-                                <p>No members match your criteria.</p>
+                                <p>No members found.</p>
                                 <Button variant="link" onClick={clearFilters} className="text-purple-600">
                                   Clear filters
                                 </Button>
@@ -1112,14 +954,7 @@ export default function DirectoryPage() {
                                       </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                      <div className="flex items-center gap-2">
-                                        <p className="font-medium text-gray-800">{member.fullName}</p>
-                                        {isUpcomingBirthday(member.dateOfBirth) && (
-                                          <Badge variant="outline" className="text-[8px] bg-red-50 text-red-600 border-red-200">
-                                            🎂 Soon!
-                                          </Badge>
-                                        )}
-                                      </div>
+                                      <p className="font-medium text-gray-800">{member.fullName}</p>
                                       <p className="text-xs text-gray-500">
                                         {member.gender && <Badge variant="outline" className="mr-1 text-[10px] capitalize">{member.gender}</Badge>}
                                         {member.dateOfBirth && formatDate(member.dateOfBirth)}
@@ -1168,40 +1003,33 @@ export default function DirectoryPage() {
                                 </TableCell>
                               </TableRow>
                               
-                              {/* Expanded details row */}
+                              {/* Expanded details */}
                               {expandedItems.has(member.id) && (
                                 <TableRow className="bg-purple-50/30 border-t-0">
                                   <TableCell colSpan={7} className="p-4">
-                                    <div className="animate-slide-down grid grid-cols-1 md:grid-cols-3 gap-4">
-                                      {/* Personal & Contact */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                      {/* Personal */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 flex items-center gap-1 text-sm">
-                                          <UserCircle className="h-4 w-4" /> Personal Details
-                                        </h4>
+                                        <h4 className="font-semibold text-purple-800 text-sm">Personal Details</h4>
                                         <div className="space-y-1 text-sm">
-                                          <p><span className="text-gray-500">ID Number:</span> {member.idNumber || '—'}</p>
+                                          <p><span className="text-gray-500">ID:</span> {member.idNumber || '—'}</p>
                                           <p><span className="text-gray-500">Profession:</span> {member.profession || '—'}</p>
                                           <p><span className="text-gray-500">Workplace:</span> {member.workplace || '—'}</p>
-                                          <p><span className="text-gray-500">Date of Birth:</span> {formatDate(member.dateOfBirth)}</p>
                                         </div>
                                       </div>
 
                                       {/* Address */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 flex items-center gap-1 text-sm">
-                                          <Home className="h-4 w-4" /> Address
-                                        </h4>
+                                        <h4 className="font-semibold text-purple-800 text-sm">Address</h4>
                                         <div className="space-y-1 text-sm">
-                                          <p><span className="text-gray-500">Address:</span> {member.address || '—'}</p>
-                                          <p><span className="text-gray-500">Home Address:</span> {member.homeAddress || '—'}</p>
+                                          <p>{member.address || '—'}</p>
+                                          <p>{member.homeAddress || '—'}</p>
                                         </div>
                                       </div>
 
                                       {/* Family */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 flex items-center gap-1 text-sm">
-                                          <HeartHandshake className="h-4 w-4" /> Family
-                                        </h4>
+                                        <h4 className="font-semibold text-purple-800 text-sm">Family</h4>
                                         <div className="space-y-1 text-sm">
                                           <p><span className="text-gray-500">Next of Kin:</span> {member.nextOfKin || '—'}</p>
                                           <p><span className="text-gray-500">Spouse:</span> {member.spouseName || '—'}</p>
@@ -1209,14 +1037,12 @@ export default function DirectoryPage() {
                                         </div>
                                       </div>
 
-                                      {/* Church Info */}
+                                      {/* Church */}
                                       <div className="space-y-2 md:col-span-3">
-                                        <h4 className="font-semibold text-purple-800 flex items-center gap-1 text-sm">
-                                          <Church className="h-4 w-4" /> Church Information
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                        <h4 className="font-semibold text-purple-800 text-sm">Church Information</h4>
+                                        <div className="grid grid-cols-3 gap-4 text-sm">
                                           <div>
-                                            <p className="text-gray-500 mb-1">Departments:</p>
+                                            <p className="text-gray-500 mb-1">All Departments:</p>
                                             <div className="flex flex-wrap gap-1">
                                               {(member.departments || []).length > 0 ? (
                                                 (member.departments || []).map(d => (
@@ -1230,7 +1056,7 @@ export default function DirectoryPage() {
                                             </div>
                                           </div>
                                           <div>
-                                            <p className="text-gray-500 mb-1">Positions:</p>
+                                            <p className="text-gray-500 mb-1">All Positions:</p>
                                             <div className="flex flex-wrap gap-1">
                                               {(member.positions || []).length > 0 ? (
                                                 (member.positions || []).map(p => (
@@ -1291,8 +1117,8 @@ export default function DirectoryPage() {
               )}
             </div>
           ) : (
-            /* ========== GRID VIEW ========== */
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-fade-in-up-slow">
+            /* Grid View */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {loading ? (
                 <div className="col-span-full flex justify-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin text-white" />
@@ -1300,8 +1126,8 @@ export default function DirectoryPage() {
               ) : members.length === 0 ? (
                 <div className="col-span-full text-center py-12 text-white bg-white/10 backdrop-blur-sm rounded-xl">
                   <div className="flex flex-col items-center gap-2">
-                    <AlertCircle className="h-8 w-8 text-white/60" />
-                    <p className="text-white">No members match your criteria.</p>
+                    <Users className="h-8 w-8 text-white/60" />
+                    <p className="text-white">No members found.</p>
                     <Button variant="link" onClick={clearFilters} className="text-white underline">
                       Clear filters
                     </Button>
@@ -1309,9 +1135,9 @@ export default function DirectoryPage() {
                 </div>
               ) : (
                 members.map((member) => (
-                  <Card key={member.id} className="border-purple-200/40 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all">
+                  <Card key={member.id} className="bg-white/90 backdrop-blur-sm border-purple-200/40 shadow-lg hover:shadow-xl transition-all">
                     <CardContent className="p-5">
-                      {/* Header with avatar, name, and expand button */}
+                      {/* Header */}
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-12 w-12 border-2 border-purple-200">
@@ -1320,40 +1146,25 @@ export default function DirectoryPage() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-bold text-gray-800">{member.fullName}</h3>
-                              {isUpcomingBirthday(member.dateOfBirth) && (
-                                <Badge variant="outline" className="text-[8px] bg-red-50 text-red-600 border-red-200">
-                                  🎂
-                                </Badge>
-                              )}
-                            </div>
+                            <h3 className="font-bold text-gray-800">{member.fullName}</h3>
                             <p className="text-xs text-gray-500">{member.profession || '—'}</p>
                           </div>
                         </div>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => toggleExpanded(member.id)}
-                          >
-                            {expandedItems.has(member.id) ? (
-                              <ChevronUp className="h-4 w-4" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4" />
-                            )}
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(member)}>
-                            <Pencil className="h-3.5 w-3.5 text-purple-700" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(member.id)}>
-                            <Trash2 className="h-3.5 w-3.5 text-red-600" />
-                          </Button>
-                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => toggleExpanded(member.id)}
+                        >
+                          {expandedItems.has(member.id) ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </Button>
                       </div>
 
-                      {/* Quick info (always visible) */}
+                      {/* Quick Info */}
                       <div className="space-y-1 text-sm text-gray-600 mb-3">
                         {member.phone && (
                           <p className="flex items-center gap-1">
@@ -1367,7 +1178,7 @@ export default function DirectoryPage() {
                         )}
                       </div>
 
-                      {/* Departments & Positions badges (always visible) */}
+                      {/* Departments & Positions */}
                       <div className="space-y-2">
                         {member.departments && member.departments.length > 0 && (
                           <div className="flex flex-wrap gap-1">
@@ -1395,66 +1206,33 @@ export default function DirectoryPage() {
                         )}
                       </div>
 
-                      {/* Expanded details */}
+                      {/* Expanded Details */}
                       {expandedItems.has(member.id) && (
-                        <div className="mt-4 pt-4 border-t border-purple-100 animate-slide-down">
-                          <div className="space-y-3">
-                            {/* Personal */}
-                            <div>
-                              <h4 className="text-xs font-semibold text-purple-800 mb-1 flex items-center gap-1">
-                                <UserCircle className="h-3 w-3" /> Personal
-                              </h4>
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div><span className="text-gray-500">ID:</span> {member.idNumber || '—'}</div>
-                                <div><span className="text-gray-500">Gender:</span> {member.gender || '—'}</div>
-                                <div><span className="text-gray-500">DOB:</span> {formatDate(member.dateOfBirth)}</div>
-                                <div><span className="text-gray-500">Work:</span> {member.workplace || '—'}</div>
-                              </div>
+                        <div className="mt-4 pt-4 border-t border-purple-100">
+                          <div className="space-y-2 text-sm">
+                            <div className="grid grid-cols-2 gap-2">
+                              <div><span className="text-gray-500">ID:</span> {member.idNumber || '—'}</div>
+                              <div><span className="text-gray-500">Work:</span> {member.workplace || '—'}</div>
+                              <div><span className="text-gray-500">Baptism:</span> {formatDate(member.baptismDate)}</div>
+                              <div><span className="text-gray-500">Joined:</span> {formatDate(member.joinedDate)}</div>
                             </div>
-
-                            {/* Address */}
+                            
                             <div>
-                              <h4 className="text-xs font-semibold text-purple-800 mb-1 flex items-center gap-1">
-                                <MapPin className="h-3 w-3" /> Address
-                              </h4>
-                              <p className="text-xs">{member.address || '—'}</p>
-                              <p className="text-xs">{member.homeAddress || '—'}</p>
+                              <span className="text-gray-500">Address:</span> {member.address || member.homeAddress || '—'}
                             </div>
-
-                            {/* Family */}
-                            <div>
-                              <h4 className="text-xs font-semibold text-purple-800 mb-1 flex items-center gap-1">
-                                <HeartHandshake className="h-3 w-3" /> Family
-                              </h4>
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div><span className="text-gray-500">Next of Kin:</span> {member.nextOfKin || '—'}</div>
-                                <div><span className="text-gray-500">Spouse:</span> {member.spouseName || '—'}</div>
-                                <div><span className="text-gray-500">Parents:</span> {member.parents || '—'}</div>
-                              </div>
-                            </div>
-
-                            {/* Church */}
-                            <div>
-                              <h4 className="text-xs font-semibold text-purple-800 mb-1 flex items-center gap-1">
-                                <Church className="h-3 w-3" /> Church
-                              </h4>
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div><span className="text-gray-500">Baptism:</span> {formatDate(member.baptismDate)}</div>
-                                <div><span className="text-gray-500">Joined:</span> {formatDate(member.joinedDate)}</div>
-                              </div>
-                              {(member.departments || []).length > 2 && (
-                                <div className="mt-1 text-xs">
-                                  <span className="text-gray-500">All depts:</span>{' '}
-                                  {(member.departments || []).slice(2).join(', ')}
-                                </div>
-                              )}
-                              {(member.positions || []).length > 2 && (
-                                <div className="mt-1 text-xs">
-                                  <span className="text-gray-500">All positions:</span>{' '}
-                                  {(member.positions || []).slice(2).join(', ')}
-                                </div>
-                              )}
-                            </div>
+                            
+                            {member.nextOfKin && (
+                              <div><span className="text-gray-500">Next of Kin:</span> {member.nextOfKin}</div>
+                            )}
+                          </div>
+                          
+                          <div className="flex gap-2 mt-3">
+                            <Button variant="outline" size="sm" className="flex-1" onClick={() => handleEdit(member)}>
+                              <Pencil className="h-3 w-3 mr-1" /> Edit
+                            </Button>
+                            <Button variant="outline" size="sm" className="flex-1 text-red-600" onClick={() => handleDelete(member.id)}>
+                              <Trash2 className="h-3 w-3 mr-1" /> Delete
+                            </Button>
                           </div>
                         </div>
                       )}

@@ -1930,7 +1930,7 @@ export default function EventsPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="rsvp_notes">Notes (optional)</Label>
+              <Label htmlFor="rsvp_notes">Add Notes (optional)</Label>
               <Textarea
                 id="rsvp_notes"
                 value={rsvpForm.notes}

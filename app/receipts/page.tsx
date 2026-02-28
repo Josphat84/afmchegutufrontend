@@ -130,7 +130,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -1261,6 +1260,105 @@ const PaymentFormModal = ({ open, onClose, onSave, payment }: {
   );
 };
 
+// =============== SIMPLE DATE PICKER COMPONENT ===============
+const SimpleDatePicker = ({ 
+  date, 
+  onSelect, 
+  placeholder 
+}: { 
+  date: Date | null; 
+  onSelect: (date: Date) => void; 
+  placeholder: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  
+  // Generate days for current month
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="bg-white/80 border-purple-200">
+          <CalendarIcon className="h-4 w-4 mr-2" />
+          {date ? format(date, 'LLL dd, y') : placeholder}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-3" align="start">
+        <div className="space-y-3">
+          <div className="text-center font-medium">
+            {monthNames[month]} {year}
+          </div>
+          <div className="grid grid-cols-7 gap-1 text-center text-sm">
+            {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+              <div key={day} className="text-muted-foreground font-medium">{day}</div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {days.map(day => {
+              const dayDate = new Date(year, month, day);
+              const isSelected = date?.getDate() === day && 
+                                 date?.getMonth() === month && 
+                                 date?.getFullYear() === year;
+              const isToday = day === today.getDate() && 
+                             month === today.getMonth() && 
+                             year === today.getFullYear();
+              
+              return (
+                <Button
+                  key={day}
+                  variant="ghost"
+                  size="sm"
+                  className={`h-8 w-8 p-0 ${
+                    isSelected 
+                      ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                      : isToday 
+                        ? 'border border-purple-200' 
+                        : ''
+                  }`}
+                  onClick={() => {
+                    onSelect(dayDate);
+                    setOpen(false);
+                  }}
+                >
+                  {day}
+                </Button>
+              );
+            })}
+          </div>
+          <div className="flex justify-between pt-2 border-t">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                onSelect(new Date());
+                setOpen(false);
+              }}
+            >
+              Today
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 // =============== MAIN PAGE ===============
 export default function PaymentsPage() {
   const router = useRouter();
@@ -1285,7 +1383,8 @@ export default function PaymentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReason, setSelectedReason] = useState<string>('all');
   const [selectedMethod, setSelectedMethod] = useState<string>('all');
-  const [dateRange, setDateRange] = useState<{ from: Date | null; to: Date | null }>({ from: null, to: null });
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(0);
@@ -1314,7 +1413,7 @@ export default function PaymentsPage() {
   useEffect(() => {
     fetchPayments();
     fetchStats();
-  }, [searchTerm, selectedReason, selectedMethod, currentPage]);
+  }, [searchTerm, selectedReason, selectedMethod, startDate, endDate, currentPage]);
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -1323,8 +1422,8 @@ export default function PaymentsPage() {
         search: searchTerm || undefined,
         reason: selectedReason !== 'all' ? selectedReason : undefined,
         payment_method: selectedMethod !== 'all' ? selectedMethod : undefined,
-        from_date: dateRange.from ? dateRange.from.toISOString().split('T')[0] : undefined,
-        to_date: dateRange.to ? dateRange.to.toISOString().split('T')[0] : undefined,
+        from_date: startDate ? startDate.toISOString().split('T')[0] : undefined,
+        to_date: endDate ? endDate.toISOString().split('T')[0] : undefined,
         limit: pageSize,
         offset: currentPage * pageSize,
       });
@@ -1334,8 +1433,8 @@ export default function PaymentsPage() {
         search: searchTerm || undefined,
         reason: selectedReason !== 'all' ? selectedReason : undefined,
         payment_method: selectedMethod !== 'all' ? selectedMethod : undefined,
-        from_date: dateRange.from ? dateRange.from.toISOString().split('T')[0] : undefined,
-        to_date: dateRange.to ? dateRange.to.toISOString().split('T')[0] : undefined,
+        from_date: startDate ? startDate.toISOString().split('T')[0] : undefined,
+        to_date: endDate ? endDate.toISOString().split('T')[0] : undefined,
       });
       setTotalCount(count);
     } catch (error) {
@@ -1443,7 +1542,8 @@ export default function PaymentsPage() {
     setSearchTerm('');
     setSelectedReason('all');
     setSelectedMethod('all');
-    setDateRange({ from: null, to: null });
+    setStartDate(null);
+    setEndDate(null);
     setCurrentPage(0);
   };
 
@@ -1677,47 +1777,28 @@ export default function PaymentsPage() {
                 </SelectContent>
               </Select>
 
-              {/* Date Range Filter - Using mode="single" for each calendar */}
+              {/* Date Range Filter - Using custom simple date pickers */}
               <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="bg-white/80 border-purple-200">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      {dateRange.from ? format(dateRange.from, 'LLL dd, y') : 'Start Date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <CalendarComponent
-                      mode="single"
-                      selected={dateRange.from || undefined}
-                      onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <SimpleDatePicker
+                  date={startDate}
+                  onSelect={setStartDate}
+                  placeholder="Start Date"
+                />
 
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="bg-white/80 border-purple-200">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      {dateRange.to ? format(dateRange.to, 'LLL dd, y') : 'End Date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <CalendarComponent
-                      mode="single"
-                      selected={dateRange.to || undefined}
-                      onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <SimpleDatePicker
+                  date={endDate}
+                  onSelect={setEndDate}
+                  placeholder="End Date"
+                />
 
-                {(dateRange.from || dateRange.to) && (
+                {(startDate || endDate) && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setDateRange({ from: null, to: null })}
+                    onClick={() => {
+                      setStartDate(null);
+                      setEndDate(null);
+                    }}
                     className="text-purple-700 hover:text-purple-800"
                   >
                     <X className="h-4 w-4" />
@@ -1726,7 +1807,7 @@ export default function PaymentsPage() {
               </div>
 
               {/* Clear Filters */}
-              {(searchTerm || selectedReason !== 'all' || selectedMethod !== 'all' || dateRange.from) && (
+              {(searchTerm || selectedReason !== 'all' || selectedMethod !== 'all' || startDate) && (
                 <Button variant="ghost" onClick={clearFilters} className="text-purple-700 hover:text-purple-800">
                   Clear Filters
                 </Button>

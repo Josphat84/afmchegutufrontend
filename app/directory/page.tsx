@@ -187,11 +187,17 @@ async function fetchAPI<T>(
       }
     }
 
+    // Handle 204 No Content responses (DELETE operations)
+    if (response.status === 204) {
+      return {} as T;
+    }
+
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
       return data;
     }
+    
     return {} as T;
   } catch (error) {
     console.error('Fetch error:', error);

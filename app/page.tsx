@@ -144,6 +144,42 @@ interface UserData {
   avatar?: string;
 }
 
+// =============== FEATURE PAGES DATA ===============
+const FEATURE_PAGES = [
+  {
+    title: "Believers Directory",
+    description: "Complete member management with personal details, departments, positions, and church involvement tracking.",
+    icon: Users,
+    href: "/directory",
+    color: "blue" as ColorType,
+    stats: "Manage 500+ members"
+  },
+  {
+    title: "Payments & Offerings",
+    description: "Record tithes, offerings, and donations with automatic receipt generation and PDF downloads.",
+    icon: Wallet,
+    href: "/receipts",
+    color: "green" as ColorType,
+    stats: "Track finances"
+  },
+  {
+    title: "Equipment Directory",
+    description: "Inventory management for church equipment including status, maintenance schedules, and assignment tracking.",
+    icon: Package,
+    href: "/equipment",
+    color: "amber" as ColorType,
+    stats: "Manage assets"
+  },
+  {
+    title: "Events & Notices",
+    description: "Upcoming church events, announcements, and calendar management with RSVP functionality.",
+    icon: CalendarDays,
+    href: "/events",
+    color: "purple" as ColorType,
+    stats: "Stay updated"
+  },
+];
+
 // =============== PUBLIC CHURCH DATA ===============
 const DEPARTMENTS = [
   { name: "Ladies Fellowship", icon: Heart, description: "Virtuous women building godly homes.", color: "rose" as ColorType },
@@ -167,7 +203,7 @@ const LATEST_SERMONS = [
 ];
 
 const PASTORS = {
-  name: "Rev. Mr & Mrs Lirani",
+  name: "Rev. Lirani & Mrs Lirani",
   title: "Senior Pastors",
   message: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future. (Jeremiah 29:11) Dear friends, it is our joy to welcome you to AFM Chegutu. Whether you are searching for faith, looking for a church home, or simply curious, you are welcome here.",
   image: "https://images.unsplash.com/photo-1566492031773-4fbd0d1d8f8b",
@@ -287,6 +323,47 @@ function SermonCard({ sermon }: { sermon: typeof LATEST_SERMONS[0] }) {
         <h4 className="font-bold text-gray-800 group-hover:text-purple-700 transition">{sermon.title}</h4>
       </div>
     </div>
+  );
+}
+
+// =============== FEATURE CARD COMPONENT ===============
+function FeatureCard({ feature, index }: { feature: typeof FEATURE_PAGES[0]; index: number }) {
+  const Icon = feature.icon;
+  const colors = {
+    blue: 'bg-blue-100 text-blue-700 border-blue-200',
+    green: 'bg-green-100 text-green-700 border-green-200',
+    amber: 'bg-amber-100 text-amber-700 border-amber-200',
+    purple: 'bg-purple-100 text-purple-700 border-purple-200',
+  };
+  
+  return (
+    <Link href={feature.href} className="block group animate-fade-in-up-slow" style={{ animationDelay: `${index * 100}ms` }}>
+      <Card className="h-full bg-white/90 backdrop-blur-sm border-purple-200/40 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className={`p-3 rounded-xl ${colors[feature.color as keyof typeof colors]} bg-opacity-80`}>
+              <Icon className={`h-6 w-6`} />
+            </div>
+            <Badge variant="outline" className="bg-white/50">
+              {feature.stats}
+            </Badge>
+          </div>
+          
+          <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-700 transition-colors">
+            {feature.title}
+          </h3>
+          
+          <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+            {feature.description}
+          </p>
+          
+          <div className="flex items-center text-purple-700 font-medium text-sm group-hover:gap-2 transition-all">
+            <span>Access Page</span>
+            <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -457,6 +534,24 @@ export default function ChurchPage() {
                   <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
                     Watch Live
                   </Button>
+                </div>
+              </section>
+
+              {/* ========== FEATURED PAGES SECTION ========== */}
+              <section className="mb-20">
+                <div className="text-center mb-10">
+                  <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">
+                    Church Management Tools
+                  </h2>
+                  <p className="text-lg text-purple-100 max-w-2xl mx-auto">
+                    Everything you need to manage your church effectively in one place
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {FEATURE_PAGES.map((feature, index) => (
+                    <FeatureCard key={feature.href} feature={feature} index={index} />
+                  ))}
                 </div>
               </section>
 

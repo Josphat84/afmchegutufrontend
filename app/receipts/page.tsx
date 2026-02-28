@@ -1677,7 +1677,7 @@ export default function PaymentsPage() {
                 </SelectContent>
               </Select>
 
-              {/* Date Range Filter - Fixed Version without mode prop */}
+              {/* Date Range Filter - Using mode="single" for each calendar */}
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
@@ -1688,6 +1688,7 @@ export default function PaymentsPage() {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <CalendarComponent
+                      mode="single"
                       selected={dateRange.from || undefined}
                       onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
                       initialFocus
@@ -1704,6 +1705,7 @@ export default function PaymentsPage() {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <CalendarComponent
+                      mode="single"
                       selected={dateRange.to || undefined}
                       onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
                       initialFocus

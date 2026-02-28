@@ -199,6 +199,55 @@ async function fetchAPI<T>(
   }
 }
 
+// Helper to convert camelCase to snake_case for backend
+const toBackend = (member: Partial<Member>) => {
+  return {
+    full_name: member.fullName,
+    email: member.email || null,
+    phone: member.phone || null,
+    gender: member.gender || null,
+    date_of_birth: member.dateOfBirth || null,
+    id_number: member.idNumber || null,
+    profession: member.profession || null,
+    workplace: member.workplace || null,
+    address: member.address || null,
+    home_address: member.homeAddress || null,
+    next_of_kin: member.nextOfKin || null,
+    spouse_name: member.spouseName || null,
+    parents: member.parents || null,
+    departments: member.departments || [],
+    positions: member.positions || [],
+    baptism_date: member.baptismDate || null,
+    joined_date: member.joinedDate || null,
+  };
+};
+
+// Helper to convert snake_case to camelCase from backend
+const fromBackend = (data: any): Member => {
+  return {
+    id: data.id,
+    fullName: data.full_name || '',
+    email: data.email || '',
+    phone: data.phone || '',
+    gender: data.gender || '',
+    dateOfBirth: data.date_of_birth || '',
+    idNumber: data.id_number || '',
+    profession: data.profession || '',
+    workplace: data.workplace || '',
+    address: data.address || '',
+    homeAddress: data.home_address || '',
+    nextOfKin: data.next_of_kin || '',
+    spouseName: data.spouse_name || '',
+    parents: data.parents || '',
+    departments: data.departments || [],
+    positions: data.positions || [],
+    baptismDate: data.baptism_date || '',
+    joinedDate: data.joined_date || '',
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
+};
+
 async function getMembers(params?: {
   search?: string;
   gender?: string;
@@ -216,7 +265,7 @@ async function getMembers(params?: {
   if (params?.offset) queryParams.append('offset', params.offset.toString());
 
   const data = await fetchAPI<any[]>(`/directory/?${queryParams.toString()}`);
-  return Array.isArray(data) ? data : [];
+  return Array.isArray(data) ? data.map(fromBackend) : [];
 }
 
 async function getMemberCount(params?: {
@@ -260,17 +309,21 @@ async function getMemberStats(): Promise<MemberStats> {
 }
 
 async function createMember(member: Partial<Member>): Promise<Member> {
-  return fetchAPI<any>('/directory/', {
+  const backendData = toBackend(member);
+  const data = await fetchAPI<any>('/directory/', {
     method: 'POST',
-    body: JSON.stringify(member),
+    body: JSON.stringify(backendData),
   });
+  return fromBackend(data);
 }
 
 async function updateMember(id: string, member: Partial<Member>): Promise<Member> {
-  return fetchAPI<any>(`/directory/${id}`, {
+  const backendData = toBackend(member);
+  const data = await fetchAPI<any>(`/directory/${id}`, {
     method: 'PATCH',
-    body: JSON.stringify(member),
+    body: JSON.stringify(backendData),
   });
+  return fromBackend(data);
 }
 
 async function deleteMember(id: string): Promise<void> {
@@ -280,8 +333,13 @@ async function deleteMember(id: string): Promise<void> {
 }
 
 // =============== HELPER FUNCTIONS ===============
-const getInitials = (name: string) => {
+const getInitials = (name?: string) => {
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return '?';
+  }
+  
   return name
+    .trim()
     .split(' ')
     .map(n => n[0])
     .join('')
@@ -545,6 +603,7 @@ export default function DirectoryPage() {
       // Prepare data with proper types
       const memberData = {
         ...formData,
+        fullName: formData.fullName || 'Unknown',
         gender: formData.gender,
         departments: formData.departments,
         positions: formData.positions,
@@ -575,7 +634,7 @@ export default function DirectoryPage() {
   const handleEdit = (member: Member) => {
     setEditingMember(member);
     setFormData({
-      fullName: member.fullName,
+      fullName: member.fullName || '',
       email: member.email || '',
       phone: member.phone || '',
       gender: member.gender,
@@ -954,7 +1013,7 @@ export default function DirectoryPage() {
                                       </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                      <p className="font-medium text-gray-800">{member.fullName}</p>
+                                      <p className="font-medium text-gray-800">{member.fullName || 'Unknown'}</p>
                                       <p className="text-xs text-gray-500">
                                         {member.gender && <Badge variant="outline" className="mr-1 text-[10px] capitalize">{member.gender}</Badge>}
                                         {member.dateOfBirth && formatDate(member.dateOfBirth)}
@@ -1146,7 +1205,7 @@ export default function DirectoryPage() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <h3 className="font-bold text-gray-800">{member.fullName}</h3>
+                            <h3 className="font-bold text-gray-800">{member.fullName || 'Unknown'}</h3>
                             <p className="text-xs text-gray-500">{member.profession || '—'}</p>
                           </div>
                         </div>

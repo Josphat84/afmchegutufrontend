@@ -13,6 +13,7 @@ import {
   X,
   ChevronDown,
   DollarSign,
+  Package,
   Users,
   CalendarDays,
   Video,

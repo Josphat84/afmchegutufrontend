@@ -1,4 +1,5 @@
-// app/page.tsx (or wherever your homepage is located)
+// app/page.tsx - Updated with rotating background images
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -102,6 +103,10 @@ import {
   Tractor,
   Store,
   Factory,
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -130,13 +135,58 @@ const animationStyles = `
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
+  @keyframes ken-burns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+  @keyframes slide-fade {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+  }
   .animate-fade-in-up-slow {
     animation: fade-in-up-slow 1.8s ease-out forwards;
   }
   .animate-float-slow {
     animation: float-slow 4s ease-in-out infinite;
   }
+  .animate-ken-burns {
+    animation: ken-burns 20s ease-in-out infinite alternate;
+  }
+  .animate-slide-fade {
+    animation: slide-fade 8s ease-in-out infinite;
+  }
 `;
+
+// =============== BACKGROUND IMAGES ===============
+const backgroundImages = [
+  {
+    url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=90&w=2070",
+    alt: "Church Family Worship",
+    caption: "A family of believers dedicated to the apostolic doctrine."
+  },
+  {
+    url: "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=90&w=2073",
+    alt: "Church Building",
+    caption: "Where faith comes alive"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1490730141103-6ac217a94b88?auto=format&fit=crop&q=90&w=2070",
+    alt: "Worship Service",
+    caption: "Encounter God through powerful worship"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&q=90&w=2070",
+    alt: "Prayer Gathering",
+    caption: "A house of prayer for all nations"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=90&w=2089",
+    alt: "Community Fellowship",
+    caption: "Growing together in faith and love"
+  },
+];
 
 // =============== TYPES ===============
 type ColorType = 'purple' | 'blue' | 'green' | 'amber' | 'red' | 'indigo' | 'emerald' | 'cyan' | 'rose' | 'pink' | 'orange' | 'teal';
@@ -150,7 +200,7 @@ interface UserData {
   avatar?: string;
 }
 
-// =============== FEATURE PAGES DATA - UPDATED WITH ALL MINISTRY LINKS ===============
+// =============== FEATURE PAGES DATA ===============
 const FEATURE_PAGES = [
   {
     title: "Believers Directory",
@@ -270,6 +320,136 @@ const PASTORS = {
   message: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future. (Jeremiah 29:11) Dear friends, it is our joy to welcome you to AFM Chegutu. Whether you are searching for faith, looking for a church home, or simply curious, you are welcome here.",
   image: "https://images.unsplash.com/photo-1566492031773-4fbd0d1d8f8b",
 };
+
+// =============== BACKGROUND SLIDESHOW COMPONENT ===============
+function BackgroundSlideshow() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+
+  // Preload images
+  useEffect(() => {
+    const loadStatus = backgroundImages.map(() => false);
+    setImagesLoaded(loadStatus);
+    
+    backgroundImages.forEach((image, index) => {
+      const img = new Image();
+      img.src = image.url;
+      img.onload = () => {
+        setImagesLoaded(prev => {
+          const updated = [...prev];
+          updated[index] = true;
+          return updated;
+        });
+      };
+    });
+  }, []);
+
+  // Auto-rotate images every 8 seconds (standard carousel timing)
+  useEffect(() => {
+    if (!isPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % backgroundImages.length);
+    }, 120000); // 120 seconds per slide
+    
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % backgroundImages.length);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + backgroundImages.length) % backgroundImages.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  return (
+    <div className="fixed inset-0 z-0">
+      {/* Images */}
+      {backgroundImages.map((image, index) => (
+        <div
+          key={index}
+          className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+          style={{
+            opacity: index === currentIndex ? 1 : 0,
+          }}
+        >
+          {/* Placeholder/Loading state */}
+          {!imagesLoaded[index] && (
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-blue-900" />
+          )}
+          
+          <div 
+            className="absolute inset-0 animate-ken-burns"
+            style={{
+              backgroundImage: `url('${image.url}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: imagesLoaded[index] ? 1 : 0,
+              transition: 'opacity 0.5s ease-in-out',
+            }}
+          />
+          
+          {/* Gradient Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-transparent to-blue-900/30" />
+        </div>
+      ))}
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={goToPrevious}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+      
+      <button
+        onClick={goToNext}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all duration-300 opacity-0 group-hover:opacity-100 hover:opacity-100"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
+
+      {/* Play/Pause Button */}
+      <button
+        onClick={() => setIsPlaying(!isPlaying)}
+        className="absolute bottom-24 right-4 z-20 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all duration-300"
+        aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+      >
+        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+      </button>
+
+      {/* Slide Indicators (Dots) */}
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {backgroundImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentIndex 
+                ? 'w-8 bg-white' 
+                : 'w-2 bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Slide Counter */}
+      <div className="absolute bottom-24 left-4 z-20 text-white/70 text-sm bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
+        {currentIndex + 1} / {backgroundImages.length}
+      </div>
+    </div>
+  );
+}
 
 // =============== DASHBOARD DATA (when logged in) ===============
 interface FinancialMetric {
@@ -499,20 +679,8 @@ export default function ChurchPage() {
       <style jsx global>{animationStyles}</style>
       <Header isLoggedIn={isLoggedIn} user={user} churchName={churchName} onLogout={handleLogout} />
 
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/30"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.9,
-            filter: 'brightness(1.05) contrast(1.1) saturate(1.1)'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
-      </div>
+      {/* Background Slideshow */}
+      <BackgroundSlideshow />
 
       <div className="relative z-10">
         <main className="container mx-auto px-4 py-12">

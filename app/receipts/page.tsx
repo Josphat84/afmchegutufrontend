@@ -616,7 +616,7 @@ const generateReceiptPDF = (payment: Payment) => {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(0, 0, 0);
-  doc.text('Thanks for doing business with us!', pageWidth / 2, y, { align: 'center' });
+  doc.text('Thanks for worshipping with us!', pageWidth / 2, y, { align: 'center' });
 
   y += 5;
 
@@ -624,7 +624,7 @@ const generateReceiptPDF = (payment: Payment) => {
   doc.setFontSize(8);
   doc.setTextColor(80, 80, 80);
   doc.text(
-    'Thank you for choosing AFM Chegutu Assembly. Your generous giving supports the work of the ministry.',
+    'Thank you for choosing AFM Chegutu Town Assembly. Your generous giving supports the work of the ministry.',
     pageWidth / 2,
     y,
     { align: 'center', maxWidth: contentWidth * 0.8 }
@@ -809,7 +809,7 @@ const PaymentDetailModal = ({ payment, open, onClose, onDownload, onEdit }: {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">{payment.church_name || 'APOSTOLIC FAITH MISSION ZIMBABWE'}</h3>
-                <p className="text-sm text-gray-600">Chegutu Town Assembly · Mid North Province</p>
+                <p className="text-sm text-gray-600">AFM Chegutu Town Assembly · Mid North Province</p>
               </div>
               <h2 className="text-3xl font-light text-gray-400">Receipt</h2>
             </div>
@@ -885,7 +885,7 @@ const PaymentDetailModal = ({ payment, open, onClose, onDownload, onEdit }: {
             <div className="text-center mt-6">
               <p className="text-sm font-bold italic">Thanks for your generosity!</p>
               <p className="text-xs text-gray-600 mt-2">
-                Thank you for choosing AFM Chegutu Assembly. Your giving supports the work of the ministry.
+                Thank you for choosing AFM Chegutu Town Assembly. Your giving supports the work of the ministry.
               </p>
             </div>
           </div>

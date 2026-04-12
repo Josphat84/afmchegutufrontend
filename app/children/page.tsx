@@ -70,7 +70,6 @@ import {
   Sun,
   Moon,
   Rainbow,
-  Butterfly,
   Bug,
   Bird,
   Fish,

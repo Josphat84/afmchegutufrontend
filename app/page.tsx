@@ -1,3 +1,4 @@
+// app/page.tsx (or wherever your homepage is located)
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -96,6 +97,11 @@ import {
   Projector,
   Speaker,
   Headphones,
+  Flower,
+  Bird,
+  Tractor,
+  Store,
+  Factory,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -133,7 +139,7 @@ const animationStyles = `
 `;
 
 // =============== TYPES ===============
-type ColorType = 'purple' | 'blue' | 'green' | 'amber' | 'red' | 'indigo' | 'emerald' | 'cyan' | 'rose';
+type ColorType = 'purple' | 'blue' | 'green' | 'amber' | 'red' | 'indigo' | 'emerald' | 'cyan' | 'rose' | 'pink' | 'orange' | 'teal';
 
 interface UserData {
   id: number;
@@ -144,7 +150,7 @@ interface UserData {
   avatar?: string;
 }
 
-// =============== FEATURE PAGES DATA ===============
+// =============== FEATURE PAGES DATA - UPDATED WITH ALL MINISTRY LINKS ===============
 const FEATURE_PAGES = [
   {
     title: "Believers Directory",
@@ -152,7 +158,7 @@ const FEATURE_PAGES = [
     icon: Users,
     href: "/directory",
     color: "blue" as ColorType,
-    stats: "Manage 500+ members"
+    stats: "500+ members"
   },
   {
     title: "Payments & Offerings",
@@ -177,6 +183,62 @@ const FEATURE_PAGES = [
     href: "/events",
     color: "purple" as ColorType,
     stats: "Stay updated"
+  },
+  {
+    title: "Children's Ministry",
+    description: "Kingdom Kids - Growing in faith, love, and wisdom. Safe, fun environment for children to encounter God.",
+    icon: Baby,
+    href: "/children",
+    color: "pink" as ColorType,
+    stats: "Ages 2-17"
+  },
+  {
+    title: "Youth Ministry",
+    description: "Empowering the next generation through dynamic worship, discipleship, and leadership development.",
+    icon: Users,
+    href: "/youth",
+    color: "orange" as ColorType,
+    stats: "Teens & Young Adults"
+  },
+  {
+    title: "Ladies Fellowship",
+    description: "Daughters of the King - Empowering women to live boldly, love deeply, and shine brightly for Christ.",
+    icon: Flower,
+    href: "/ladies",
+    color: "rose" as ColorType,
+    stats: "Women's Ministry"
+  },
+  {
+    title: "Men's Fellowship",
+    description: "Iron Sharpens Iron - Forging godly men through faith, fellowship, and action.",
+    icon: Shield,
+    href: "/men",
+    color: "indigo" as ColorType,
+    stats: "Men's Ministry"
+  },
+  {
+    title: "Couples Ministry",
+    description: "Two Becoming One - Building strong marriages that honor God and bless families.",
+    icon: HeartHandshake,
+    href: "/couples",
+    color: "red" as ColorType,
+    stats: "Marriage Ministry"
+  },
+  {
+    title: "Media & Production",
+    description: "Audio, video, live streaming, and creative media to share the Gospel message.",
+    icon: Video,
+    href: "/media",
+    color: "cyan" as ColorType,
+    stats: "Creative Arts"
+  },
+  {
+    title: "Kingdom Projects",
+    description: "Sustainable income-generating projects including farming, manufacturing, and services.",
+    icon: Tractor,
+    href: "/projects",
+    color: "emerald" as ColorType,
+    stats: "Income Generation"
   },
 ];
 
@@ -225,35 +287,6 @@ interface QuickAction {
   link: string;
 }
 
-interface ServiceSchedule {
-  id: number;
-  title: string;
-  time: string;
-  date: string;
-  type: string;
-  speaker: string;
-  location: string;
-  attendees: number;
-}
-
-interface RecentDonation {
-  id: number;
-  name: string;
-  amount: number;
-  type: string;
-  date: string;
-  status: 'completed' | 'pending';
-}
-
-interface UpcomingEvent {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  type: 'conference' | 'meeting' | 'service' | 'outreach';
-  attendees: number;
-}
-
 // Helper for dashboard colors
 function getColorClasses(color: ColorType) {
   const colorMap: Record<ColorType, { light: string; icon: string; border: string }> = {
@@ -266,6 +299,9 @@ function getColorClasses(color: ColorType) {
     emerald: { light: 'bg-emerald-100/70', icon: 'text-emerald-700', border: 'border-emerald-200/60' },
     cyan: { light: 'bg-cyan-100/70', icon: 'text-cyan-700', border: 'border-cyan-200/60' },
     rose: { light: 'bg-rose-100/70', icon: 'text-rose-700', border: 'border-rose-200/60' },
+    pink: { light: 'bg-pink-100/70', icon: 'text-pink-700', border: 'border-pink-200/60' },
+    orange: { light: 'bg-orange-100/70', icon: 'text-orange-700', border: 'border-orange-200/60' },
+    teal: { light: 'bg-teal-100/70', icon: 'text-teal-700', border: 'border-teal-200/60' },
   };
   return colorMap[color];
 }
@@ -329,22 +365,16 @@ function SermonCard({ sermon }: { sermon: typeof LATEST_SERMONS[0] }) {
 // =============== FEATURE CARD COMPONENT ===============
 function FeatureCard({ feature, index }: { feature: typeof FEATURE_PAGES[0]; index: number }) {
   const Icon = feature.icon;
-  const colors = {
-    blue: 'bg-blue-100 text-blue-700 border-blue-200',
-    green: 'bg-green-100 text-green-700 border-green-200',
-    amber: 'bg-amber-100 text-amber-700 border-amber-200',
-    purple: 'bg-purple-100 text-purple-700 border-purple-200',
-  };
   
   return (
-    <Link href={feature.href} className="block group animate-fade-in-up-slow" style={{ animationDelay: `${index * 100}ms` }}>
+    <Link href={feature.href} className="block group animate-fade-in-up-slow" style={{ animationDelay: `${index * 50}ms` }}>
       <Card className="h-full bg-white/90 backdrop-blur-sm border-purple-200/40 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className={`p-3 rounded-xl ${colors[feature.color as keyof typeof colors]} bg-opacity-80`}>
-              <Icon className={`h-6 w-6`} />
+            <div className={`p-3 rounded-xl ${getColorClasses(feature.color).light}`}>
+              <Icon className={`h-6 w-6 ${getColorClasses(feature.color).icon}`} />
             </div>
-            <Badge variant="outline" className="bg-white/50">
+            <Badge variant="outline" className="bg-white/50 text-xs">
               {feature.stats}
             </Badge>
           </div>
@@ -353,7 +383,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURE_PAGES[0]; ind
             {feature.title}
           </h3>
           
-          <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+          <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">
             {feature.description}
           </p>
           
@@ -548,7 +578,7 @@ export default function ChurchPage() {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {FEATURE_PAGES.map((feature, index) => (
                     <FeatureCard key={feature.href} feature={feature} index={index} />
                   ))}

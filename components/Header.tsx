@@ -1,5 +1,4 @@
-//header component
-//frontend/components/header.tsx
+// frontend/components/header.tsx
 
 'use client';
 
@@ -48,6 +47,12 @@ import {
   TrendingUp,
   Award,
   LucideIcon,
+  Flower,
+  Bird,
+  Briefcase,
+  Tractor,
+  Store,
+  Heart,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -58,7 +63,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { AuthForm } from './AuthForm'; // We'll create this next
+import { AuthForm } from './AuthForm';
 
 interface UserData {
   id: number;
@@ -76,7 +81,7 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-// Module data for navigation dropdowns (can be moved to a shared config)
+// Module data for navigation dropdowns
 const financialModules = [
   { icon: DollarSign, title: 'Tithe Records', link: '/tithes' },
   { icon: Gift, title: 'Offerings', link: '/offerings' },
@@ -95,8 +100,23 @@ const membershipModules = [
   { icon: BookHeart, title: 'Small Groups', link: '/small-groups' },
 ];
 
+// =============== NEW MINISTRY MODULES ===============
+const ministryModules = [
+  { icon: Baby, title: 'Children\'s Ministry', link: '/children', description: 'Kingdom Kids' },
+  { icon: Users, title: 'Youth Ministry', link: '/youth', description: 'Next Generation' },
+  { icon: Flower, title: 'Ladies Fellowship', link: '/ladies', description: 'Daughters of the King' },
+  { icon: Shield, title: 'Men\'s Fellowship', link: '/men', description: 'Iron Sharpens Iron' },
+  { icon: HeartHandshake, title: 'Couples Ministry', link: '/couples', description: 'Two Becoming One' },
+  { icon: Tractor, title: 'Kingdom Projects', link: '/projects', description: 'Income Generation' },
+  { icon: Video, title: 'Media & Production', link: '/media', description: 'Creative Arts' },
+  { icon: CalendarDays, title: 'Events & Notices', link: '/events', description: 'Church Calendar' },
+];
+
 export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [ministriesOpen, setMinistriesOpen] = useState(false);
+  const [financesOpen, setFinancesOpen] = useState(false);
+  const [membersOpen, setMembersOpen] = useState(false);
   const pathname = usePathname();
 
   // Close mobile menu on route change
@@ -115,7 +135,6 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-white text-lg drop-shadow-lg">AFM Chegutu Town</span>
-              
             </div>
           </Link>
 
@@ -143,6 +162,32 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
             >
               Dashboard
             </Link>
+
+            {/* Ministries Dropdown - NEW */}
+            <div className="relative group">
+              <button className="flex items-center gap-2 text-sm text-white/90 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm drop-shadow-sm font-medium">
+                Ministries
+                <ChevronDown className="h-4 w-4" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 hidden group-hover:block w-64 bg-purple-900/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 p-2 z-50">
+                {ministryModules.map((module) => {
+                  const Icon = module.icon;
+                  return (
+                    <Link
+                      key={module.link}
+                      href={module.link}
+                      className="flex items-start gap-3 p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                    >
+                      <Icon className="h-4 w-4 text-white/70 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="font-medium">{module.title}</div>
+                        <div className="text-xs text-white/50">{module.description}</div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Finances Dropdown */}
             <div className="relative group">
@@ -190,25 +235,36 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
               </div>
             </div>
 
+            {/* Direct Links */}
             <Link
-              href="/calendar"
+              href="/directory"
               className={`text-sm px-4 py-2 rounded-lg transition-all duration-300 backdrop-blur-sm drop-shadow-sm font-medium ${
-                pathname === '/calendar'
+                pathname === '/directory'
                   ? 'text-white bg-white/20'
                   : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
             >
-              Calendar
+              Directory
             </Link>
             <Link
-              href="/media"
+              href="/receipts"
               className={`text-sm px-4 py-2 rounded-lg transition-all duration-300 backdrop-blur-sm drop-shadow-sm font-medium ${
-                pathname === '/media'
+                pathname === '/receipts'
                   ? 'text-white bg-white/20'
                   : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
             >
-              Media
+              Payments
+            </Link>
+            <Link
+              href="/equipment"
+              className={`text-sm px-4 py-2 rounded-lg transition-all duration-300 backdrop-blur-sm drop-shadow-sm font-medium ${
+                pathname === '/equipment'
+                  ? 'text-white bg-white/20'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              Equipment
             </Link>
           </nav>
 
@@ -280,7 +336,7 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-purple-200/20 bg-purple-900/95 backdrop-blur-xl mt-2 py-4 rounded-b-xl">
+          <div className="lg:hidden border-t border-purple-200/20 bg-purple-900/95 backdrop-blur-xl mt-2 py-4 rounded-b-xl max-h-[80vh] overflow-y-auto">
             <div className="space-y-1 px-4">
               <Link
                 href="/"
@@ -290,64 +346,131 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
                 Dashboard
               </Link>
 
+              {/* Ministries Section - Mobile */}
               <div className="space-y-1">
-                <div className="flex items-center justify-between p-3 text-sm text-white/90">
-                  Finances
-                </div>
-                <div className="ml-4 space-y-1">
-                  {financialModules.slice(0, 3).map((module) => {
-                    const Icon = module.icon;
-                    return (
-                      <Link
-                        key={module.link}
-                        href={module.link}
-                        className="flex items-center gap-3 p-3 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Icon className="h-4 w-4 text-white/60" />
-                        {module.title}
-                      </Link>
-                    );
-                  })}
-                </div>
+                <button
+                  onClick={() => setMinistriesOpen(!ministriesOpen)}
+                  className="w-full flex items-center justify-between p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                >
+                  <span className="font-medium">Ministries</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${ministriesOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {ministriesOpen && (
+                  <div className="ml-4 space-y-1 border-l border-white/20 pl-2">
+                    {ministryModules.map((module) => {
+                      const Icon = module.icon;
+                      return (
+                        <Link
+                          key={module.link}
+                          href={module.link}
+                          className="flex items-start gap-3 p-3 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Icon className="h-4 w-4 text-white/60 mt-0.5" />
+                          <div className="flex-1">
+                            <div className="font-medium">{module.title}</div>
+                            <div className="text-xs text-white/40">{module.description}</div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
+              {/* Finances Section - Mobile */}
               <div className="space-y-1">
-                <div className="flex items-center justify-between p-3 text-sm text-white/90">
-                  Members
-                </div>
-                <div className="ml-4 space-y-1">
-                  {membershipModules.slice(0, 3).map((module) => {
-                    const Icon = module.icon;
-                    return (
-                      <Link
-                        key={module.link}
-                        href={module.link}
-                        className="flex items-center gap-3 p-3 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <Icon className="h-4 w-4 text-white/60" />
-                        {module.title}
-                      </Link>
-                    );
-                  })}
-                </div>
+                <button
+                  onClick={() => setFinancesOpen(!financesOpen)}
+                  className="w-full flex items-center justify-between p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                >
+                  <span className="font-medium">Finances</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${financesOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {financesOpen && (
+                  <div className="ml-4 space-y-1 border-l border-white/20 pl-2">
+                    {financialModules.map((module) => {
+                      const Icon = module.icon;
+                      return (
+                        <Link
+                          key={module.link}
+                          href={module.link}
+                          className="flex items-center gap-3 p-3 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Icon className="h-4 w-4 text-white/60" />
+                          {module.title}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
+              {/* Members Section - Mobile */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => setMembersOpen(!membersOpen)}
+                  className="w-full flex items-center justify-between p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                >
+                  <span className="font-medium">Members</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${membersOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {membersOpen && (
+                  <div className="ml-4 space-y-1 border-l border-white/20 pl-2">
+                    {membershipModules.map((module) => {
+                      const Icon = module.icon;
+                      return (
+                        <Link
+                          key={module.link}
+                          href={module.link}
+                          className="flex items-center gap-3 p-3 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Icon className="h-4 w-4 text-white/60" />
+                          {module.title}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Links - Mobile */}
               <Link
-                href="/calendar"
+                href="/directory"
                 className="flex items-center gap-3 p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Calendar
+                <Users className="h-4 w-4 text-white/60" />
+                Believers Directory
               </Link>
 
               <Link
-                href="/media"
+                href="/receipts"
                 className="flex items-center gap-3 p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Media
+                <DollarSign className="h-4 w-4 text-white/60" />
+                Payments & Offerings
+              </Link>
+
+              <Link
+                href="/equipment"
+                className="flex items-center gap-3 p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Package className="h-4 w-4 text-white/60" />
+                Equipment Directory
+              </Link>
+
+              <Link
+                href="/events"
+                className="flex items-center gap-3 p-3 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <CalendarDays className="h-4 w-4 text-white/60" />
+                Events & Notices
               </Link>
             </div>
 

@@ -1501,7 +1501,7 @@ export default function ExpensesPage() {
                             labelLine={false}>
                             {incomePieData.map((d,i)=><Cell key={i} fill={d.fill}/>)}
                           </Pie>
-                          <ReTooltip formatter={(v:number)=>[fmt(v),'Amount']}/>
+                          <ReTooltip formatter={(v)=>[fmt(Number(v??0)),'Amount']}/>
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="space-y-2 w-full sm:w-auto sm:min-w-[130px]">
@@ -1528,7 +1528,7 @@ export default function ExpensesPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
                         <XAxis dataKey="month" tick={{fontSize:11}} axisLine={false} tickLine={false}/>
                         <YAxis tick={{fontSize:11}} axisLine={false} tickLine={false} tickFormatter={v=>`$${(v as number).toLocaleString()}`} width={60}/>
-                        <ReTooltip formatter={(v:number)=>[fmt(v),'Income']} contentStyle={{borderRadius:'8px',fontSize:'12px'}}/>
+                        <ReTooltip formatter={(v)=>[fmt(Number(v??0)),'Income']} contentStyle={{borderRadius:'8px',fontSize:'12px'}}/>
                         <Bar dataKey="amount" fill="#22C55E" radius={[4,4,0,0]} name="Income"/>
                       </BarChart>
                     </ResponsiveContainer>

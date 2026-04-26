@@ -128,14 +128,15 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-purple-200/40 bg-purple-900/80 backdrop-blur-xl backdrop-saturate-150">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-18 min-h-[4.5rem] items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/90 to-blue-500/90 shadow-lg">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/90 to-blue-500/90 shadow-lg">
               <Church className="h-5 w-5 text-white" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-white text-lg drop-shadow-lg">AFM Chegutu Town</span>
+            <div className="flex flex-col min-w-0">
+              <span className="font-bold text-white text-base leading-tight truncate drop-shadow-lg">AFM Chegutu</span>
+              <span className="text-purple-200 text-xs leading-tight truncate hidden sm:block">Assembly</span>
             </div>
           </Link>
 

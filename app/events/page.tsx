@@ -115,11 +115,141 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+// =============== SIMPLE CUSTOM CALENDAR COMPONENT ===============
+// This replaces the problematic CalendarComponent with a simple custom one
+const SimpleCalendar = ({ 
+  selectedDate, 
+  onDateSelect, 
+  eventDates = [],
+  className = "" 
+}: { 
+  selectedDate?: Date;
+  onDateSelect: (date: Date) => void;
+  eventDates?: Date[];
+  className?: string;
+}) => {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const days = [];
+    
+    // Add padding days from previous month
+    const startPadding = firstDay.getDay();
+    for (let i = startPadding - 1; i >= 0; i--) {
+      const prevDate = new Date(year, month, -i);
+      days.push({ date: prevDate, isCurrentMonth: false });
+    }
+    
+    // Add days of current month
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push({ date: new Date(year, month, i), isCurrentMonth: true });
+    }
+    
+    // Add padding days for next month to make 6 rows
+    const remainingDays = 42 - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      const nextDate = new Date(year, month + 1, i);
+      days.push({ date: nextDate, isCurrentMonth: false });
+    }
+    
+    return days;
+  };
+  
+  const isSameDay = (date1: Date, date2: Date) => {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+  };
+  
+  const isToday = (date: Date) => {
+    return isSameDay(date, new Date());
+  };
+  
+  const hasEvent = (date: Date) => {
+    return eventDates.some(eventDate => isSameDay(eventDate, date));
+  };
+  
+  const isSelected = (date: Date) => {
+    return selectedDate && isSameDay(date, selectedDate);
+  };
+  
+  const changeMonth = (increment: number) => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + increment, 1));
+  };
+  
+  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const days = getDaysInMonth(currentMonth);
+  
+  return (
+    <div className={className}>
+      {/* Calendar Header */}
+      <div className="flex items-center justify-between mb-4 px-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => changeMonth(-1)}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <div className="font-semibold text-gray-900">
+          {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => changeMonth(1)}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+      
+      {/* Week Days Header */}
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {weekDays.map(day => (
+          <div key={day} className="text-center text-xs font-medium text-gray-500 py-2">
+            {day}
+          </div>
+        ))}
+      </div>
+      
+      {/* Calendar Days */}
+      <div className="grid grid-cols-7 gap-1">
+        {days.map(({ date, isCurrentMonth }, idx) => (
+          <button
+            key={idx}
+            onClick={() => onDateSelect(date)}
+            className={`
+              relative aspect-square p-0 text-sm font-medium rounded-full transition-all
+              ${!isCurrentMonth ? 'text-gray-400' : 'text-gray-900'}
+              ${isSelected(date) ? 'bg-[#2A4D69] text-white hover:bg-[#1e3a52]' : 'hover:bg-gray-100'}
+              ${isToday(date) && !isSelected(date) ? 'border-2 border-[#86BBD8]' : ''}
+              focus:outline-none focus:ring-2 focus:ring-[#86BBD8]
+            `}
+          >
+            {date.getDate()}
+            {hasEvent(date) && (
+              <div className={`
+                absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full
+                ${isSelected(date) ? 'bg-white' : 'bg-[#86BBD8]'}
+              `} />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // =============== CONSTANTS ===============
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -158,44 +288,28 @@ interface Event {
   excerpt: string;
   type: string;
   category: string;
-  
-  // Event dates
   event_start_date?: string;
   event_end_date?: string;
   event_start_time?: string;
   event_end_time?: string;
   all_day?: boolean;
-  
-  // Location
   location?: string;
   venue?: string;
   address?: string;
   is_online?: boolean;
   online_url?: string;
-  
-  // Registration
   registration_required?: boolean;
   registration_deadline?: string;
   capacity?: number;
-  
-  // Media
   featured_image?: string;
   gallery_images?: string[];
-  
-  // Author
   author_name?: string;
   author_email?: string;
-  
-  // Status
   is_published: boolean;
   is_featured: boolean;
   published_at: string;
-  
-  // Stats
   views: number;
   rsvp_count: number;
-  
-  // Timestamps
   created_at: string;
   updated_at: string;
 }
@@ -217,7 +331,6 @@ async function fetchAPI<T>(
   options?: RequestInit
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log('Fetching:', url);
   
   try {
     const response = await fetch(url, {
@@ -229,8 +342,6 @@ async function fetchAPI<T>(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Error response:', errorText);
-      
       try {
         const errorJson = JSON.parse(errorText);
         throw new Error(errorJson.detail || `API error: ${response.status}`);
@@ -239,7 +350,6 @@ async function fetchAPI<T>(
       }
     }
 
-    // Handle 204 No Content responses (DELETE operations)
     if (response.status === 204) {
       return {} as T;
     }
@@ -318,10 +428,6 @@ async function uploadImage(file: File): Promise<{ url: string }> {
   return response.json();
 }
 
-async function getEventRSVPs(eventId: string): Promise<RSVP[]> {
-  return fetchAPI<RSVP[]>(`/events/${eventId}/rsvps`);
-}
-
 async function createRSVP(rsvp: Partial<RSVP>): Promise<RSVP> {
   return fetchAPI<RSVP>('/events/rsvps', {
     method: 'POST',
@@ -338,11 +444,6 @@ const getTypeIcon = (type: string) => {
 const getTypeColor = (type: string) => {
   const t = EVENT_TYPES.find(t => t.value === type);
   return t?.color || 'bg-gray-100 text-gray-800 border-gray-200';
-};
-
-const getTypeDescription = (type: string) => {
-  const t = EVENT_TYPES.find(t => t.value === type);
-  return t?.description || '';
 };
 
 const getCategoryIcon = (category: string) => {
@@ -381,27 +482,6 @@ const formatShortDate = (dateStr?: string) => {
   }
 };
 
-const formatDateTime = (dateStr?: string, timeStr?: string) => {
-  if (!dateStr) return '';
-  try {
-    const date = new Date(dateStr);
-    if (timeStr) {
-      const [hours, minutes] = timeStr.split(':');
-      date.setHours(parseInt(hours), parseInt(minutes));
-    }
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  } catch {
-    return `${dateStr} ${timeStr || ''}`;
-  }
-};
-
 const formatTime = (timeStr?: string) => {
   if (!timeStr) return '';
   try {
@@ -427,11 +507,9 @@ const getInitials = (name?: string) => {
 
 const validateEventForm = (data: Record<string, any>): string[] => {
   const errors: string[] = [];
-  
   if (!data.title?.trim()) {
     errors.push('Title is required');
   }
-  
   return errors;
 };
 
@@ -463,7 +541,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
   
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Hero Section */}
       <div className="relative h-[40vh] md:h-[50vh] overflow-hidden">
         {event.featured_image ? (
           <>
@@ -478,7 +555,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
           <div className="w-full h-full bg-gradient-to-br from-[#2A4D69] to-[#6B7B8E]" />
         )}
         
-        {/* Back Button */}
         <button
           onClick={onBack}
           className="absolute top-6 left-6 z-10 flex items-center gap-2 px-4 py-2 bg-black/50 backdrop-blur-sm text-white rounded-full hover:bg-black/70 transition-all"
@@ -487,7 +563,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
           <span>Back to Events</span>
         </button>
         
-        {/* Action Buttons */}
         <div className="absolute top-6 right-6 z-10 flex gap-2">
           {isAdmin && (
             <>
@@ -513,7 +588,6 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
           </button>
         </div>
         
-        {/* Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
           <div className="container mx-auto">
             <div className="flex flex-wrap gap-2 mb-4">
@@ -547,38 +621,33 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
         </div>
       </div>
       
-      {/* Content Section */}
       <div className="container mx-auto py-12 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Excerpt */}
             {event.excerpt && (
-              <div className="bg-[#86BBD8]/10 dark:bg-[#0d1f2d]/20 rounded-xl p-6 border border-[#86BBD8]/30 dark:border-[#162d3f]">
-                <p className="text-lg text-gray-700 dark:text-gray-300 italic leading-relaxed">
+              <div className="bg-[#86BBD8]/10 rounded-xl p-6 border border-[#86BBD8]/30">
+                <p className="text-lg text-gray-700 italic leading-relaxed">
                   "{event.excerpt}"
                 </p>
               </div>
             )}
             
-            {/* Full Content */}
             {event.content && (
-              <div className="prose prose-lg max-w-none dark:prose-invert">
-                <p className="whitespace-pre-line text-gray-700 dark:text-gray-300 leading-relaxed">
+              <div className="prose prose-lg max-w-none">
+                <p className="whitespace-pre-line text-gray-700 leading-relaxed">
                   {event.content}
                 </p>
               </div>
             )}
             
-            {/* Gallery & Audio */}
             {event.gallery_images && event.gallery_images.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Media</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Media</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {event.gallery_images.map((url, idx) => {
                     const isAudio = /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(url);
                     return isAudio ? (
-                      <div key={idx} className="col-span-full bg-[#86BBD8]/10 dark:bg-[#0d1f2d]/20 rounded-xl p-4 border border-[#86BBD8]/30 dark:border-[#162d3f]">
+                      <div key={idx} className="col-span-full bg-[#86BBD8]/10 rounded-xl p-4 border border-[#86BBD8]/30">
                         <p className="text-xs text-[#78C0A6] font-medium mb-2">Audio Recording {idx + 1}</p>
                         <audio controls src={url} className="w-full" />
                       </div>
@@ -597,73 +666,68 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
             )}
           </div>
           
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Event Details Card */}
             {event.type === 'event' && (
-              <Card className="sticky top-24 border-[#86BBD8]/40 dark:border-[#162d3f]">
+              <Card className="sticky top-24 border-[#86BBD8]/40">
                 <CardContent className="p-6 space-y-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5 text-[#2A4D69]" />
                     Event Details
                   </h3>
                   
                   <Separator />
                   
-                  {/* Date & Time */}
                   {event.event_start_date && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 rounded-lg flex items-center justify-center">
                         <CalendarIcon className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Date & Time</p>
-                        <p className="font-medium text-gray-900 dark:text-white">
+                        <p className="text-sm text-gray-500">Date & Time</p>
+                        <p className="font-medium text-gray-900">
                           {formatDate(event.event_start_date)}
                           {event.event_end_date && event.event_end_date !== event.event_start_date && (
                             <> – {formatDate(event.event_end_date)}</>
                           )}
                         </p>
                         {event.event_start_time && !event.all_day && (
-                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                          <p className="text-sm text-gray-600 mt-1">
                             {formatTime(event.event_start_time)}
                             {event.event_end_time && ` – ${formatTime(event.event_end_time)}`}
                           </p>
                         )}
                         {event.all_day && (
-                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">All Day</p>
+                          <p className="text-sm text-gray-600 mt-1">All Day</p>
                         )}
                       </div>
                     </div>
                   )}
                   
-                  {/* Location */}
                   {event.location && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 rounded-lg flex items-center justify-center">
                         <MapPin className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Location</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{event.location}</p>
+                        <p className="text-sm text-gray-500">Location</p>
+                        <p className="font-medium text-gray-900">{event.location}</p>
                         {event.venue && (
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{event.venue}</p>
+                          <p className="text-sm text-gray-600">{event.venue}</p>
                         )}
                         {event.address && (
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{event.address}</p>
+                          <p className="text-sm text-gray-600">{event.address}</p>
                         )}
                       </div>
                     </div>
                   )}
                   
-                  {/* Online */}
                   {event.is_online && event.online_url && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 rounded-lg flex items-center justify-center">
                         <Globe className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Online Meeting</p>
+                        <p className="text-sm text-gray-500">Online Meeting</p>
                         <a
                           href={event.online_url}
                           target="_blank"
@@ -676,23 +740,21 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                     </div>
                   )}
                   
-                  {/* Stats */}
                   <div className="flex gap-4 pt-4">
                     <div className="flex-1 text-center">
-                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <div className="text-2xl font-bold text-gray-900">
                         {event.rsvp_count || 0}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Going</div>
+                      <div className="text-xs text-gray-500">Going</div>
                     </div>
                     <div className="flex-1 text-center">
-                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <div className="text-2xl font-bold text-gray-900">
                         {event.views || 0}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Views</div>
+                      <div className="text-xs text-gray-500">Views</div>
                     </div>
                   </div>
                   
-                  {/* RSVP Button */}
                   <Button
                     onClick={() => onRSVP(event)}
                     className="w-full bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white py-6 text-lg"
@@ -704,11 +766,10 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
               </Card>
             )}
             
-            {/* Author Info */}
             {(event.author_name || event.author_email) && (
-              <Card className="border-[#86BBD8]/40 dark:border-[#162d3f]">
+              <Card className="border-[#86BBD8]/40">
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <User className="h-5 w-5 text-[#2A4D69]" />
                     About the Author
                   </h3>
@@ -719,7 +780,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white text-lg">
+                      <p className="font-medium text-gray-900 text-lg">
                         {event.author_name || 'Church Admin'}
                       </p>
                       {event.author_email && (
@@ -745,12 +806,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
 
 // =============== MAIN PAGE ===============
 export default function EventsPage() {
-  const router = useRouter();
-  
-  // View mode
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
-  
-  // Data
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -759,29 +815,16 @@ export default function EventsPage() {
   const [rsvpDialogOpen, setRsvpDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [fullPageEvent, setFullPageEvent] = useState<Event | null>(null);
-  
-  // Expanded items
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  
-  // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showUpcoming, setShowUpcoming] = useState(false);
   const [showFeatured, setShowFeatured] = useState(false);
-  
-  // Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(12);
-  const [totalCount, setTotalCount] = useState(0);
-  
-  // Auth state
   const [isAdmin, setIsAdmin] = useState(false);
-  
-  // Form validation
   const [formErrors, setFormErrors] = useState<string[]>([]);
-  
-  // Form state
   const [formData, setFormData] = useState<Record<string, any>>({
     title: '',
     content: '',
@@ -806,7 +849,6 @@ export default function EventsPage() {
     is_featured: false,
   });
   
-  // RSVP form state
   const [rsvpForm, setRsvpForm] = useState({
     name: '',
     email: '',
@@ -815,33 +857,24 @@ export default function EventsPage() {
     notes: '',
   });
   
-  // Image upload
   const [uploading, setUploading] = useState(false);
-
-  // Audio recording
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
   const [recordingTime, setRecordingTime] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Camera
   const [showCamera, setShowCamera] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Calendar view
   const [calendarDate, setCalendarDate] = useState<Date | undefined>(new Date());
 
-  // Check if user is admin
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAdmin(!!token);
   }, []);
   
-  // Fetch events
   useEffect(() => {
     fetchEvents();
   }, [searchTerm, selectedType, selectedCategory, showUpcoming, showFeatured, currentPage]);
@@ -859,7 +892,6 @@ export default function EventsPage() {
         offset: currentPage * pageSize,
       });
       setEvents(data);
-      setTotalCount(data.length);
     } catch (error) {
       console.error('Failed to fetch events:', error);
       toast.error('Failed to load events');
@@ -868,42 +900,23 @@ export default function EventsPage() {
     }
   };
   
-  // Toggle expanded
-  const toggleExpanded = (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setExpandedItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
-  
-  // Open full page view
   const openFullPage = (event: Event) => {
     setFullPageEvent(event);
     window.scrollTo(0, 0);
   };
   
-  // Close full page view
   const closeFullPage = () => {
     setFullPageEvent(null);
   };
   
-  // Expand all
   const expandAll = () => {
     setExpandedItems(new Set(events.map(e => e.id)));
   };
   
-  // Collapse all
   const collapseAll = () => {
     setExpandedItems(new Set());
   };
   
-  // Clear filters
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedType('all');
@@ -913,7 +926,6 @@ export default function EventsPage() {
     setCurrentPage(0);
   };
   
-  // Audio recording handlers
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -931,7 +943,7 @@ export default function EventsPage() {
       setRecordingTime(0);
       recordingTimerRef.current = setInterval(() => setRecordingTime(t => t + 1), 1000);
     } catch {
-      toast.error('Microphone access denied. Please allow microphone permission.');
+      toast.error('Microphone access denied');
     }
   };
 
@@ -950,15 +962,14 @@ export default function EventsPage() {
       const { url } = await uploadImage(file);
       setFormData(prev => ({ ...prev, gallery_images: [...(prev.gallery_images || []), url] }));
       setAudioUrl('');
-      toast.success('Audio saved to event media');
+      toast.success('Audio saved');
     } catch {
-      toast.error('Failed to save audio recording');
+      toast.error('Failed to save audio');
     } finally {
       setUploading(false);
     }
   };
 
-  // Audio file upload handler
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -976,7 +987,6 @@ export default function EventsPage() {
     }
   };
 
-  // Camera handlers
   const openCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
@@ -986,7 +996,7 @@ export default function EventsPage() {
         if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play(); }
       }, 100);
     } catch {
-      toast.error('Camera access denied. Please allow camera permission.');
+      toast.error('Camera access denied');
     }
   };
 
@@ -1004,9 +1014,9 @@ export default function EventsPage() {
         const file = new File([blob], `capture-${Date.now()}.jpg`, { type: 'image/jpeg' });
         const { url } = await uploadImage(file);
         setFormData(prev => ({ ...prev, featured_image: url }));
-        toast.success('Photo captured and set as featured image');
+        toast.success('Photo captured');
       } catch {
-        toast.error('Failed to upload captured photo');
+        toast.error('Failed to upload photo');
       } finally {
         setUploading(false);
       }
@@ -1019,87 +1029,71 @@ export default function EventsPage() {
     setShowCamera(false);
   };
 
-  // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
     if (file.size > 10 * 1024 * 1024) {
       toast.error('Image must be less than 10MB');
       return;
     }
-    
     if (!file.type.startsWith('image/')) {
       toast.error('File must be an image');
       return;
     }
-    
     setUploading(true);
     try {
       const { url } = await uploadImage(file);
       setFormData(prev => ({ ...prev, featured_image: url }));
-      toast.success('Image uploaded successfully');
+      toast.success('Image uploaded');
     } catch (error) {
-      console.error('Upload failed:', error);
       toast.error('Failed to upload image');
     } finally {
       setUploading(false);
     }
   };
   
-  // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const errors = validateEventForm(formData);
     if (errors.length > 0) {
       setFormErrors(errors);
       toast.error(errors[0]);
       return;
     }
-    
     setSaving(true);
-    
     try {
       const cleanedData: Record<string, any> = { ...formData };
       Object.keys(cleanedData).forEach(key => {
-        if (cleanedData[key] === '') {
-          delete cleanedData[key];
-        }
+        if (cleanedData[key] === '') delete cleanedData[key];
       });
-      
       if (editingEvent) {
         await updateEvent(editingEvent.id, cleanedData);
-        toast.success('Event updated successfully');
+        toast.success('Event updated');
       } else {
         await createEvent(cleanedData);
-        toast.success('Event created successfully');
+        toast.success('Event created');
       }
-      
       setDialogOpen(false);
       resetForm();
       setEditingEvent(null);
       await fetchEvents();
     } catch (error: any) {
-      console.error('Failed to save event:', error);
       toast.error(error.message || 'Failed to save event');
     } finally {
       setSaving(false);
     }
   };
   
-  // Handle RSVP submit
   const handleRSVP = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedEvent) return;
-    
     setSaving(true);
     try {
       await createRSVP({
         event_id: selectedEvent.id,
         ...rsvpForm,
       });
-      toast.success('RSVP submitted successfully');
+      toast.success('RSVP submitted');
       setRsvpDialogOpen(false);
       setRsvpForm({ name: '', email: '', phone: '', guests: 1, notes: '' });
       if (fullPageEvent) {
@@ -1108,31 +1102,24 @@ export default function EventsPage() {
       }
       await fetchEvents();
     } catch (error: any) {
-      console.error('RSVP failed:', error);
       toast.error(error.message || 'Failed to submit RSVP');
     } finally {
       setSaving(false);
     }
   };
   
-  // Handle delete
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
-    
     try {
       await deleteEvent(id);
-      toast.success('Item deleted successfully');
-      if (fullPageEvent?.id === id) {
-        setFullPageEvent(null);
-      }
+      toast.success('Item deleted');
+      if (fullPageEvent?.id === id) setFullPageEvent(null);
       await fetchEvents();
     } catch (error: any) {
-      console.error('Delete failed:', error);
       toast.error(error.message || 'Failed to delete');
     }
   };
   
-  // Reset form
   const resetForm = () => {
     setFormData({
       title: '',
@@ -1160,7 +1147,6 @@ export default function EventsPage() {
     setFormErrors([]);
   };
   
-  // Open edit dialog
   const handleEdit = (event: Event, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setEditingEvent(event);
@@ -1169,14 +1155,12 @@ export default function EventsPage() {
     setDialogOpen(true);
   };
   
-  // Open RSVP dialog
   const handleRSVPClick = (event: Event, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setSelectedEvent(event);
     setRsvpDialogOpen(true);
   };
   
-  // Check if event is upcoming
   const isUpcoming = (event: Event) => {
     if (!event.event_start_date) return false;
     const today = new Date();
@@ -1185,11 +1169,9 @@ export default function EventsPage() {
     return eventDate >= today;
   };
   
-  // Separate featured and regular
   const featuredEvents = events.filter(e => e.is_featured);
   const regularEvents = events.filter(e => !e.is_featured);
 
-  // Calendar helpers
   const eventDates = useMemo(() =>
     events.filter(e => e.event_start_date).map(e => {
       const [y, m, d] = e.event_start_date!.slice(0, 10).split('-').map(Number);
@@ -1207,7 +1189,6 @@ export default function EventsPage() {
     return events.filter(e => e.event_start_date?.slice(0, 10) === target);
   }, [events, calendarDate]);
   
-  // If full page view is active, show the detail page
   if (fullPageEvent) {
     return (
       <>
@@ -1226,7 +1207,6 @@ export default function EventsPage() {
     );
   }
   
-  // Main listing page
   if (loading && events.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#86BBD8]/10 to-[#78C0A6]/10">
@@ -1241,10 +1221,8 @@ export default function EventsPage() {
   return (
     <>
       <Toaster position="top-right" richColors />
-      
       <Header isLoggedIn={isAdmin} user={null} churchName="AFM Chegutu" onLogout={() => {}} />
       
-      {/* Background */}
       <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-gradient-to-br from-[#0d1f2d]/40 to-blue-900/30"
@@ -1260,7 +1238,6 @@ export default function EventsPage() {
       
       <div className="relative z-10 min-h-screen">
         <main className="container mx-auto py-10 px-4">
-          {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">
@@ -1278,7 +1255,7 @@ export default function EventsPage() {
                     resetForm();
                     setDialogOpen(true);
                   }}
-                  className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white"
+                  className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] text-white"
                 >
                   <Plus className="h-4 w-4 mr-2" /> Add New
                 </Button>
@@ -1288,7 +1265,7 @@ export default function EventsPage() {
                 size="icon"
                 onClick={() => setViewMode('grid')}
                 className={`bg-white/10 backdrop-blur-sm border-white/30 ${
-                  viewMode === 'grid' ? 'bg-white/30 text-white' : 'text-white/70 hover:text-white'
+                  viewMode === 'grid' ? 'bg-white/30 text-white' : 'text-white/70'
                 }`}
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -1298,7 +1275,7 @@ export default function EventsPage() {
                 size="icon"
                 onClick={() => setViewMode('list')}
                 className={`bg-white/10 backdrop-blur-sm border-white/30 ${
-                  viewMode === 'list' ? 'bg-white/30 text-white' : 'text-white/70 hover:text-white'
+                  viewMode === 'list' ? 'bg-white/30 text-white' : 'text-white/70'
                 }`}
               >
                 <LayoutList className="h-4 w-4" />
@@ -1308,7 +1285,7 @@ export default function EventsPage() {
                 size="icon"
                 onClick={() => setViewMode('calendar')}
                 className={`bg-white/10 backdrop-blur-sm border-white/30 ${
-                  viewMode === 'calendar' ? 'bg-white/30 text-white' : 'text-white/70 hover:text-white'
+                  viewMode === 'calendar' ? 'bg-white/30 text-white' : 'text-white/70'
                 }`}
                 title="Calendar view"
               >
@@ -1317,17 +1294,15 @@ export default function EventsPage() {
             </div>
           </div>
           
-          {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-[#86BBD8]/40/40 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-[#86BBD8]/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search */}
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search events, notices, sermons..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-10 bg-white/80 border-[#86BBD8]/40"
+                  className="pl-10 pr-10 bg-white/80"
                 />
                 {searchTerm && (
                   <button
@@ -1339,31 +1314,19 @@ export default function EventsPage() {
                 )}
               </div>
               
-              {/* Expand/Collapse */}
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={expandAll}
-                  className="bg-white/80 border-[#86BBD8]/40"
-                >
+                <Button variant="outline" size="sm" onClick={expandAll} className="bg-white/80">
                   <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={collapseAll}
-                  className="bg-white/80 border-[#86BBD8]/40"
-                >
+                <Button variant="outline" size="sm" onClick={collapseAll} className="bg-white/80">
                   <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
                 </Button>
               </div>
               
-              {/* Type Filter */}
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-[#86BBD8]/40">
+                <SelectTrigger className="w-full lg:w-[180px] bg-white/80">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1379,9 +1342,8 @@ export default function EventsPage() {
                 </SelectContent>
               </Select>
               
-              {/* Category Filter */}
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-[#86BBD8]/40">
+                <SelectTrigger className="w-full lg:w-[180px] bg-white/80">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1397,13 +1359,12 @@ export default function EventsPage() {
                 </SelectContent>
               </Select>
               
-              {/* Filter toggles */}
               <div className="flex gap-2">
                 <Button
                   variant={showUpcoming ? "default" : "outline"}
                   size="sm"
                   onClick={() => setShowUpcoming(!showUpcoming)}
-                  className={showUpcoming ? "bg-[#2A4D69] text-white" : "bg-white/80 border-[#86BBD8]/40"}
+                  className={showUpcoming ? "bg-[#2A4D69] text-white" : "bg-white/80"}
                 >
                   <CalendarDays className="h-4 w-4 mr-2" />
                   Upcoming
@@ -1412,23 +1373,21 @@ export default function EventsPage() {
                   variant={showFeatured ? "default" : "outline"}
                   size="sm"
                   onClick={() => setShowFeatured(!showFeatured)}
-                  className={showFeatured ? "bg-[#2A4D69] text-white" : "bg-white/80 border-[#86BBD8]/40"}
+                  className={showFeatured ? "bg-[#2A4D69] text-white" : "bg-white/80"}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Featured
                 </Button>
               </div>
               
-              {/* Clear Filters */}
               {(searchTerm || selectedType !== 'all' || selectedCategory !== 'all' || showUpcoming || showFeatured) && (
-                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69] hover:text-[#1e3a52]">
+                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69]">
                   Clear Filters
                 </Button>
               )}
             </div>
           </div>
           
-          {/* Featured Section */}
           {featuredEvents.length > 0 && (
             <div className="mb-12">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
@@ -1437,7 +1396,7 @@ export default function EventsPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer" onClick={() => openFullPage(item)}>
                     {item.featured_image ? (
                       <div className="relative h-56 overflow-hidden">
                         <img
@@ -1445,14 +1404,12 @@ export default function EventsPage() {
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ) : (
-                      <div className="h-56 bg-gradient-to-br from-[#86BBD8]/100 to-blue-500 flex items-center justify-center">
+                      <div className="h-56 bg-gradient-to-br from-[#86BBD8] to-blue-500 flex items-center justify-center">
                         <span className="text-6xl opacity-30">{getTypeIcon(item.type)}</span>
                       </div>
                     )}
-                    
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex flex-wrap gap-2">
@@ -1460,9 +1417,7 @@ export default function EventsPage() {
                             {getTypeIcon(item.type)} {EVENT_TYPES.find(t => t.value === item.type)?.label}
                           </Badge>
                           {isUpcoming(item) && (
-                            <Badge className="bg-green-500 text-white border-0">
-                              Upcoming
-                            </Badge>
+                            <Badge className="bg-green-500 text-white border-0">Upcoming</Badge>
                           )}
                         </div>
                         {isAdmin && (
@@ -1476,29 +1431,12 @@ export default function EventsPage() {
                           </div>
                         )}
                       </div>
-                      
                       <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#2A4D69] transition-colors">
                         {item.title}
                       </h3>
-                      
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                         {item.excerpt || item.content?.slice(0, 100) + '...' || 'No description'}
                       </p>
-                      
-                      {item.type === 'event' && item.event_start_date && (
-                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                          <CalendarIcon className="h-4 w-4 text-[#2A4D69]" />
-                          <span>{formatShortDate(item.event_start_date)}</span>
-                          {item.location && (
-                            <>
-                              <span>•</span>
-                              <MapPin className="h-4 w-4 text-[#2A4D69]" />
-                              <span className="truncate">{item.location}</span>
-                            </>
-                          )}
-                        </div>
-                      )}
-                      
                       <div className="flex items-center justify-between pt-4 border-t border-[#86BBD8]/30">
                         <div className="flex items-center gap-3 text-xs text-gray-500">
                           <Avatar className="h-6 w-6">
@@ -1510,14 +1448,8 @@ export default function EventsPage() {
                           <span>•</span>
                           <span>{item.views || 0} views</span>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-[#2A4D69] hover:text-[#2A4D69] group-hover:translate-x-1 transition-transform"
-                          onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
-                        >
-                          Read More
-                          <ArrowRight className="h-4 w-4 ml-1" />
+                        <Button size="sm" variant="ghost" className="text-[#2A4D69] group-hover:translate-x-1 transition-transform" onClick={(e) => { e.stopPropagation(); openFullPage(item); }}>
+                          Read More <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>
                       </div>
                     </CardContent>
@@ -1527,7 +1459,6 @@ export default function EventsPage() {
             </div>
           )}
           
-          {/* Regular Events Grid/List */}
           <div>
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <Newspaper className="h-5 w-5" />
@@ -1543,17 +1474,12 @@ export default function EventsPage() {
                 <p className="text-white">No events found matching your criteria.</p>
               </div>
             ) : viewMode === 'grid' ? (
-              /* Grid View */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {regularEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-xl transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm overflow-hidden hover:shadow-xl transition-all cursor-pointer" onClick={() => openFullPage(item)}>
                     {item.featured_image && (
                       <div className="relative h-48 overflow-hidden">
-                        <img
-                          src={item.featured_image}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
+                        <img src={item.featured_image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       </div>
                     )}
                     <CardContent className="p-5">
@@ -1561,46 +1487,17 @@ export default function EventsPage() {
                         <Badge className={getTypeColor(item.type)}>
                           {getTypeIcon(item.type)} {EVENT_TYPES.find(t => t.value === item.type)?.label}
                         </Badge>
-                        {isUpcoming(item) && (
-                          <Badge className="bg-green-500 text-white text-xs border-0">
-                            Soon
-                          </Badge>
-                        )}
+                        {isUpcoming(item) && <Badge className="bg-green-500 text-white text-xs border-0">Soon</Badge>}
                       </div>
-                      
-                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#2A4D69] transition-colors">
-                        {item.title}
-                      </h3>
-                      
-                      {item.excerpt && (
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.excerpt}</p>
-                      )}
-                      
-                      {item.type === 'event' && item.event_start_date && (
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                          <CalendarIcon className="h-3 w-3 text-[#2A4D69]" />
-                          <span>{formatShortDate(item.event_start_date)}</span>
-                        </div>
-                      )}
-                      
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#2A4D69] transition-colors">{item.title}</h3>
+                      {item.excerpt && <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.excerpt}</p>}
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#86BBD8]/30">
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <Eye className="h-3 w-3" /> {item.views || 0}
-                          {item.type === 'event' && (
-                            <>
-                              <span>•</span>
-                              <Users className="h-3 w-3" /> {item.rsvp_count || 0}
-                            </>
-                          )}
+                          {item.type === 'event' && <><span>•</span><Users className="h-3 w-3" /> {item.rsvp_count || 0}</>}
                         </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="text-[#2A4D69] hover:text-[#2A4D69]"
-                          onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
-                        >
-                          View
-                          <ArrowRight className="h-3 w-3 ml-1" />
+                        <Button size="sm" variant="ghost" className="text-[#2A4D69]" onClick={(e) => { e.stopPropagation(); openFullPage(item); }}>
+                          View <ArrowRight className="h-3 w-3 ml-1" />
                         </Button>
                       </div>
                     </CardContent>
@@ -1608,18 +1505,13 @@ export default function EventsPage() {
                 ))}
               </div>
             ) : viewMode === 'list' ? (
-              /* List View */
               <div className="space-y-4">
                 {regularEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
                     <div className="flex flex-col md:flex-row">
                       {item.featured_image && (
                         <div className="md:w-48 h-32 md:h-auto relative overflow-hidden">
-                          <img
-                            src={item.featured_image}
-                            alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
+                          <img src={item.featured_image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         </div>
                       )}
                       <CardContent className="flex-1 p-5">
@@ -1627,54 +1519,17 @@ export default function EventsPage() {
                           <Badge className={getTypeColor(item.type)}>
                             {getTypeIcon(item.type)} {EVENT_TYPES.find(t => t.value === item.type)?.label}
                           </Badge>
-                          {item.category && (
-                            <Badge variant="outline" className="text-xs">
-                              {getCategoryIcon(item.category)} {getCategoryLabel(item.category)}
-                            </Badge>
-                          )}
-                          {isUpcoming(item) && (
-                            <Badge className="bg-green-500 text-white text-xs border-0 ml-auto">
-                              Upcoming
-                            </Badge>
-                          )}
+                          {item.category && <Badge variant="outline" className="text-xs">{getCategoryIcon(item.category)} {getCategoryLabel(item.category)}</Badge>}
+                          {isUpcoming(item) && <Badge className="bg-green-500 text-white text-xs border-0 ml-auto">Upcoming</Badge>}
                         </div>
-
-                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#2A4D69] transition-colors">
-                          {item.title}
-                        </h3>
-
-                        {item.excerpt && (
-                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.excerpt}</p>
-                        )}
-
-                        {item.type === 'event' && item.event_start_date && (
-                          <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-3">
-                            <span className="flex items-center gap-1">
-                              <CalendarIcon className="h-3 w-3 text-[#2A4D69]" /> {formatDate(item.event_start_date)}
-                            </span>
-                            {item.location && (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3 text-[#2A4D69]" /> {item.location}
-                              </span>
-                            )}
-                          </div>
-                        )}
-
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#2A4D69] transition-colors">{item.title}</h3>
+                        {item.excerpt && <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.excerpt}</p>}
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-3 text-xs text-gray-500">
                             <Eye className="h-3 w-3" /> {item.views || 0}
-                            {item.type === 'event' && (
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" /> {item.rsvp_count || 0} going
-                              </span>
-                            )}
+                            {item.type === 'event' && <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {item.rsvp_count || 0} going</span>}
                           </div>
-                          <Button
-                            size="sm"
-                            variant="link"
-                            className="text-[#2A4D69] hover:text-[#2A4D69]"
-                            onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
-                          >
+                          <Button size="sm" variant="link" className="text-[#2A4D69]" onClick={(e) => { e.stopPropagation(); openFullPage(item); }}>
                             Read More <ArrowRight className="h-3 w-3 ml-1" />
                           </Button>
                         </div>
@@ -1684,27 +1539,17 @@ export default function EventsPage() {
                 ))}
               </div>
             ) : (
-              /* Calendar View - Fixed for older react-day-picker versions */
+              /* Calendar View using custom SimpleCalendar component */
               <div className="grid md:grid-cols-[360px,1fr] gap-6 items-start">
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-[#86BBD8]/40/40 shadow-lg">
-                  <CalendarComponent
-                    selectedDays={calendarDate}
-                    onDayClick={(day: Date) => setCalendarDate(day)}
-                    modifiers={{
-                      hasEvent: eventDates
-                    }}
-                    modifiersStyles={{
-                      hasEvent: {
-                        backgroundColor: '#86BBD8',
-                        color: '#1e3a52',
-                        fontWeight: 'bold',
-                        borderRadius: '50%'
-                      }
-                    }}
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-[#86BBD8]/40 shadow-lg">
+                  <SimpleCalendar
+                    selectedDate={calendarDate}
+                    onDateSelect={setCalendarDate}
+                    eventDates={eventDates}
                     className="rounded-lg w-full"
                   />
                   <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 px-1">
-                    <div className="w-4 h-4 rounded-full bg-[#86BBD8]/30 border border-purple-300 flex-shrink-0" />
+                    <div className="w-4 h-4 rounded-full bg-[#86BBD8]/30 flex-shrink-0" />
                     <span>Days with events</span>
                   </div>
                 </div>
@@ -1723,9 +1568,9 @@ export default function EventsPage() {
                   ) : (
                     <div className="space-y-3">
                       {selectedDateEvents.map(item => (
-                        <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                        <Card key={item.id} className="group bg-white/90 backdrop-blur-sm overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
                           <CardContent className="p-4 flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl bg-[#86BBD8]/10`}>
+                            <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl bg-[#86BBD8]/10">
                               {getTypeIcon(item.type)}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -1756,16 +1601,10 @@ export default function EventsPage() {
             )}
           </div>
           
-          {/* Load More */}
           {events.length >= pageSize && (
             <div className="text-center mt-12">
-              <Button
-                variant="outline"
-                className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 px-8 py-6 text-lg"
-                onClick={() => setCurrentPage(p => p + 1)}
-              >
-                Load More Events
-                <ArrowRight className="h-5 w-5 ml-2" />
+              <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 px-8 py-6 text-lg" onClick={() => setCurrentPage(p => p + 1)}>
+                Load More Events <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </div>
           )}
@@ -1780,7 +1619,7 @@ export default function EventsPage() {
               {editingEvent ? 'Edit Event' : 'Create New Event'}
             </DialogTitle>
             <DialogDescription>
-              Fill in the details below to {editingEvent ? 'update' : 'create'} an event or notice. All fields except Title are optional.
+              Fill in the details below to {editingEvent ? 'update' : 'create'} an event or notice.
             </DialogDescription>
           </DialogHeader>
           
@@ -1803,310 +1642,127 @@ export default function EventsPage() {
                 <TabsTrigger value="media">Media & Author</TabsTrigger>
               </TabsList>
               
-              {/* Basic Info Tab */}
               <TabsContent value="basic" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="title">Title *</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      placeholder="Enter title"
-                      required
-                    />
+                    <Input id="title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} placeholder="Enter title" required />
                   </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="type">Type</Label>
-                    <Select
-                      value={formData.type}
-                      onValueChange={(v) => setFormData({ ...formData, type: v })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
+                    <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
                       <SelectContent>
                         {EVENT_TYPES.map(type => (
                           <SelectItem key={type.value} value={type.value}>
                             <div className="flex items-center gap-2">
                               <span>{type.icon}</span>
-                              <div>
-                                <div>{type.label}</div>
-                                <div className="text-xs text-gray-500">{type.description}</div>
-                              </div>
+                              <div><div>{type.label}</div><div className="text-xs text-gray-500">{type.description}</div></div>
                             </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(v) => setFormData({ ...formData, category: v })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
+                    <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
                       <SelectContent>
                         <ScrollArea className="h-64">
                           {CATEGORIES.map(cat => (
                             <SelectItem key={cat.value} value={cat.value}>
-                              <span className="flex items-center gap-2">
-                                <span>{cat.icon}</span>
-                                <span>{cat.label}</span>
-                              </span>
+                              <span className="flex items-center gap-2"><span>{cat.icon}</span><span>{cat.label}</span></span>
                             </SelectItem>
                           ))}
                         </ScrollArea>
                       </SelectContent>
                     </Select>
                   </div>
-                  
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="excerpt">Excerpt (Short Description)</Label>
-                    <Textarea
-                      id="excerpt"
-                      value={formData.excerpt}
-                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                      placeholder="Brief summary of the event/notice"
-                      rows={2}
-                    />
+                    <Textarea id="excerpt" value={formData.excerpt} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} placeholder="Brief summary" rows={2} />
                   </div>
-                  
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="content">Full Content</Label>
-                    <Textarea
-                      id="content"
-                      value={formData.content}
-                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                      placeholder="Detailed description"
-                      rows={4}
-                    />
+                    <Textarea id="content" value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} placeholder="Detailed description" rows={4} />
                   </div>
                 </div>
               </TabsContent>
               
-              {/* Event Details Tab */}
               <TabsContent value="details" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="event_start_date">Start Date</Label>
-                    <Input
-                      id="event_start_date"
-                      type="date"
-                      value={formData.event_start_date}
-                      onChange={(e) => setFormData({ ...formData, event_start_date: e.target.value })}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="event_end_date">End Date</Label>
-                    <Input
-                      id="event_end_date"
-                      type="date"
-                      value={formData.event_end_date}
-                      onChange={(e) => setFormData({ ...formData, event_end_date: e.target.value })}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="event_start_time">Start Time</Label>
-                    <Input
-                      id="event_start_time"
-                      type="time"
-                      value={formData.event_start_time}
-                      onChange={(e) => setFormData({ ...formData, event_start_time: e.target.value })}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="event_end_time">End Time</Label>
-                    <Input
-                      id="event_end_time"
-                      type="time"
-                      value={formData.event_end_time}
-                      onChange={(e) => setFormData({ ...formData, event_end_time: e.target.value })}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="all_day"
-                      checked={formData.all_day || false}
-                      onCheckedChange={(checked) => setFormData({ ...formData, all_day: checked as boolean })}
-                    />
-                    <Label htmlFor="all_day">All Day Event</Label>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Location Name</Label>
-                    <Input
-                      id="location"
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="e.g., Main Sanctuary"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="venue">Venue</Label>
-                    <Input
-                      id="venue"
-                      value={formData.venue}
-                      onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
-                      placeholder="e.g., Church Hall"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="address">Full Address</Label>
-                    <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      placeholder="Street address, city, etc."
-                    />
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_online"
-                      checked={formData.is_online || false}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_online: checked as boolean })}
-                    />
-                    <Label htmlFor="is_online">Online Event</Label>
-                  </div>
-                  
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="online_url">Online Meeting URL</Label>
-                    <Input
-                      id="online_url"
-                      type="url"
-                      value={formData.online_url}
-                      onChange={(e) => setFormData({ ...formData, online_url: e.target.value })}
-                      placeholder="https://meet.google.com/..."
-                    />
-                  </div>
+                  <div className="space-y-2"><Label htmlFor="event_start_date">Start Date</Label><Input id="event_start_date" type="date" value={formData.event_start_date} onChange={(e) => setFormData({ ...formData, event_start_date: e.target.value })} /></div>
+                  <div className="space-y-2"><Label htmlFor="event_end_date">End Date</Label><Input id="event_end_date" type="date" value={formData.event_end_date} onChange={(e) => setFormData({ ...formData, event_end_date: e.target.value })} /></div>
+                  <div className="space-y-2"><Label htmlFor="event_start_time">Start Time</Label><Input id="event_start_time" type="time" value={formData.event_start_time} onChange={(e) => setFormData({ ...formData, event_start_time: e.target.value })} /></div>
+                  <div className="space-y-2"><Label htmlFor="event_end_time">End Time</Label><Input id="event_end_time" type="time" value={formData.event_end_time} onChange={(e) => setFormData({ ...formData, event_end_time: e.target.value })} /></div>
+                  <div className="flex items-center space-x-2"><Checkbox id="all_day" checked={formData.all_day || false} onCheckedChange={(checked) => setFormData({ ...formData, all_day: checked as boolean })} /><Label htmlFor="all_day">All Day Event</Label></div>
+                  <div className="space-y-2"><Label htmlFor="location">Location Name</Label><Input id="location" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="e.g., Main Sanctuary" /></div>
+                  <div className="space-y-2"><Label htmlFor="venue">Venue</Label><Input id="venue" value={formData.venue} onChange={(e) => setFormData({ ...formData, venue: e.target.value })} placeholder="e.g., Church Hall" /></div>
+                  <div className="space-y-2 md:col-span-2"><Label htmlFor="address">Full Address</Label><Input id="address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} placeholder="Street address, city, etc." /></div>
+                  <div className="flex items-center space-x-2"><Checkbox id="is_online" checked={formData.is_online || false} onCheckedChange={(checked) => setFormData({ ...formData, is_online: checked as boolean })} /><Label htmlFor="is_online">Online Event</Label></div>
+                  <div className="space-y-2 md:col-span-2"><Label htmlFor="online_url">Online Meeting URL</Label><Input id="online_url" type="url" value={formData.online_url} onChange={(e) => setFormData({ ...formData, online_url: e.target.value })} placeholder="https://meet.google.com/..." /></div>
                 </div>
               </TabsContent>
               
-              {/* Media & Author Tab */}
               <TabsContent value="media" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                  {/* Featured Image */}
                   <div className="space-y-2 md:col-span-2">
                     <Label>Featured Image</Label>
                     <div className="flex flex-wrap items-start gap-4">
                       {formData.featured_image ? (
                         <div className="relative w-32 h-32">
-                          <img src={formData.featured_image} alt="Featured" className="w-full h-full object-cover rounded-lg border border-gray-200" />
-                          <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full" onClick={() => setFormData({ ...formData, featured_image: '' })}>
-                            <X className="h-3 w-3" />
-                          </Button>
+                          <img src={formData.featured_image} alt="Featured" className="w-full h-full object-cover rounded-lg border" />
+                          <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full" onClick={() => setFormData({ ...formData, featured_image: '' })}><X className="h-3 w-3" /></Button>
                         </div>
                       ) : (
-                        <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex-1 space-y-2">
                           <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="cursor-pointer" />
-                          {uploading && <div className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin text-[#2A4D69]" /><p className="text-sm text-gray-500">Uploading…</p></div>}
+                          {uploading && <div className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /><p className="text-sm">Uploading…</p></div>}
                           <p className="text-xs text-gray-400">JPG, PNG, GIF, WEBP — max 10 MB</p>
                         </div>
                       )}
-                      {/* Camera capture button */}
                       {!formData.featured_image && (
-                        <Button type="button" variant="outline" onClick={openCamera} className="flex items-center gap-2 border-[#86BBD8]/40 text-[#2A4D69] hover:bg-[#86BBD8]/10">
-                          <CameraIcon className="h-4 w-4" /> Take Photo
-                        </Button>
+                        <Button type="button" variant="outline" onClick={openCamera} className="flex items-center gap-2"><CameraIcon className="h-4 w-4" /> Take Photo</Button>
                       )}
                     </div>
                   </div>
 
-                  {/* Audio Recording */}
                   <div className="space-y-2 md:col-span-2">
                     <Label>Audio</Label>
                     <div className="border border-dashed border-gray-300 rounded-lg p-4 space-y-3">
                       <div className="flex flex-wrap items-center gap-3">
                         {!isRecording ? (
-                          <Button type="button" onClick={startRecording} variant="outline" className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50">
-                            <Mic className="h-4 w-4" /> Record Audio
-                          </Button>
+                          <Button type="button" onClick={startRecording} variant="outline" className="flex items-center gap-2"><Mic className="h-4 w-4" /> Record Audio</Button>
                         ) : (
-                          <Button type="button" onClick={stopRecording} variant="outline" className="flex items-center gap-2 border-red-500 bg-red-50 text-red-700 animate-pulse">
-                            <StopCircle className="h-4 w-4" />
-                            Stop · {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
-                          </Button>
+                          <Button type="button" onClick={stopRecording} variant="outline" className="flex items-center gap-2 animate-pulse"><StopCircle className="h-4 w-4" /> Stop · {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}</Button>
                         )}
                         <div>
                           <input type="file" accept="audio/*" onChange={handleAudioUpload} className="hidden" id="audio-file-input" />
-                          <label htmlFor="audio-file-input" className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition">
-                            <Upload className="h-4 w-4" /> Upload Audio File
-                          </label>
+                          <label htmlFor="audio-file-input" className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 border rounded-md text-sm hover:bg-gray-50"><Upload className="h-4 w-4" /> Upload Audio</label>
                         </div>
                       </div>
                       {audioUrl && (
                         <div className="space-y-2">
                           <audio controls src={audioUrl} className="w-full" />
-                          <div className="flex gap-2">
-                            <Button type="button" size="sm" onClick={saveRecording} disabled={uploading} className="bg-[#2A4D69] hover:bg-[#1e3a52] text-white">
-                              {uploading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null}
-                              Save to Event
-                            </Button>
-                            <Button type="button" size="sm" variant="outline" onClick={() => setAudioUrl('')}>Discard</Button>
-                          </div>
+                          <div className="flex gap-2"><Button type="button" size="sm" onClick={saveRecording} disabled={uploading} className="bg-[#2A4D69] text-white">Save to Event</Button><Button type="button" size="sm" variant="outline" onClick={() => setAudioUrl('')}>Discard</Button></div>
                         </div>
                       )}
-                      {(formData.gallery_images || []).filter((u: string) => /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(u)).length > 0 && (
-                        <div className="space-y-1 pt-2 border-t border-gray-100">
-                          <p className="text-xs text-gray-400 font-medium">Saved audio files:</p>
-                          {(formData.gallery_images || []).filter((u: string) => /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(u)).map((u: string, i: number) => (
-                            <div key={i} className="flex items-center gap-2">
-                              <audio controls src={u} className="flex-1 h-8" style={{ height: '2rem' }} />
-                              <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => setFormData(prev => ({ ...prev, gallery_images: (prev.gallery_images || []).filter((_: string, idx: number) => idx !== i) }))}>
-                                <X className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <p className="text-xs text-gray-400">Audio is saved to the event&apos;s media gallery. MP3, WAV, OGG, WEBM — max 50 MB</p>
+                      <p className="text-xs text-gray-400">Audio saved to event media gallery. MP3, WAV, OGG, WEBM — max 50 MB</p>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="author_name">Author Name</Label>
-                    <Input id="author_name" value={formData.author_name} onChange={(e) => setFormData({ ...formData, author_name: e.target.value })} placeholder="e.g., Pastor John" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="author_email">Author Email</Label>
-                    <Input id="author_email" type="email" value={formData.author_email} onChange={(e) => setFormData({ ...formData, author_email: e.target.value })} placeholder="pastor@church.org" />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="is_featured" checked={formData.is_featured || false} onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })} />
-                    <Label htmlFor="is_featured">Feature this post</Label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="is_published" checked={formData.is_published !== false} onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked as boolean })} />
-                    <Label htmlFor="is_published">Published (visible to public)</Label>
-                  </div>
+                  <div className="space-y-2"><Label htmlFor="author_name">Author Name</Label><Input id="author_name" value={formData.author_name} onChange={(e) => setFormData({ ...formData, author_name: e.target.value })} placeholder="e.g., Pastor John" /></div>
+                  <div className="space-y-2"><Label htmlFor="author_email">Author Email</Label><Input id="author_email" type="email" value={formData.author_email} onChange={(e) => setFormData({ ...formData, author_email: e.target.value })} placeholder="pastor@church.org" /></div>
+                  <div className="flex items-center space-x-2"><Checkbox id="is_featured" checked={formData.is_featured || false} onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })} /><Label htmlFor="is_featured">Feature this post</Label></div>
+                  <div className="flex items-center space-x-2"><Checkbox id="is_published" checked={formData.is_published !== false} onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked as boolean })} /><Label htmlFor="is_published">Published (visible to public)</Label></div>
                 </div>
               </TabsContent>
             </Tabs>
             
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white">
-                {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                {editingEvent ? 'Update' : 'Create'}
-              </Button>
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] text-white">{saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}{editingEvent ? 'Update' : 'Create'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -2115,19 +1771,13 @@ export default function EventsPage() {
       {/* Camera Overlay */}
       {showCamera && (
         <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center p-4">
-          <p className="text-white text-sm mb-4 opacity-70">Point the camera at your subject, then tap Capture</p>
           <div className="relative w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl">
             <video ref={videoRef} className="w-full rounded-2xl" autoPlay playsInline muted />
             <canvas ref={canvasRef} className="hidden" />
           </div>
           <div className="flex items-center gap-4 mt-6">
-            <Button type="button" variant="outline" onClick={closeCamera} className="border-white/40 text-white hover:bg-white/10">
-              <X className="h-4 w-4 mr-2" /> Cancel
-            </Button>
-            <Button type="button" onClick={capturePhoto} disabled={uploading} className="bg-white text-black hover:bg-gray-100 font-bold px-10 py-3 text-base rounded-full shadow-2xl">
-              {uploading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CameraIcon className="h-5 w-5 mr-2" />}
-              Capture
-            </Button>
+            <Button type="button" variant="outline" onClick={closeCamera} className="border-white/40 text-white hover:bg-white/10"><X className="h-4 w-4 mr-2" /> Cancel</Button>
+            <Button type="button" onClick={capturePhoto} disabled={uploading} className="bg-white text-black hover:bg-gray-100 font-bold px-10 py-3 rounded-full">{uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <CameraIcon className="h-5 w-5 mr-2" />}Capture</Button>
           </div>
         </div>
       )}
@@ -2135,77 +1785,14 @@ export default function EventsPage() {
       {/* RSVP Dialog */}
       <Dialog open={rsvpDialogOpen} onOpenChange={setRsvpDialogOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>RSVP for Event</DialogTitle>
-            <DialogDescription>
-              {selectedEvent?.title}
-            </DialogDescription>
-          </DialogHeader>
-          
+          <DialogHeader><DialogTitle>RSVP for Event</DialogTitle><DialogDescription>{selectedEvent?.title}</DialogDescription></DialogHeader>
           <form onSubmit={handleRSVP} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="rsvp_name">Your Name *</Label>
-              <Input
-                id="rsvp_name"
-                value={rsvpForm.name}
-                onChange={(e) => setRsvpForm({ ...rsvpForm, name: e.target.value })}
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="rsvp_email">Email</Label>
-              <Input
-                id="rsvp_email"
-                type="email"
-                value={rsvpForm.email}
-                onChange={(e) => setRsvpForm({ ...rsvpForm, email: e.target.value })}
-                placeholder="your@email.com"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="rsvp_phone">Phone</Label>
-              <Input
-                id="rsvp_phone"
-                value={rsvpForm.phone}
-                onChange={(e) => setRsvpForm({ ...rsvpForm, phone: e.target.value })}
-                placeholder="+263 77 123 4567"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="rsvp_guests">Number of Guests (including yourself)</Label>
-              <Input
-                id="rsvp_guests"
-                type="number"
-                min="1"
-                value={rsvpForm.guests}
-                onChange={(e) => setRsvpForm({ ...rsvpForm, guests: parseInt(e.target.value) || 1 })}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="rsvp_notes">Notes (optional)</Label>
-              <Textarea
-                id="rsvp_notes"
-                value={rsvpForm.notes}
-                onChange={(e) => setRsvpForm({ ...rsvpForm, notes: e.target.value })}
-                placeholder="Any special requirements or questions?"
-                rows={2}
-              />
-            </div>
-            
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setRsvpDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={saving} className="bg-[#2A4D69] hover:bg-[#1e3a52] text-white">
-                {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                Submit RSVP
-              </Button>
-            </DialogFooter>
+            <div className="space-y-2"><Label htmlFor="rsvp_name">Your Name *</Label><Input id="rsvp_name" value={rsvpForm.name} onChange={(e) => setRsvpForm({ ...rsvpForm, name: e.target.value })} placeholder="Enter your full name" required /></div>
+            <div className="space-y-2"><Label htmlFor="rsvp_email">Email</Label><Input id="rsvp_email" type="email" value={rsvpForm.email} onChange={(e) => setRsvpForm({ ...rsvpForm, email: e.target.value })} placeholder="your@email.com" /></div>
+            <div className="space-y-2"><Label htmlFor="rsvp_phone">Phone</Label><Input id="rsvp_phone" value={rsvpForm.phone} onChange={(e) => setRsvpForm({ ...rsvpForm, phone: e.target.value })} placeholder="+263 77 123 4567" /></div>
+            <div className="space-y-2"><Label htmlFor="rsvp_guests">Number of Guests (including yourself)</Label><Input id="rsvp_guests" type="number" min="1" value={rsvpForm.guests} onChange={(e) => setRsvpForm({ ...rsvpForm, guests: parseInt(e.target.value) || 1 })} /></div>
+            <div className="space-y-2"><Label htmlFor="rsvp_notes">Notes (optional)</Label><Textarea id="rsvp_notes" value={rsvpForm.notes} onChange={(e) => setRsvpForm({ ...rsvpForm, notes: e.target.value })} placeholder="Any special requirements?" rows={2} /></div>
+            <DialogFooter><Button type="button" variant="outline" onClick={() => setRsvpDialogOpen(false)}>Cancel</Button><Button type="submit" disabled={saving} className="bg-[#2A4D69] text-white">{saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}Submit RSVP</Button></DialogFooter>
           </form>
         </DialogContent>
       </Dialog>

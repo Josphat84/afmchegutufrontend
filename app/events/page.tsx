@@ -1684,14 +1684,23 @@ export default function EventsPage() {
                 ))}
               </div>
             ) : (
-              /* Calendar View - FIXED: removed mode="single" */
+              /* Calendar View - Fixed for older react-day-picker versions */
               <div className="grid md:grid-cols-[360px,1fr] gap-6 items-start">
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-[#86BBD8]/40/40 shadow-lg">
                   <CalendarComponent
-                    selected={calendarDate}
-                    onSelect={setCalendarDate}
-                    modifiers={{ hasEvent: eventDates }}
-                    modifiersClassNames={{ hasEvent: 'bg-[#86BBD8]/30 text-[#1e3a52] font-bold rounded-full' }}
+                    selectedDays={calendarDate}
+                    onDayClick={(day: Date) => setCalendarDate(day)}
+                    modifiers={{
+                      hasEvent: eventDates
+                    }}
+                    modifiersStyles={{
+                      hasEvent: {
+                        backgroundColor: '#86BBD8',
+                        color: '#1e3a52',
+                        fontWeight: 'bold',
+                        borderRadius: '50%'
+                      }
+                    }}
                     className="rounded-lg w-full"
                   />
                   <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 px-1">

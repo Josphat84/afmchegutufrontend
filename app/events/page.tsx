@@ -1688,7 +1688,7 @@ export default function EventsPage() {
               <div className="grid md:grid-cols-[360px,1fr] gap-6 items-start">
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-[#86BBD8]/40/40 shadow-lg">
                   <CalendarComponent
-                    mode="single"
+                    
                     selected={calendarDate}
                     onSelect={setCalendarDate}
                     modifiers={{ hasEvent: eventDates }}

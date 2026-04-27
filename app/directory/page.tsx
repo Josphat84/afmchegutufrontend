@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo, Fragment } from 'react';
 import Link from 'next/link';
@@ -402,7 +402,7 @@ export default function DirectoryPage() {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -700,10 +700,10 @@ export default function DirectoryPage() {
 
   if (loading && members.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#86BBD8]/10 to-[#78C0A6]/10">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600" />
-          <p className="text-purple-800 text-sm font-medium">Loading directory...</p>
+          <Loader2 className="h-8 w-8 animate-spin rounded-full border-4 border-[#86BBD8]/40 border-t-purple-600" />
+          <p className="text-[#1e3a52] text-sm font-medium">Loading directory...</p>
         </div>
       </div>
     );
@@ -723,7 +723,7 @@ export default function DirectoryPage() {
       {/* Background */}
       <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/30"
+          className="absolute inset-0 bg-gradient-to-br from-[#0d1f2d]/40 to-blue-900/30"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070')",
             backgroundSize: 'cover',
@@ -731,7 +731,7 @@ export default function DirectoryPage() {
             opacity: 0.9,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1f2d]/40 via-transparent to-blue-900/30" />
       </div>
 
       <div className="relative z-10 min-h-screen">
@@ -742,7 +742,7 @@ export default function DirectoryPage() {
               <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
                 Believers Directory
               </h1>
-              <p className="text-purple-100 mt-1">
+              <p className="text-[#c8dff0] mt-1">
                 Showing {members.length} of {totalCount} members
               </p>
             </div>
@@ -769,7 +769,7 @@ export default function DirectoryPage() {
               </Button>
               <Button
                 onClick={openNewDialog}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg"
+                className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white border-0 shadow-lg"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Member
               </Button>
@@ -778,9 +778,9 @@ export default function DirectoryPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-purple-200/40">
+            <Card className="bg-white/80 backdrop-blur-sm border-[#86BBD8]/40/40">
               <CardContent className="p-3 text-center">
-                <Users className="h-5 w-5 text-purple-700 mx-auto mb-1" />
+                <Users className="h-5 w-5 text-[#2A4D69] mx-auto mb-1" />
                 <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
                 <p className="text-xs text-gray-500">Total</p>
               </CardContent>
@@ -823,7 +823,7 @@ export default function DirectoryPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-purple-200/40 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-[#86BBD8]/40/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
@@ -832,7 +832,7 @@ export default function DirectoryPage() {
                   placeholder="Search by name, email, phone..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-10 bg-white/80 border-purple-200"
+                  className="pl-10 pr-10 bg-white/80 border-[#86BBD8]/40"
                 />
                 {searchTerm && (
                   <button
@@ -850,7 +850,7 @@ export default function DirectoryPage() {
                   variant="outline"
                   size="sm"
                   onClick={expandAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
@@ -859,7 +859,7 @@ export default function DirectoryPage() {
                   variant="outline"
                   size="sm"
                   onClick={collapseAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
@@ -868,7 +868,7 @@ export default function DirectoryPage() {
 
               {/* Gender Filter */}
               <Select value={selectedGender} onValueChange={setSelectedGender}>
-                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="Gender" />
                 </SelectTrigger>
                 <SelectContent>
@@ -882,7 +882,7 @@ export default function DirectoryPage() {
               {/* Departments Filter */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="bg-white/80 border-purple-200 justify-between">
+                  <Button variant="outline" className="bg-white/80 border-[#86BBD8]/40 justify-between">
                     <span>Departments {selectedDepartments.length > 0 && `(${selectedDepartments.length})`}</span>
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
@@ -915,7 +915,7 @@ export default function DirectoryPage() {
               {/* Positions Filter */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="bg-white/80 border-purple-200 justify-between">
+                  <Button variant="outline" className="bg-white/80 border-[#86BBD8]/40 justify-between">
                     <span>Positions {selectedPositions.length > 0 && `(${selectedPositions.length})`}</span>
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
@@ -947,7 +947,7 @@ export default function DirectoryPage() {
 
               {/* Clear Filters */}
               {(searchTerm || selectedGender !== 'all' || selectedDepartments.length > 0 || selectedPositions.length > 0) && (
-                <Button variant="ghost" onClick={clearFilters} className="text-purple-700 hover:text-purple-800">
+                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69] hover:text-[#1e3a52]">
                   Clear Filters
                 </Button>
               )}
@@ -958,11 +958,11 @@ export default function DirectoryPage() {
           {viewMode === 'table' ? (
             /* Table View */
             <div>
-              <Card className="border-purple-200/40 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
+              <Card className="border-[#86BBD8]/40/40 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader className="bg-gradient-to-r from-purple-100/80 to-blue-100/80">
+                      <TableHeader className="bg-gradient-to-r from-[#c8dff0]/80 to-blue-100/80">
                         <TableRow>
                           <TableHead className="w-10"></TableHead>
                           <TableHead>Member</TableHead>
@@ -977,7 +977,7 @@ export default function DirectoryPage() {
                         {loading ? (
                           <TableRow>
                             <TableCell colSpan={7} className="text-center py-12">
-                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-purple-600" />
+                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-[#2A4D69]" />
                             </TableCell>
                           </TableRow>
                         ) : members.length === 0 ? (
@@ -986,7 +986,7 @@ export default function DirectoryPage() {
                               <div className="flex flex-col items-center gap-2">
                                 <AlertCircle className="h-8 w-8 text-gray-400" />
                                 <p>No members found.</p>
-                                <Button variant="link" onClick={clearFilters} className="text-purple-600">
+                                <Button variant="link" onClick={clearFilters} className="text-[#2A4D69]">
                                   Clear filters
                                 </Button>
                               </div>
@@ -996,7 +996,7 @@ export default function DirectoryPage() {
                           members.map((member) => (
                             <Fragment key={member.id}>
                               {/* Main row */}
-                              <TableRow className="hover:bg-purple-50/50 transition">
+                              <TableRow className="hover:bg-[#86BBD8]/10/50 transition">
                                 <TableCell>
                                   <Button
                                     variant="ghost"
@@ -1013,8 +1013,8 @@ export default function DirectoryPage() {
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center gap-3">
-                                    <Avatar className="h-9 w-9 border-2 border-purple-200">
-                                      <AvatarFallback className="bg-gradient-to-br from-purple-500/80 to-blue-500/80 text-white text-xs">
+                                    <Avatar className="h-9 w-9 border-2 border-[#86BBD8]/40">
+                                      <AvatarFallback className="bg-gradient-to-br from-[#86BBD8]/100/80 to-blue-500/80 text-white text-xs">
                                         {getInitials(member.fullName)}
                                       </AvatarFallback>
                                     </Avatar>
@@ -1034,7 +1034,7 @@ export default function DirectoryPage() {
                                 <TableCell>
                                   <div className="flex flex-wrap gap-1">
                                     {(member.departments || []).slice(0, 2).map(d => (
-                                      <Badge key={d} variant="secondary" className="text-xs bg-purple-100 text-purple-800">
+                                      <Badge key={d} variant="secondary" className="text-xs bg-[#86BBD8]/20 text-[#1e3a52]">
                                         {d}
                                       </Badge>
                                     ))}
@@ -1059,8 +1059,8 @@ export default function DirectoryPage() {
                                   {member.baptismDate ? formatDate(member.baptismDate) : '—'}
                                 </TableCell>
                                 <TableCell className="text-right space-x-1">
-                                  <Button variant="ghost" size="icon" onClick={() => handleEdit(member)} className="hover:bg-purple-100">
-                                    <Pencil className="h-4 w-4 text-purple-700" />
+                                  <Button variant="ghost" size="icon" onClick={() => handleEdit(member)} className="hover:bg-[#86BBD8]/20">
+                                    <Pencil className="h-4 w-4 text-[#2A4D69]" />
                                   </Button>
                                   <Button variant="ghost" size="icon" onClick={() => handleDelete(member.id)} className="hover:bg-red-100">
                                     <Trash2 className="h-4 w-4 text-red-600" />
@@ -1070,12 +1070,12 @@ export default function DirectoryPage() {
                               
                               {/* Expanded details */}
                               {expandedItems.has(member.id) && (
-                                <TableRow className="bg-purple-50/30 border-t-0">
+                                <TableRow className="bg-[#86BBD8]/10/30 border-t-0">
                                   <TableCell colSpan={7} className="p-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                       {/* Personal */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Personal Details</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Personal Details</h4>
                                         <div className="space-y-1 text-sm">
                                           <p><span className="text-gray-500">ID:</span> {member.idNumber || '—'}</p>
                                           <p><span className="text-gray-500">Profession:</span> {member.profession || '—'}</p>
@@ -1085,7 +1085,7 @@ export default function DirectoryPage() {
 
                                       {/* Address */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Address</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Address</h4>
                                         <div className="space-y-1 text-sm">
                                           <p>{member.address || '—'}</p>
                                           <p>{member.homeAddress || '—'}</p>
@@ -1094,7 +1094,7 @@ export default function DirectoryPage() {
 
                                       {/* Family */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Family</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Family</h4>
                                         <div className="space-y-1 text-sm">
                                           <p><span className="text-gray-500">Next of Kin:</span> {member.nextOfKin || '—'}</p>
                                           <p><span className="text-gray-500">Spouse:</span> {member.spouseName || '—'}</p>
@@ -1104,14 +1104,14 @@ export default function DirectoryPage() {
 
                                       {/* Church */}
                                       <div className="space-y-2 md:col-span-3">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Church Information</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Church Information</h4>
                                         <div className="grid grid-cols-3 gap-4 text-sm">
                                           <div>
                                             <p className="text-gray-500 mb-1">All Departments:</p>
                                             <div className="flex flex-wrap gap-1">
                                               {(member.departments || []).length > 0 ? (
                                                 (member.departments || []).map(d => (
-                                                  <Badge key={d} variant="secondary" className="bg-purple-100 text-purple-800">
+                                                  <Badge key={d} variant="secondary" className="bg-[#86BBD8]/20 text-[#1e3a52]">
                                                     {d}
                                                   </Badge>
                                                 ))
@@ -1200,13 +1200,13 @@ export default function DirectoryPage() {
                 </div>
               ) : (
                 members.map((member) => (
-                  <Card key={member.id} className="bg-white/90 backdrop-blur-sm border-purple-200/40 shadow-lg hover:shadow-xl transition-all">
+                  <Card key={member.id} className="bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 shadow-lg hover:shadow-xl transition-all">
                     <CardContent className="p-5">
                       {/* Header */}
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
-                          <Avatar className="h-12 w-12 border-2 border-purple-200">
-                            <AvatarFallback className="bg-gradient-to-br from-purple-500/80 to-blue-500/80 text-white">
+                          <Avatar className="h-12 w-12 border-2 border-[#86BBD8]/40">
+                            <AvatarFallback className="bg-gradient-to-br from-[#86BBD8]/100/80 to-blue-500/80 text-white">
                               {getInitials(member.fullName)}
                             </AvatarFallback>
                           </Avatar>
@@ -1248,7 +1248,7 @@ export default function DirectoryPage() {
                         {member.departments && member.departments.length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {(member.departments || []).slice(0, 2).map(d => (
-                              <Badge key={d} variant="secondary" className="text-xs bg-purple-100 text-purple-800">
+                              <Badge key={d} variant="secondary" className="text-xs bg-[#86BBD8]/20 text-[#1e3a52]">
                                 {d}
                               </Badge>
                             ))}
@@ -1273,7 +1273,7 @@ export default function DirectoryPage() {
 
                       {/* Expanded Details */}
                       {expandedItems.has(member.id) && (
-                        <div className="mt-4 pt-4 border-t border-purple-100">
+                        <div className="mt-4 pt-4 border-t border-[#86BBD8]/30">
                           <div className="space-y-2 text-sm">
                             <div className="grid grid-cols-2 gap-2">
                               <div><span className="text-gray-500">ID:</span> {member.idNumber || '—'}</div>
@@ -1312,9 +1312,9 @@ export default function DirectoryPage() {
 
       {/* Add/Edit Member Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-purple-200">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-[#86BBD8]/40">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#1e3a52] to-[#556470] bg-clip-text text-transparent">
               {editingMember ? 'Edit Member' : 'Add New Member'}
             </DialogTitle>
           </DialogHeader>
@@ -1455,7 +1455,7 @@ export default function DirectoryPage() {
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white">
                 {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {editingMember ? 'Update Member' : 'Save Member'}
               </Button>

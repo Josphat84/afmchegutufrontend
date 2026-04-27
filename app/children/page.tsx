@@ -1,9 +1,8 @@
-// app/children/page.tsx
+﻿// app/children/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   Users, 
   Calendar, 
@@ -135,10 +134,10 @@ const CHILDREN_INFO = {
   age_groups: ['Toddlers (2-4)', 'Pre-School (5-6)', 'Juniors (7-9)', 'Tweens (10-12)', 'Teens (13-17)'],
   meeting_day: 'Sunday',
   meeting_time: '9:00 AM - 12:00 PM',
-  location: 'Children\'s Wing, Grace Community Church',
+  location: "Children's Wing, AFM Chegutu",
   vision: 'To raise a generation of children who know God, love His Word, and live out their faith with joy and confidence.',
   mission: 'To create a safe, fun, and engaging environment where children encounter God, learn biblical truths, and develop life skills.',
-  email: 'children@gracechurch.org',
+  email: 'children@afmchegutu.org',
   phone: '+263 242 123 456',
 };
 
@@ -160,7 +159,7 @@ const AGE_GROUPS = [
     icon: Rainbow,
     description: 'Interactive Bible lessons, crafts, and memory verses.',
     ratio: '1:6 teacher ratio',
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-[#86BBD8]/20 text-[#2A4D69]',
   },
   {
     id: 3,
@@ -198,28 +197,28 @@ const LEADERSHIP = [
     name: 'Mrs. Grace Makoni',
     title: 'Children\'s Ministry Director',
     bio: 'Grace has over 15 years of experience in children\'s education and ministry. She holds a degree in Early Childhood Development.',
-    email: 'grace.makoni@gracechurch.org',
+    email: 'grace.makoni@afmchegutu.org',
   },
   {
     id: 2,
     name: 'Auntie Mercy Banda',
     title: 'Little Lambs Coordinator',
     bio: 'Mercy is passionate about toddlers and has a heart for nurturing young children in a loving environment.',
-    email: 'mercy.banda@gracechurch.org',
+    email: 'mercy.banda@afmchegutu.org',
   },
   {
     id: 3,
     name: 'Uncle Tendai Ncube',
     title: 'Mighty Warriors Coordinator',
     bio: 'Tendai leads the boys\' ministry and loves teaching children through sports and hands-on activities.',
-    email: 'tendai.ncube@gracechurch.org',
+    email: 'tendai.ncube@afmchegutu.org',
   },
   {
     id: 4,
     name: 'Auntie Rutendo Moyo',
     title: 'Impact Teens Coordinator',
     bio: 'Rutendo mentors teenagers and helps them navigate faith, identity, and life challenges.',
-    email: 'rutendo.moyo@gracechurch.org',
+    email: 'rutendo.moyo@afmchegutu.org',
   },
 ];
 
@@ -302,7 +301,7 @@ const SPECIAL_EVENTS = [
     id: 4,
     title: 'Parents & Kids Conference',
     date: 'October 10-11, 2025',
-    location: 'Grace Convention Centre',
+    location: 'AFM Chegutu Convention',
     description: 'Equipping parents and children to grow together in faith.',
     age_group: 'Parents + Children',
     cost: '$20 per family',
@@ -408,7 +407,7 @@ const TESTIMONIALS = [
   },
   {
     id: 2,
-    name: 'Mr. & Mrs. Chen',
+    name: 'Mr. & Mrs. Chikwanda',
     child_age: 9,
     text: 'The children\'s ministry has been a blessing to our family. Our son has grown spiritually and socially.',
   },
@@ -599,7 +598,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: any }) => (
 export default function ChildrenPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [currentWallpaperIndex, setCurrentWallpaperIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('about');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
@@ -707,7 +706,7 @@ export default function ChildrenPage() {
                 {CHILDREN_INFO.tagline}
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
+                <Button size="lg" className="bg-gradient-to-r from-pink-600 to-[#2A4D69] hover:from-pink-700 hover:to-[#1e3a52] text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
                   <Heart className="h-5 w-5 mr-2" /> Register My Child
                 </Button>
                 <Button size="lg" variant="outline" className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30" onClick={() => setActiveTab('programs')}>
@@ -760,8 +759,8 @@ export default function ChildrenPage() {
                   <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
                     <CardContent className="p-8 text-center">
                       <div className="flex justify-center mb-4">
-                        <div className="p-3 rounded-full bg-purple-100">
-                          <Rocket className="h-8 w-8 text-purple-600" />
+                        <div className="p-3 rounded-full bg-[#86BBD8]/20">
+                          <Rocket className="h-8 w-8 text-[#2A4D69]" />
                         </div>
                       </div>
                       <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
@@ -843,7 +842,7 @@ export default function ChildrenPage() {
                   ))}
                 </div>
                 <div className="text-center mt-8">
-                  <Button onClick={() => setRegisterDialogOpen(true)} className="bg-gradient-to-r from-pink-600 to-purple-600">
+                  <Button onClick={() => setRegisterDialogOpen(true)} className="bg-gradient-to-r from-pink-600 to-[#2A4D69]">
                     Register Your Child
                   </Button>
                 </div>
@@ -963,7 +962,7 @@ export default function ChildrenPage() {
         {/* CTA Section */}
         <section className="py-16 px-4">
           <div className="container mx-auto text-center">
-            <Card className="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
+            <Card className="bg-gradient-to-r from-pink-600 via-[#2A4D69] to-[#6B7B8E] text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Join Our Children's Ministry!</h2>
                 <p className="text-white/90 mb-6">
@@ -1061,7 +1060,7 @@ export default function ChildrenPage() {
               <Button type="button" variant="outline" onClick={() => setRegisterDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-purple-600">Submit Registration</Button>
+              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-[#2A4D69]">Submit Registration</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -1119,7 +1118,7 @@ export default function ChildrenPage() {
               <Button type="button" variant="outline" onClick={() => setContactDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-purple-600">Submit Application</Button>
+              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-[#2A4D69]">Submit Application</Button>
             </DialogFooter>
           </form>
         </DialogContent>

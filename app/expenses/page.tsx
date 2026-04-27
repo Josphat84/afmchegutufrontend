@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
@@ -63,7 +63,7 @@ const EXPENSE_CATEGORIES = [
 ];
 
 const INCOME_CATEGORIES = [
-  { value: 'tithes',          label: 'Tithes',           color: 'bg-purple-100 text-purple-800 border-purple-200', chart: '#9333EA' },
+  { value: 'tithes',          label: 'Tithes',           color: 'bg-[#86BBD8]/20 text-[#1e3a52] border-[#86BBD8]/40', chart: '#9333EA' },
   { value: 'offerings',       label: 'Sunday Offerings', color: 'bg-green-100 text-green-800 border-green-200',    chart: '#22C55E' },
   { value: 'donations',       label: 'Donations',        color: 'bg-blue-100 text-blue-800 border-blue-200',       chart: '#3B82F6' },
   { value: 'fundraising',     label: 'Fundraising',      color: 'bg-amber-100 text-amber-800 border-amber-200',    chart: '#F59E0B' },
@@ -124,7 +124,7 @@ interface Payment {
 }
 
 const PAYMENT_REASON_CONFIG: Record<string, { label: string; color: string; chart: string }> = {
-  tithe:        { label: 'Tithes',        color: 'bg-purple-100 text-purple-800 border-purple-200', chart: '#9333EA' },
+  tithe:        { label: 'Tithes',        color: 'bg-[#86BBD8]/20 text-[#1e3a52] border-[#86BBD8]/40', chart: '#9333EA' },
   offering:     { label: 'Offerings',     color: 'bg-green-100 text-green-800 border-green-200',    chart: '#22C55E' },
   subscription: { label: 'Subscription',  color: 'bg-blue-100 text-blue-800 border-blue-200',       chart: '#3B82F6' },
   project:      { label: 'Project Fund',  color: 'bg-amber-100 text-amber-800 border-amber-200',    chart: '#F59E0B' },
@@ -201,7 +201,7 @@ function PageBackground() {
         </div>
       ))}
       {/* dark overlay so content stays readable */}
-      <div className="absolute inset-0 bg-purple-950/60" />
+      <div className="absolute inset-0 bg-[#080f17]/60" />
 
       {/* controls bottom-right */}
       <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
@@ -289,7 +289,7 @@ function BudgetBar({ category, spent, budget }: { category: typeof EXPENSE_CATEG
         </span>
       </div>
       <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full transition-all duration-500 ${over?'bg-red-500':pct>80?'bg-amber-500':'bg-purple-500'}`}
+        <div className={`h-full rounded-full transition-all duration-500 ${over?'bg-red-500':pct>80?'bg-amber-500':'bg-[#86BBD8]/100'}`}
           style={{ width: `${pct}%` }} />
       </div>
       {over && <p className="text-xs text-red-500 flex items-center gap-1"><AlertTriangle className="w-3 h-3"/>Over budget by {fmt(spent-budget)}</p>}
@@ -364,18 +364,18 @@ function ExpenseRow({ expense, onApprove, onReject, onDisapprove, onEdit, onDele
 
   return (
     <>
-      <tr className="border-b border-gray-100 hover:bg-purple-50/60 transition-colors">
+      <tr className="border-b border-gray-100 hover:bg-[#86BBD8]/10/60 transition-colors">
         <td className="px-2 py-3 w-8">
           {expense.status==='pending' && (
             <input type="checkbox" checked={selected} onChange={onSelect}
-              className="w-4 h-4 rounded border-gray-300 text-purple-600 cursor-pointer accent-purple-600"/>
+              className="w-4 h-4 rounded border-gray-300 text-[#2A4D69] cursor-pointer accent-purple-600"/>
           )}
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-1.5">
             <TooltipProvider><Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={onToggle} className="flex items-center gap-1 text-xs font-mono text-purple-700 font-semibold hover:text-purple-900">
+                <button onClick={onToggle} className="flex items-center gap-1 text-xs font-mono text-[#2A4D69] font-semibold hover:text-[#0d1f2d]">
                   {expanded ? <ChevronUp className="w-3.5 h-3.5"/> : <ChevronDown className="w-3.5 h-3.5"/>}
                   {expense.ref}
                 </button>
@@ -415,7 +415,7 @@ function ExpenseRow({ expense, onApprove, onReject, onDisapprove, onEdit, onDele
         </td>
       </tr>
       {expanded && (
-        <tr className="bg-purple-50/40">
+        <tr className="bg-[#86BBD8]/10/40">
           <td colSpan={8} className="px-6 py-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div><p className="text-xs text-gray-500 mb-0.5">Payment Method</p><p className="font-medium text-gray-700 capitalize">{expense.payment_method.replace('_',' ')}</p></div>
@@ -425,7 +425,7 @@ function ExpenseRow({ expense, onApprove, onReject, onDisapprove, onEdit, onDele
               {expense.receipt_url && (
                 <div><p className="text-xs text-gray-500 mb-0.5">Receipt</p>
                   <a href={expense.receipt_url} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-purple-600 hover:underline text-xs font-medium">
+                    className="inline-flex items-center gap-1 text-[#2A4D69] hover:underline text-xs font-medium">
                     <FileText className="w-3 h-3"/>View Receipt
                   </a>
                 </div>
@@ -463,7 +463,7 @@ function ExpenseCard({ expense, onApprove, onReject, onDisapprove, onEdit, onDel
               <CatIcon className="w-4 h-4"/>
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-mono text-purple-600 font-semibold">{expense.ref}</p>
+              <p className="text-xs font-mono text-[#2A4D69] font-semibold">{expense.ref}</p>
               <p className="text-sm font-medium text-gray-800 leading-tight break-words">{expense.description}</p>
             </div>
           </div>
@@ -907,10 +907,10 @@ export default function ExpensesPage() {
                 <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
                   <TrendingDown className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-purple-200 text-sm font-medium uppercase tracking-wide">Financial Management</span>
+                <span className="text-[#86BBD8] text-sm font-medium uppercase tracking-wide">Financial Management</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Expenses & Budget</h1>
-              <p className="text-purple-200 max-w-xl text-sm">
+              <p className="text-[#86BBD8] max-w-xl text-sm">
                 Track, approve and analyse church expenditure.
               </p>
             </div>
@@ -942,7 +942,7 @@ export default function ExpensesPage() {
                 </TooltipTrigger>
                 <TooltipContent>Download as Excel workbook (.xlsx)</TooltipContent>
               </Tooltip></TooltipProvider>
-              <Button onClick={openAdd} className="bg-white text-purple-900 hover:bg-purple-50 font-semibold gap-2">
+              <Button onClick={openAdd} className="bg-white text-[#0d1f2d] hover:bg-[#86BBD8]/10 font-semibold gap-2">
                 <Plus className="w-4 h-4" /> Add Expense
               </Button>
             </div>
@@ -953,7 +953,7 @@ export default function ExpensesPage() {
       {/* ── STATS ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 w-full pb-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon={DollarSign} label="Total Approved"  value={`$${totalSpent.toLocaleString()}`}   sub="Approved expenses"              color="bg-purple-600 text-white" />
+          <StatCard icon={DollarSign} label="Total Approved"  value={`$${totalSpent.toLocaleString()}`}   sub="Approved expenses"              color="bg-[#2A4D69] text-white" />
           <StatCard icon={Target}     label="Monthly Budget"  value={`$${totalBudget.toLocaleString()}`}  sub={`$${Math.max(totalBudget-totalSpent,0).toLocaleString()} left`} color="bg-blue-600 text-white" />
           <StatCard icon={Clock}      label="Pending Review"  value={`${pending.length}`}                  sub={`$${totalPending.toLocaleString()} awaiting`} trend={pending.length>3?'up':'neutral'} color="bg-amber-500 text-white" />
           <StatCard icon={Receipt}    label="Total Records"   value={`${expenses.length}`}                 sub={`${onHoldList.length} on hold`} color="bg-green-600 text-white" />
@@ -964,16 +964,16 @@ export default function ExpensesPage() {
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 pb-10 w-full">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="bg-white/20 backdrop-blur-md border border-white/20">
-            <TabsTrigger value="expenses" className="text-white data-[state=active]:bg-white data-[state=active]:text-purple-900">
+            <TabsTrigger value="expenses" className="text-white data-[state=active]:bg-white data-[state=active]:text-[#0d1f2d]">
               <Receipt className="w-4 h-4 mr-2"/>Expense Ledger
             </TabsTrigger>
-            <TabsTrigger value="charts" className="text-white data-[state=active]:bg-white data-[state=active]:text-purple-900">
+            <TabsTrigger value="charts" className="text-white data-[state=active]:bg-white data-[state=active]:text-[#0d1f2d]">
               <BarChart3 className="w-4 h-4 mr-2"/>Charts
             </TabsTrigger>
-            <TabsTrigger value="budget" className="text-white data-[state=active]:bg-white data-[state=active]:text-purple-900">
+            <TabsTrigger value="budget" className="text-white data-[state=active]:bg-white data-[state=active]:text-[#0d1f2d]">
               <Target className="w-4 h-4 mr-2"/>Budget
             </TabsTrigger>
-            <TabsTrigger value="income" className="text-white data-[state=active]:bg-white data-[state=active]:text-purple-900">
+            <TabsTrigger value="income" className="text-white data-[state=active]:bg-white data-[state=active]:text-[#0d1f2d]">
               <TrendingUp className="w-4 h-4 mr-2"/>Income
             </TabsTrigger>
           </TabsList>
@@ -1001,7 +1001,7 @@ export default function ExpensesPage() {
 
             {/* Guide banner */}
             <div className="flex items-start gap-2 p-3 bg-white/15 backdrop-blur-sm rounded-xl border border-white/20 text-white text-xs">
-              <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-purple-200"/>
+              <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#86BBD8]"/>
               <span className="text-white/80">
                 <strong className="text-white">How to use:</strong> Click a <strong className="text-white">Ref number</strong> (↓) to expand details.
                 Use <strong className="text-white">✓</strong> to approve, <strong className="text-white">✕</strong> to reject, <strong className="text-white">↩</strong> to disapprove.
@@ -1051,7 +1051,7 @@ export default function ExpensesPage() {
                     <span>{filtered.length} record{filtered.length!==1?'s':''}</span>
                     {(search||filterCat!=='all'||filterStatus!=='all'||filterMonth!=='all') && (
                       <button onClick={()=>{setSearch('');setFilterCat('all');setFilterStatus('all');setFilterMonth('all');}}
-                        className="text-purple-600 hover:underline flex items-center gap-1">
+                        className="text-[#2A4D69] hover:underline flex items-center gap-1">
                         <RefreshCw className="w-3 h-3"/>Clear filters
                       </button>
                     )}
@@ -1083,7 +1083,7 @@ export default function ExpensesPage() {
                       <TooltipProvider><Tooltip>
                         <TooltipTrigger asChild>
                           <button onClick={()=>setViewMode('table')}
-                            className={`px-2 py-1.5 transition ${viewMode==='table'?'bg-purple-600 text-white':'bg-white text-gray-500 hover:bg-gray-50'}`}>
+                            className={`px-2 py-1.5 transition ${viewMode==='table'?'bg-[#2A4D69] text-white':'bg-white text-gray-500 hover:bg-gray-50'}`}>
                             <LayoutList className="w-3.5 h-3.5"/>
                           </button>
                         </TooltipTrigger>
@@ -1092,7 +1092,7 @@ export default function ExpensesPage() {
                       <TooltipProvider><Tooltip>
                         <TooltipTrigger asChild>
                           <button onClick={()=>setViewMode('grid')}
-                            className={`px-2 py-1.5 transition ${viewMode==='grid'?'bg-purple-600 text-white':'bg-white text-gray-500 hover:bg-gray-50'}`}>
+                            className={`px-2 py-1.5 transition ${viewMode==='grid'?'bg-[#2A4D69] text-white':'bg-white text-gray-500 hover:bg-gray-50'}`}>
                             <LayoutGrid className="w-3.5 h-3.5"/>
                           </button>
                         </TooltipTrigger>
@@ -1160,7 +1160,7 @@ export default function ExpensesPage() {
                     <span className="text-xs text-gray-500">{filtered.length} records shown</span>
                     <div className="flex items-center gap-3 text-sm">
                       <span className="text-gray-500">Filtered approved total:</span>
-                      <span className="font-bold text-purple-700">
+                      <span className="font-bold text-[#2A4D69]">
                         ${filtered.filter(e=>e.status==='approved').reduce((s,e)=>s+e.amount,0).toLocaleString('en-US',{minimumFractionDigits:2})}
                       </span>
                     </div>
@@ -1339,7 +1339,7 @@ export default function ExpensesPage() {
                       ? <p className="text-center text-gray-400 py-6 text-sm">No approved expenses yet</p>
                       : entries.map(([vendor,amount],i)=>(
                         <div key={vendor} className="flex items-center gap-3">
-                          <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-700 text-xs flex items-center justify-center font-bold flex-shrink-0">{i+1}</span>
+                          <span className="w-5 h-5 rounded-full bg-[#86BBD8]/20 text-[#2A4D69] text-xs flex items-center justify-center font-bold flex-shrink-0">{i+1}</span>
                           <span className="flex-1 text-sm text-gray-700 truncate">{vendor}</span>
                           <span className="text-sm font-semibold text-gray-800">{fmt(amount)}</span>
                         </div>
@@ -1370,7 +1370,7 @@ export default function ExpensesPage() {
             )}
             <div className="flex justify-end mb-3">
               <Button variant="outline" size="sm" onClick={()=>{ setBudgetDraft({}); setEditingBudget(true); }}
-                className="bg-white/80 backdrop-blur-sm gap-2 border-white/30 text-purple-900 hover:bg-white">
+                className="bg-white/80 backdrop-blur-sm gap-2 border-white/30 text-[#0d1f2d] hover:bg-white">
                 <Pencil className="w-3.5 h-3.5"/>Edit Budget Allocations
               </Button>
             </div>
@@ -1379,7 +1379,7 @@ export default function ExpensesPage() {
                 <Card className="border border-white/20 bg-white/90 backdrop-blur-md shadow-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-semibold text-gray-800 flex items-center gap-2">
-                      <Target className="w-4 h-4 text-purple-600"/>Budget vs Actual — by Category
+                      <Target className="w-4 h-4 text-[#2A4D69]"/>Budget vs Actual — by Category
                     </CardTitle>
                     <p className="text-xs text-gray-500">Based on approved expenses only. Red bars indicate over-budget categories.</p>
                   </CardHeader>
@@ -1392,15 +1392,15 @@ export default function ExpensesPage() {
               </div>
 
               <div className="space-y-4">
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-700 to-indigo-800 text-white">
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-[#1e3a52] to-indigo-800 text-white">
                   <CardContent className="p-5 space-y-4">
                     <div className="flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-purple-200"/>
+                      <BarChart3 className="w-5 h-5 text-[#86BBD8]"/>
                       <h3 className="font-semibold">Overall Budget Health</h3>
                     </div>
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-purple-200">Spent</span>
+                        <span className="text-[#86BBD8]">Spent</span>
                         <span className="font-bold">{Math.round((totalSpent/totalBudget)*100)}%</span>
                       </div>
                       <div className="h-3 bg-white/20 rounded-full overflow-hidden">
@@ -1416,12 +1416,12 @@ export default function ExpensesPage() {
                         {label:'Pending',        val:fmt(totalPending), cls:'text-amber-300'},
                       ].map(row=>(
                         <div key={row.label} className="flex justify-between">
-                          <span className="text-purple-200">{row.label}</span>
+                          <span className="text-[#86BBD8]">{row.label}</span>
                           <span className={`font-semibold ${row.cls}`}>{row.val}</span>
                         </div>
                       ))}
                       <div className="flex justify-between border-t border-white/20 pt-2 mt-2">
-                        <span className="text-purple-200">Remaining</span>
+                        <span className="text-[#86BBD8]">Remaining</span>
                         <span className={`font-bold ${totalBudget-totalSpent<0?'text-red-300':'text-white'}`}>{fmt(Math.max(totalBudget-totalSpent,0))}</span>
                       </div>
                     </div>
@@ -1448,12 +1448,12 @@ export default function ExpensesPage() {
                   </CardContent>
                 </Card>
 
-                <div className="p-4 bg-white/80 backdrop-blur-sm border border-purple-100 rounded-xl">
+                <div className="p-4 bg-white/80 backdrop-blur-sm border border-[#86BBD8]/30 rounded-xl">
                   <div className="flex items-center gap-2 mb-2">
-                    <ShieldCheck className="w-4 h-4 text-purple-600"/>
-                    <p className="text-xs font-semibold text-purple-800">Financial Accountability</p>
+                    <ShieldCheck className="w-4 h-4 text-[#2A4D69]"/>
+                    <p className="text-xs font-semibold text-[#1e3a52]">Financial Accountability</p>
                   </div>
-                  <p className="text-xs text-purple-600 leading-relaxed">
+                  <p className="text-xs text-[#2A4D69] leading-relaxed">
                     All expenses require pastoral approval. On-hold expenses are deferred and do not count toward approved spend. Records are retained for audit and annual report.
                   </p>
                 </div>
@@ -1480,7 +1480,7 @@ export default function ExpensesPage() {
               <StatCard icon={TrendingUp}   label="Total Income"   value={fmt(totalIncome)}             sub={`${paymentsList.length} receipts`}  color="bg-green-600 text-white"/>
               <StatCard icon={DollarSign}   label="This Month"     value={fmt(thisMonthIncome)}         sub="Income this month"                  color="bg-teal-600 text-white"/>
               <StatCard icon={TrendingDown} label="Total Expenses" value={fmt(totalSpent)}              sub="Approved expenses"                  color="bg-red-500 text-white"/>
-              <StatCard icon={Target}       label="Net Position"   value={fmt(totalIncome-totalSpent)}  sub={totalIncome-totalSpent>=0?'Surplus':'Deficit'} color={totalIncome-totalSpent>=0?'bg-purple-600 text-white':'bg-orange-600 text-white'}/>
+              <StatCard icon={Target}       label="Net Position"   value={fmt(totalIncome-totalSpent)}  sub={totalIncome-totalSpent>=0?'Surplus':'Deficit'} color={totalIncome-totalSpent>=0?'bg-[#2A4D69] text-white':'bg-orange-600 text-white'}/>
             </div>
 
             {/* Charts row */}
@@ -1630,7 +1630,7 @@ export default function ExpensesPage() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Receipt className="w-5 h-5 text-purple-600"/>
+              <Receipt className="w-5 h-5 text-[#2A4D69]"/>
               {editingExpense?'Edit Expense':'Submit New Expense'}
             </DialogTitle>
             <DialogDescription>
@@ -1688,10 +1688,10 @@ export default function ExpensesPage() {
               <Label>Receipt / Invoice</Label>
               <input type="file" accept="image/*,.pdf"
                 onChange={e=>setReceiptFile(e.target.files?.[0]||null)}
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"/>
+                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#86BBD8]/10 file:text-[#2A4D69] hover:file:bg-[#86BBD8]/20 cursor-pointer"/>
               {receiptFile && <p className="text-xs text-green-600 mt-1">📎 {receiptFile.name}</p>}
               {editingExpense?.receipt_url && !receiptFile && (
-                <p className="text-xs text-gray-500 mt-1">Current: <a href={editingExpense.receipt_url} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">View receipt</a></p>
+                <p className="text-xs text-gray-500 mt-1">Current: <a href={editingExpense.receipt_url} target="_blank" rel="noopener noreferrer" className="text-[#2A4D69] hover:underline">View receipt</a></p>
               )}
             </div>
             <div className="md:col-span-2 flex items-center gap-4 p-3 bg-violet-50 rounded-xl border border-violet-100">
@@ -1713,7 +1713,7 @@ export default function ExpensesPage() {
           </div>
           <DialogFooter className="mt-4 gap-2">
             <Button variant="outline" onClick={()=>setShowForm(false)}>Cancel</Button>
-            <Button onClick={handleSave} disabled={isLoading} className="bg-purple-700 hover:bg-purple-800 text-white">
+            <Button onClick={handleSave} disabled={isLoading} className="bg-[#1e3a52] hover:bg-[#162d3f] text-white">
               {editingExpense?<><Check className="w-4 h-4 mr-2"/>Save Changes</>:<><Plus className="w-4 h-4 mr-2"/>Submit Expense</>}
             </Button>
           </DialogFooter>
@@ -1725,7 +1725,7 @@ export default function ExpensesPage() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-purple-600"/>Edit Budget Allocations
+              <Target className="w-5 h-5 text-[#2A4D69]"/>Edit Budget Allocations
             </DialogTitle>
             <DialogDescription>Set the monthly budget for each expense category. Changes are saved to the database.</DialogDescription>
           </DialogHeader>
@@ -1750,13 +1750,13 @@ export default function ExpensesPage() {
               );
             })}
           </div>
-          <div className="mt-3 p-3 bg-purple-50 rounded-xl text-xs text-purple-700 flex items-center gap-2">
+          <div className="mt-3 p-3 bg-[#86BBD8]/10 rounded-xl text-xs text-[#2A4D69] flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 flex-shrink-0"/>
             Total monthly budget: <strong>${EXPENSE_CATEGORIES.reduce((s,c)=>s+(parseFloat(budgetDraft[c.value]??String(budgets[c.value]??c.budget))||0),0).toLocaleString()}</strong>
           </div>
           <DialogFooter className="mt-4 gap-2">
             <Button variant="outline" onClick={()=>{ setEditingBudget(false); setBudgetDraft({}); }}>Cancel</Button>
-            <Button onClick={saveBudgets} className="bg-purple-700 hover:bg-purple-800 text-white">
+            <Button onClick={saveBudgets} className="bg-[#1e3a52] hover:bg-[#162d3f] text-white">
               <Check className="w-4 h-4 mr-2"/>Save Budgets
             </Button>
           </DialogFooter>
@@ -1768,7 +1768,7 @@ export default function ExpensesPage() {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-purple-600"/>Period Report
+              <FileText className="w-5 h-5 text-[#2A4D69]"/>Period Report
             </DialogTitle>
             <DialogDescription>Generate a report for a specific date range — export as PDF or Excel.</DialogDescription>
           </DialogHeader>
@@ -1795,7 +1795,7 @@ export default function ExpensesPage() {
           <DialogFooter className="mt-4 gap-2">
             <Button variant="outline" onClick={()=>setReportDialog(false)}>Cancel</Button>
             <Button onClick={generateReport} disabled={!reportFrom||!reportTo||reportLoading}
-              className="bg-purple-700 hover:bg-purple-800 text-white">
+              className="bg-[#1e3a52] hover:bg-[#162d3f] text-white">
               {reportLoading ? 'Generating…' : reportFmt==='pdf'
                 ? <><Printer className="w-4 h-4 mr-2"/>Generate PDF</>
                 : <><FileSpreadsheet className="w-4 h-4 mr-2"/>Generate Excel</>}

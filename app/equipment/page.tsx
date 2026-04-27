@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo, Fragment } from 'react';
 import Link from 'next/link';
@@ -310,7 +310,7 @@ export default function EquipmentPage() {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -602,10 +602,10 @@ export default function EquipmentPage() {
 
   if (loading && equipment.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#86BBD8]/10 to-[#78C0A6]/10">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600" />
-          <p className="text-purple-800 text-sm font-medium">Loading equipment...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#86BBD8]/40 border-t-purple-600" />
+          <p className="text-[#1e3a52] text-sm font-medium">Loading equipment...</p>
         </div>
       </div>
     );
@@ -625,7 +625,7 @@ export default function EquipmentPage() {
       {/* Background */}
       <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/30"
+          className="absolute inset-0 bg-gradient-to-br from-[#0d1f2d]/40 to-blue-900/30"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070')",
             backgroundSize: 'cover',
@@ -634,7 +634,7 @@ export default function EquipmentPage() {
             filter: 'brightness(1.05) contrast(1.1) saturate(1.1)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1f2d]/40 via-transparent to-blue-900/30" />
       </div>
 
       <div className="relative z-10 min-h-screen">
@@ -645,7 +645,7 @@ export default function EquipmentPage() {
               <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
                 Equipment Directory
               </h1>
-              <p className="text-purple-100 mt-1">
+              <p className="text-[#c8dff0] mt-1">
                 Showing {equipment.length} of {totalCount} items
               </p>
             </div>
@@ -672,7 +672,7 @@ export default function EquipmentPage() {
               </Button>
               <Button
                 onClick={openNewDialog}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 shadow-lg"
+                className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white border-0 shadow-lg"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Equipment
               </Button>
@@ -681,9 +681,9 @@ export default function EquipmentPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 mb-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-purple-200/40">
+            <Card className="bg-white/80 backdrop-blur-sm border-[#86BBD8]/40/40">
               <CardContent className="p-3 text-center">
-                <Package className="h-5 w-5 text-purple-700 mx-auto mb-1" />
+                <Package className="h-5 w-5 text-[#2A4D69] mx-auto mb-1" />
                 <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
                 <p className="text-xs text-gray-500">Total</p>
               </CardContent>
@@ -733,7 +733,7 @@ export default function EquipmentPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-purple-200/40 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-6 border border-[#86BBD8]/40/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
@@ -742,7 +742,7 @@ export default function EquipmentPage() {
                   placeholder="Search by name, serial, model, manufacturer..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-10 bg-white/80 border-purple-200"
+                  className="pl-10 pr-10 bg-white/80 border-[#86BBD8]/40"
                 />
                 {searchTerm && (
                   <button
@@ -760,7 +760,7 @@ export default function EquipmentPage() {
                   variant="outline"
                   size="sm"
                   onClick={expandAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
@@ -769,7 +769,7 @@ export default function EquipmentPage() {
                   variant="outline"
                   size="sm"
                   onClick={collapseAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
@@ -778,7 +778,7 @@ export default function EquipmentPage() {
 
               {/* Category Filter */}
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -791,7 +791,7 @@ export default function EquipmentPage() {
 
               {/* Status Filter */}
               <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -804,7 +804,7 @@ export default function EquipmentPage() {
 
               {/* Clear Filters */}
               {(searchTerm || selectedCategory !== 'all' || selectedStatus !== 'all' || selectedLocation) && (
-                <Button variant="ghost" onClick={clearFilters} className="text-purple-700 hover:text-purple-800">
+                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69] hover:text-[#1e3a52]">
                   Clear Filters
                 </Button>
               )}
@@ -815,11 +815,11 @@ export default function EquipmentPage() {
           {viewMode === 'table' ? (
             /* ========== TABLE VIEW ========== */
             <div>
-              <Card className="border-purple-200/40 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
+              <Card className="border-[#86BBD8]/40/40 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader className="bg-gradient-to-r from-purple-100/80 to-blue-100/80">
+                      <TableHeader className="bg-gradient-to-r from-[#c8dff0]/80 to-blue-100/80">
                         <TableRow>
                           <TableHead className="w-10"></TableHead>
                           <TableHead>Equipment</TableHead>
@@ -835,7 +835,7 @@ export default function EquipmentPage() {
                         {loading ? (
                           <TableRow>
                             <TableCell colSpan={8} className="text-center py-12">
-                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-purple-600" />
+                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-[#2A4D69]" />
                             </TableCell>
                           </TableRow>
                         ) : equipment.length === 0 ? (
@@ -844,7 +844,7 @@ export default function EquipmentPage() {
                               <div className="flex flex-col items-center gap-2">
                                 <Package className="h-8 w-8 text-gray-400" />
                                 <p>No equipment found.</p>
-                                <Button variant="link" onClick={clearFilters} className="text-purple-600">
+                                <Button variant="link" onClick={clearFilters} className="text-[#2A4D69]">
                                   Clear filters
                                 </Button>
                               </div>
@@ -854,7 +854,7 @@ export default function EquipmentPage() {
                           equipment.map((item) => (
                             <Fragment key={item.id}>
                               {/* Main row */}
-                              <TableRow className="hover:bg-purple-50/50 transition">
+                              <TableRow className="hover:bg-[#86BBD8]/10/50 transition">
                                 <TableCell>
                                   <Button
                                     variant="ghost"
@@ -871,8 +871,8 @@ export default function EquipmentPage() {
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-lg bg-purple-100">
-                                      <Package className="h-5 w-5 text-purple-700" />
+                                    <div className="p-2 rounded-lg bg-[#86BBD8]/20">
+                                      <Package className="h-5 w-5 text-[#2A4D69]" />
                                     </div>
                                     <div>
                                       <p className="font-medium text-gray-800">{item.name}</p>
@@ -884,7 +884,7 @@ export default function EquipmentPage() {
                                   </div>
                                 </TableCell>
                                 <TableCell>
-                                  <Badge variant="outline" className="bg-purple-50">
+                                  <Badge variant="outline" className="bg-[#86BBD8]/10">
                                     {item.category || '—'}
                                   </Badge>
                                 </TableCell>
@@ -893,8 +893,8 @@ export default function EquipmentPage() {
                                 <TableCell>{item.location || '—'}</TableCell>
                                 <TableCell>{item.assigned_to || '—'}</TableCell>
                                 <TableCell className="text-right space-x-1">
-                                  <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="hover:bg-purple-100">
-                                    <Pencil className="h-4 w-4 text-purple-700" />
+                                  <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="hover:bg-[#86BBD8]/20">
+                                    <Pencil className="h-4 w-4 text-[#2A4D69]" />
                                   </Button>
                                   <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)} className="hover:bg-red-100">
                                     <Trash2 className="h-4 w-4 text-red-600" />
@@ -904,12 +904,12 @@ export default function EquipmentPage() {
                               
                               {/* Expanded details */}
                               {expandedItems.has(item.id) && (
-                                <TableRow className="bg-purple-50/30 border-t-0">
+                                <TableRow className="bg-[#86BBD8]/10/30 border-t-0">
                                   <TableCell colSpan={8} className="p-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                       {/* Basic Info */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Basic Info</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Basic Info</h4>
                                         <div className="space-y-1 text-sm">
                                           {item.description && <p><span className="text-gray-500">Description:</span> {item.description}</p>}
                                           {item.manufacturer && <p><span className="text-gray-500">Manufacturer:</span> {item.manufacturer}</p>}
@@ -920,7 +920,7 @@ export default function EquipmentPage() {
 
                                       {/* Purchase Info */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Purchase Info</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Purchase Info</h4>
                                         <div className="space-y-1 text-sm">
                                           {item.purchase_date && <p><span className="text-gray-500">Date:</span> {formatDate(item.purchase_date)}</p>}
                                           {item.purchase_price > 0 && <p><span className="text-gray-500">Price:</span> {formatCurrency(item.purchase_price)}</p>}
@@ -930,7 +930,7 @@ export default function EquipmentPage() {
 
                                       {/* Maintenance */}
                                       <div className="space-y-2">
-                                        <h4 className="font-semibold text-purple-800 text-sm">Maintenance</h4>
+                                        <h4 className="font-semibold text-[#1e3a52] text-sm">Maintenance</h4>
                                         <div className="space-y-1 text-sm">
                                           {item.last_maintenance && <p><span className="text-gray-500">Last:</span> {formatDate(item.last_maintenance)}</p>}
                                           {item.next_maintenance && <p><span className="text-gray-500">Next:</span> {formatDate(item.next_maintenance)}</p>}
@@ -996,13 +996,13 @@ export default function EquipmentPage() {
                 </div>
               ) : (
                 equipment.map((item) => (
-                  <Card key={item.id} className="border-purple-200/40 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all">
+                  <Card key={item.id} className="border-[#86BBD8]/40/40 bg-white/90 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all">
                     <CardContent className="p-5">
                       {/* Header */}
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-lg bg-purple-100">
-                            <Package className="h-6 w-6 text-purple-700" />
+                          <div className="p-3 rounded-lg bg-[#86BBD8]/20">
+                            <Package className="h-6 w-6 text-[#2A4D69]" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
@@ -1025,7 +1025,7 @@ export default function EquipmentPage() {
                             )}
                           </Button>
                           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(item)}>
-                            <Pencil className="h-3.5 w-3.5 text-purple-700" />
+                            <Pencil className="h-3.5 w-3.5 text-[#2A4D69]" />
                           </Button>
                           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(item.id)}>
                             <Trash2 className="h-3.5 w-3.5 text-red-600" />
@@ -1057,7 +1057,7 @@ export default function EquipmentPage() {
 
                       {/* Expanded details */}
                       {expandedItems.has(item.id) && (
-                        <div className="mt-4 pt-4 border-t border-purple-100">
+                        <div className="mt-4 pt-4 border-t border-[#86BBD8]/30">
                           <div className="space-y-2 text-xs">
                             {item.serial_number && (
                               <p><span className="text-gray-500">Serial:</span> {item.serial_number}</p>
@@ -1091,9 +1091,9 @@ export default function EquipmentPage() {
 
       {/* Add/Edit Equipment Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-purple-200">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-[#86BBD8]/40">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#1e3a52] to-[#556470] bg-clip-text text-transparent">
               {editingItem ? 'Edit Equipment' : 'Add New Equipment'}
             </DialogTitle>
           </DialogHeader>
@@ -1219,7 +1219,7 @@ export default function EquipmentPage() {
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white">
                 {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {editingItem ? 'Update Equipment' : 'Save Equipment'}
               </Button>

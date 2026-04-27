@@ -1,4 +1,4 @@
-// app/media/page.tsx
+﻿// app/media/page.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -112,7 +112,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const MEDIA_TYPES = [
   { value: 'audio', label: 'Audio', icon: Headphones, color: 'bg-blue-100 text-blue-700' },
   { value: 'video', label: 'Video', icon: Video, color: 'bg-red-100 text-red-700' },
-  { value: 'podcast', label: 'Podcast', icon: Podcast, color: 'bg-purple-100 text-purple-700' },
+  { value: 'podcast', label: 'Podcast', icon: Podcast, color: 'bg-[#86BBD8]/20 text-[#2A4D69]' },
   { value: 'broadcast', label: 'Broadcast', icon: Radio, color: 'bg-green-100 text-green-700' },
   { value: 'sermon', label: 'Sermon', icon: Mic, color: 'bg-orange-100 text-orange-700' },
 ];
@@ -791,7 +791,7 @@ export default function MediaPage() {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   
   // Form state
   const [formData, setFormData] = useState({

@@ -1,4 +1,4 @@
-// app/ladies/page.tsx
+﻿// app/ladies/page.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -215,10 +215,10 @@ const LADIES_FELLOWSHIP_INFO = {
   members_count: 150,
   meeting_day: 'Tuesday',
   meeting_time: '10:00 AM - 12:00 PM',
-  location: 'Fellowship Hall, Grace Community Church',
+  location: 'Fellowship Hall, AFM Chegutu',
   vision: 'To see every woman know her worth in Christ, discover her God-given purpose, and flourish in every season of life.',
   mission: 'To create a safe, nurturing community where women grow in faith, build authentic friendships, and serve with compassion.',
-  email: 'women@gracechurch.org',
+  email: 'women@afmchegutu.org',
   phone: '+263 242 123 459',
   verse: 'She is clothed with strength and dignity, and she laughs without fear of the future. - Proverbs 31:25',
 };
@@ -237,7 +237,7 @@ const CORE_VALUES = [
     title: 'Identity in Christ',
     description: 'Discovering who we are as beloved daughters of the King and living from that truth.',
     icon: Crown,
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-[#86BBD8]/20 text-[#2A4D69]',
   },
   {
     id: 3,
@@ -269,7 +269,7 @@ const LEADERSHIP = [
     name: 'Mrs. Grace Makoni',
     title: 'Women\'s Ministry Director',
     bio: 'Grace has a heart for women to know their worth in Christ. She has led the women\'s ministry for 7 years and is a certified biblical counselor.',
-    email: 'grace.makoni@gracechurch.org',
+    email: 'grace.makoni@afmchegutu.org',
     avatar: 'GM',
   },
   {
@@ -277,7 +277,7 @@ const LEADERSHIP = [
     name: 'Auntie Mercy Banda',
     title: 'Mentorship Coordinator',
     bio: 'Mercy oversees our Titus 2 mentorship program, connecting women across generations for discipleship.',
-    email: 'mercy.banda@gracechurch.org',
+    email: 'mercy.banda@afmchegutu.org',
     avatar: 'MB',
   },
   {
@@ -285,7 +285,7 @@ const LEADERSHIP = [
     name: 'Mrs. Rutendo Moyo',
     title: 'Prayer Ministry Lead',
     bio: 'Rutendo leads our prayer gatherings and intercessory team, believing in the power of women united in prayer.',
-    email: 'rutendo.moyo@gracechurch.org',
+    email: 'rutendo.moyo@afmchegutu.org',
     avatar: 'RM',
   },
   {
@@ -293,7 +293,7 @@ const LEADERSHIP = [
     name: 'Sister Chipo Ncube',
     title: 'Events & Outreach Coordinator',
     bio: 'Chipo organizes our retreats, conferences, and community service projects with creativity and excellence.',
-    email: 'chipo.ncube@gracechurch.org',
+    email: 'chipo.ncube@afmchegutu.org',
     avatar: 'CN',
   },
 ];
@@ -357,7 +357,7 @@ const SPECIAL_EVENTS = [
     id: 3,
     title: 'Women\'s Conference 2025',
     date: 'May 9-10, 2025',
-    location: 'Grace Convention Centre',
+    location: 'AFM Chegutu Convention',
     description: '"Flourish" - A conference to help women thrive in every area of life. Dynamic speakers, worship, and workshops.',
     cost: '$45 early bird',
     spots_left: 150,
@@ -431,7 +431,7 @@ const PROGRAMS = [
 const TESTIMONIALS = [
   {
     id: 1,
-    name: 'Sarah Chen',
+    name: 'Sarah Chikwanda',
     years: 4,
     text: 'The women\'s ministry has been a lifeline for me. I\'ve found genuine friendships and grown so much in my faith.',
   },
@@ -652,7 +652,7 @@ const SafeImage = ({ src, alt, className, fill, ...props }: { src: string; alt: 
   if (error || !src || src.startsWith('/images/')) {
     return (
       <div 
-        className={`bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center ${className}`}
+        className={`bg-gradient-to-br from-pink-400 to-[#2A4D69] flex items-center justify-center ${className}`}
         style={fill ? { position: 'absolute', inset: 0 } : {}}
       >
         <ImageIcon className="h-8 w-8 text-white/50" />
@@ -814,7 +814,7 @@ const BlogPostCard = ({ post, onLike, onComment, onEdit, onDelete }: {
   return (
     <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-md overflow-hidden">
       {post.coverImage && (
-        <div className="relative h-48 w-full bg-gradient-to-br from-pink-400 to-purple-600">
+        <div className="relative h-48 w-full bg-gradient-to-br from-pink-400 to-[#2A4D69]">
           <SafeImage
             src={post.coverImage}
             alt={post.title}
@@ -970,7 +970,7 @@ const AudioCard = ({ audio, onPlay, onDownload }: {
   return (
     <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-md hover:shadow-lg transition-all overflow-hidden">
       <div className="flex">
-        <div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-pink-400 to-purple-600">
+        <div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-pink-400 to-[#2A4D69]">
           {audio.coverImage && (
             <SafeImage
               src={audio.coverImage}
@@ -1036,7 +1036,7 @@ const GalleryImageCard = ({ image, onView, onLike }: {
   onLike: (id: string) => void;
 }) => (
   <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-md overflow-hidden group cursor-pointer" onClick={() => onView(image)}>
-    <div className="relative aspect-square bg-gradient-to-br from-pink-400 to-purple-600">
+    <div className="relative aspect-square bg-gradient-to-br from-pink-400 to-[#2A4D69]">
       <SafeImage
         src={image.thumbnailUrl || image.imageUrl}
         alt={image.title}
@@ -1584,7 +1584,7 @@ const LightboxModal = ({ image, onClose, onNext, onPrevious, hasNext, hasPreviou
 export default function LadiesFellowshipPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [activeTab, setActiveTab] = useState('about');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
@@ -1815,7 +1815,7 @@ export default function LadiesFellowshipPage() {
                   <Crown className="h-8 w-8 text-amber-400" />
                 </div>
                 <div className="animate-pulse delay-200">
-                  <Gem className="h-8 w-8 text-purple-400" />
+                  <Gem className="h-8 w-8 text-[#86BBD8]/80" />
                 </div>
                 <div className="animate-pulse delay-300">
                   <Bird className="h-8 w-8 text-rose-400" />
@@ -1834,7 +1834,7 @@ export default function LadiesFellowshipPage() {
                 "{LADIES_FELLOWSHIP_INFO.verse}"
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
+                <Button size="lg" className="bg-gradient-to-r from-pink-600 to-[#2A4D69] hover:from-pink-700 hover:to-[#1e3a52] text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
                   <Heart className="h-5 w-5 mr-2" /> Join the Sisterhood
                 </Button>
                 <Button size="lg" variant="outline" className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30" onClick={() => setActiveTab('events')}>
@@ -1885,8 +1885,8 @@ export default function LadiesFellowshipPage() {
                   <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
                     <CardContent className="p-8 text-center">
                       <div className="flex justify-center mb-4">
-                        <div className="p-3 rounded-full bg-purple-100">
-                          <Sparkles className="h-8 w-8 text-purple-600" />
+                        <div className="p-3 rounded-full bg-[#86BBD8]/20">
+                          <Sparkles className="h-8 w-8 text-[#2A4D69]" />
                         </div>
                       </div>
                       <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
@@ -1982,7 +1982,7 @@ export default function LadiesFellowshipPage() {
                 </div>
                 
                 {currentAudio && (
-                  <Card className="bg-gradient-to-r from-pink-600 to-purple-600 text-white border-0">
+                  <Card className="bg-gradient-to-r from-pink-600 to-[#2A4D69] text-white border-0">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
                         <Button 
@@ -2065,7 +2065,7 @@ export default function LadiesFellowshipPage() {
                         key={album.id} 
                         className="bg-white/90 backdrop-blur-sm border-0 shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-all"
                       >
-                        <div className="relative h-48 bg-gradient-to-br from-pink-400 to-purple-600">
+                        <div className="relative h-48 bg-gradient-to-br from-pink-400 to-[#2A4D69]">
                           <SafeImage
                             src={album.coverImage}
                             alt={album.title}
@@ -2161,7 +2161,7 @@ export default function LadiesFellowshipPage() {
 
         <section className="py-16 px-4">
           <div className="container mx-auto text-center">
-            <Card className="bg-gradient-to-r from-pink-600 via-purple-600 to-rose-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
+            <Card className="bg-gradient-to-r from-pink-600 via-[#2A4D69] to-rose-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">You Belong Here, Sister!</h2>
                 <p className="text-white/90 mb-6">
@@ -2261,7 +2261,7 @@ export default function LadiesFellowshipPage() {
               <Button type="button" variant="outline" onClick={() => setRegisterDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-purple-600">Submit</Button>
+              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-[#2A4D69]">Submit</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -2317,7 +2317,7 @@ export default function LadiesFellowshipPage() {
               <Button type="button" variant="outline" onClick={() => setContactDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-purple-600">Send Message</Button>
+              <Button type="submit" className="bg-gradient-to-r from-pink-600 to-[#2A4D69]">Send Message</Button>
             </DialogFooter>
           </form>
         </DialogContent>

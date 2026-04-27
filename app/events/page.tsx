@@ -1,8 +1,7 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect, useMemo, Fragment } from 'react';
+import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { toast, Toaster } from 'sonner';
@@ -62,14 +61,12 @@ import {
   BookmarkPlus,
   ThumbsUp,
   MessageSquare,
-  Calendar,
   List,
   LayoutGrid,
   LayoutList,
   Fullscreen,
   Minimize,
   ArrowLeft,
-  ArrowRight as ArrowRightIcon,
   Home,
   Info,
   Award,
@@ -82,6 +79,10 @@ import {
   Link as LinkIcon,
   ChevronLeft,
   ChevronRight,
+  Mic,
+  Camera as CameraIcon,
+  StopCircle,
+  CalendarRange,
 } from 'lucide-react';
 
 // =============== IMPORTED COMPONENTS ===============
@@ -126,7 +127,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const EVENT_TYPES = [
   { value: 'event', label: 'Event', icon: '🎉', color: 'bg-green-100 text-green-800 border-green-200', description: 'Church events, conferences, gatherings' },
   { value: 'notice', label: 'Notice', icon: '📢', color: 'bg-blue-100 text-blue-800 border-blue-200', description: 'Announcements and important notices' },
-  { value: 'sermon', label: 'Sermon', icon: '📖', color: 'bg-purple-100 text-purple-800 border-purple-200', description: 'Sermon series and messages' },
+  { value: 'sermon', label: 'Sermon', icon: '📖', color: 'bg-[#86BBD8]/20 text-[#1e3a52] border-[#86BBD8]/40', description: 'Sermon series and messages' },
   { value: 'testimony', label: 'Testimony', icon: '🙏', color: 'bg-amber-100 text-amber-800 border-amber-200', description: 'Personal testimonies and stories' },
   { value: 'prayer', label: 'Prayer Request', icon: '🕯️', color: 'bg-indigo-100 text-indigo-800 border-indigo-200', description: 'Prayer requests and updates' },
 ];
@@ -474,7 +475,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           </>
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600" />
+          <div className="w-full h-full bg-gradient-to-br from-[#2A4D69] to-[#6B7B8E]" />
         )}
         
         {/* Back Button */}
@@ -553,7 +554,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
           <div className="lg:col-span-2 space-y-8">
             {/* Excerpt */}
             {event.excerpt && (
-              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-100 dark:border-purple-800">
+              <div className="bg-[#86BBD8]/10 dark:bg-[#0d1f2d]/20 rounded-xl p-6 border border-[#86BBD8]/30 dark:border-[#162d3f]">
                 <p className="text-lg text-gray-700 dark:text-gray-300 italic leading-relaxed">
                   "{event.excerpt}"
                 </p>
@@ -569,20 +570,28 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
               </div>
             )}
             
-            {/* Gallery */}
+            {/* Gallery & Audio */}
             {event.gallery_images && event.gallery_images.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Gallery</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Media</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {event.gallery_images.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`Gallery ${idx + 1}`}
-                      className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer"
-                      onClick={() => window.open(img, '_blank')}
-                    />
-                  ))}
+                  {event.gallery_images.map((url, idx) => {
+                    const isAudio = /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(url);
+                    return isAudio ? (
+                      <div key={idx} className="col-span-full bg-[#86BBD8]/10 dark:bg-[#0d1f2d]/20 rounded-xl p-4 border border-[#86BBD8]/30 dark:border-[#162d3f]">
+                        <p className="text-xs text-[#78C0A6] font-medium mb-2">Audio Recording {idx + 1}</p>
+                        <audio controls src={url} className="w-full" />
+                      </div>
+                    ) : (
+                      <img
+                        key={idx}
+                        src={url}
+                        alt={`Gallery ${idx + 1}`}
+                        className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer"
+                        onClick={() => window.open(url, '_blank')}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -592,10 +601,10 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
           <div className="space-y-6">
             {/* Event Details Card */}
             {event.type === 'event' && (
-              <Card className="sticky top-24 border-purple-200 dark:border-purple-800">
+              <Card className="sticky top-24 border-[#86BBD8]/40 dark:border-[#162d3f]">
                 <CardContent className="p-6 space-y-6">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5 text-purple-600" />
+                    <CalendarIcon className="h-5 w-5 text-[#2A4D69]" />
                     Event Details
                   </h3>
                   
@@ -604,8 +613,8 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                   {/* Date & Time */}
                   {event.event_start_date && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                        <CalendarIcon className="h-5 w-5 text-purple-600" />
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                        <CalendarIcon className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Date & Time</p>
@@ -631,8 +640,8 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                   {/* Location */}
                   {event.location && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                        <MapPin className="h-5 w-5 text-purple-600" />
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                        <MapPin className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Location</p>
@@ -650,8 +659,8 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                   {/* Online */}
                   {event.is_online && event.online_url && (
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                        <Globe className="h-5 w-5 text-purple-600" />
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#86BBD8]/20 dark:bg-[#0d1f2d]/30 rounded-lg flex items-center justify-center">
+                        <Globe className="h-5 w-5 text-[#2A4D69]" />
                       </div>
                       <div className="flex-1">
                         <p className="text-sm text-gray-500 dark:text-gray-400">Online Meeting</p>
@@ -659,7 +668,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                           href={event.online_url}
                           target="_blank"
                           rel="noopener"
-                          className="text-purple-600 hover:underline break-all"
+                          className="text-[#2A4D69] hover:underline break-all"
                         >
                           {event.online_url}
                         </a>
@@ -686,7 +695,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                   {/* RSVP Button */}
                   <Button
                     onClick={() => onRSVP(event)}
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-6 text-lg"
+                    className="w-full bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white py-6 text-lg"
                   >
                     <Users className="h-5 w-5 mr-2" />
                     RSVP for this Event
@@ -697,15 +706,15 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
             
             {/* Author Info */}
             {(event.author_name || event.author_email) && (
-              <Card className="border-purple-200 dark:border-purple-800">
+              <Card className="border-[#86BBD8]/40 dark:border-[#162d3f]">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <User className="h-5 w-5 text-purple-600" />
+                    <User className="h-5 w-5 text-[#2A4D69]" />
                     About the Author
                   </h3>
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16">
-                      <AvatarFallback className="bg-purple-100 text-purple-800 text-xl">
+                      <AvatarFallback className="bg-[#86BBD8]/20 text-[#1e3a52] text-xl">
                         {getInitials(event.author_name)}
                       </AvatarFallback>
                     </Avatar>
@@ -716,7 +725,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                       {event.author_email && (
                         <a
                           href={`mailto:${event.author_email}`}
-                          className="text-sm text-purple-600 hover:underline flex items-center gap-1 mt-1"
+                          className="text-sm text-[#2A4D69] hover:underline flex items-center gap-1 mt-1"
                         >
                           <Mail className="h-3 w-3" />
                           {event.author_email}
@@ -739,7 +748,7 @@ export default function EventsPage() {
   const router = useRouter();
   
   // View mode
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   
   // Data
   const [events, setEvents] = useState<Event[]>([]);
@@ -808,7 +817,24 @@ export default function EventsPage() {
   
   // Image upload
   const [uploading, setUploading] = useState(false);
-  
+
+  // Audio recording
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState('');
+  const [recordingTime, setRecordingTime] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Camera
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Calendar view
+  const [calendarDate, setCalendarDate] = useState<Date | undefined>(new Date());
+
   // Check if user is admin
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -887,6 +913,112 @@ export default function EventsPage() {
     setCurrentPage(0);
   };
   
+  // Audio recording handlers
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      mr.ondataavailable = ev => { if (ev.data.size > 0) audioChunksRef.current.push(ev.data); };
+      mr.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setAudioUrl(URL.createObjectURL(blob));
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mediaRecorderRef.current = mr;
+      mr.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      recordingTimerRef.current = setInterval(() => setRecordingTime(t => t + 1), 1000);
+    } catch {
+      toast.error('Microphone access denied. Please allow microphone permission.');
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+  };
+
+  const saveRecording = async () => {
+    if (!audioUrl) return;
+    setUploading(true);
+    try {
+      const blob = await fetch(audioUrl).then(r => r.blob());
+      const file = new File([blob], `recording-${Date.now()}.webm`, { type: blob.type });
+      const { url } = await uploadImage(file);
+      setFormData(prev => ({ ...prev, gallery_images: [...(prev.gallery_images || []), url] }));
+      setAudioUrl('');
+      toast.success('Audio saved to event media');
+    } catch {
+      toast.error('Failed to save audio recording');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Audio file upload handler
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) { toast.error('Audio file must be less than 50MB'); return; }
+    setUploading(true);
+    try {
+      const { url } = await uploadImage(file);
+      setFormData(prev => ({ ...prev, gallery_images: [...(prev.gallery_images || []), url] }));
+      toast.success('Audio uploaded');
+    } catch {
+      toast.error('Failed to upload audio');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  // Camera handlers
+  const openCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      setCameraStream(stream);
+      setShowCamera(true);
+      setTimeout(() => {
+        if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play(); }
+      }, 100);
+    } catch {
+      toast.error('Camera access denied. Please allow camera permission.');
+    }
+  };
+
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0);
+    canvas.toBlob(async blob => {
+      if (!blob) return;
+      closeCamera();
+      setUploading(true);
+      try {
+        const file = new File([blob], `capture-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const { url } = await uploadImage(file);
+        setFormData(prev => ({ ...prev, featured_image: url }));
+        toast.success('Photo captured and set as featured image');
+      } catch {
+        toast.error('Failed to upload captured photo');
+      } finally {
+        setUploading(false);
+      }
+    }, 'image/jpeg', 0.9);
+  };
+
+  const closeCamera = () => {
+    cameraStream?.getTracks().forEach(t => t.stop());
+    setCameraStream(null);
+    setShowCamera(false);
+  };
+
   // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1056,6 +1188,24 @@ export default function EventsPage() {
   // Separate featured and regular
   const featuredEvents = events.filter(e => e.is_featured);
   const regularEvents = events.filter(e => !e.is_featured);
+
+  // Calendar helpers
+  const eventDates = useMemo(() =>
+    events.filter(e => e.event_start_date).map(e => {
+      const [y, m, d] = e.event_start_date!.slice(0, 10).split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }),
+    [events]
+  );
+
+  const selectedDateEvents = useMemo(() => {
+    if (!calendarDate) return [];
+    const y = calendarDate.getFullYear();
+    const m = String(calendarDate.getMonth() + 1).padStart(2, '0');
+    const d = String(calendarDate.getDate()).padStart(2, '0');
+    const target = `${y}-${m}-${d}`;
+    return events.filter(e => e.event_start_date?.slice(0, 10) === target);
+  }, [events, calendarDate]);
   
   // If full page view is active, show the detail page
   if (fullPageEvent) {
@@ -1079,10 +1229,10 @@ export default function EventsPage() {
   // Main listing page
   if (loading && events.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#86BBD8]/10 to-[#78C0A6]/10">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-          <p className="text-purple-800">Loading events...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-[#2A4D69]" />
+          <p className="text-[#1e3a52]">Loading events...</p>
         </div>
       </div>
     );
@@ -1097,7 +1247,7 @@ export default function EventsPage() {
       {/* Background */}
       <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/30"
+          className="absolute inset-0 bg-gradient-to-br from-[#0d1f2d]/40 to-blue-900/30"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070')",
             backgroundSize: 'cover',
@@ -1105,7 +1255,7 @@ export default function EventsPage() {
             opacity: 0.9,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1f2d]/40 via-transparent to-blue-900/30" />
       </div>
       
       <div className="relative z-10 min-h-screen">
@@ -1116,7 +1266,7 @@ export default function EventsPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">
                 Events & Notices
               </h1>
-              <p className="text-lg text-purple-100">
+              <p className="text-lg text-[#c8dff0]">
                 Stay updated with everything happening at AFM Chegutu
               </p>
             </div>
@@ -1128,7 +1278,7 @@ export default function EventsPage() {
                     resetForm();
                     setDialogOpen(true);
                   }}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                  className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white"
                 >
                   <Plus className="h-4 w-4 mr-2" /> Add New
                 </Button>
@@ -1153,11 +1303,22 @@ export default function EventsPage() {
               >
                 <LayoutList className="h-4 w-4" />
               </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setViewMode('calendar')}
+                className={`bg-white/10 backdrop-blur-sm border-white/30 ${
+                  viewMode === 'calendar' ? 'bg-white/30 text-white' : 'text-white/70 hover:text-white'
+                }`}
+                title="Calendar view"
+              >
+                <CalendarRange className="h-4 w-4" />
+              </Button>
             </div>
           </div>
           
           {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-purple-200/40 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-[#86BBD8]/40/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
@@ -1166,7 +1327,7 @@ export default function EventsPage() {
                   placeholder="Search events, notices, sermons..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-10 bg-white/80 border-purple-200"
+                  className="pl-10 pr-10 bg-white/80 border-[#86BBD8]/40"
                 />
                 {searchTerm && (
                   <button
@@ -1184,7 +1345,7 @@ export default function EventsPage() {
                   variant="outline"
                   size="sm"
                   onClick={expandAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
@@ -1193,7 +1354,7 @@ export default function EventsPage() {
                   variant="outline"
                   size="sm"
                   onClick={collapseAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
@@ -1202,7 +1363,7 @@ export default function EventsPage() {
               
               {/* Type Filter */}
               <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1220,7 +1381,7 @@ export default function EventsPage() {
               
               {/* Category Filter */}
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[180px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1242,7 +1403,7 @@ export default function EventsPage() {
                   variant={showUpcoming ? "default" : "outline"}
                   size="sm"
                   onClick={() => setShowUpcoming(!showUpcoming)}
-                  className={showUpcoming ? "bg-purple-600 text-white" : "bg-white/80 border-purple-200"}
+                  className={showUpcoming ? "bg-[#2A4D69] text-white" : "bg-white/80 border-[#86BBD8]/40"}
                 >
                   <CalendarDays className="h-4 w-4 mr-2" />
                   Upcoming
@@ -1251,7 +1412,7 @@ export default function EventsPage() {
                   variant={showFeatured ? "default" : "outline"}
                   size="sm"
                   onClick={() => setShowFeatured(!showFeatured)}
-                  className={showFeatured ? "bg-purple-600 text-white" : "bg-white/80 border-purple-200"}
+                  className={showFeatured ? "bg-[#2A4D69] text-white" : "bg-white/80 border-[#86BBD8]/40"}
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Featured
@@ -1260,7 +1421,7 @@ export default function EventsPage() {
               
               {/* Clear Filters */}
               {(searchTerm || selectedType !== 'all' || selectedCategory !== 'all' || showUpcoming || showFeatured) && (
-                <Button variant="ghost" onClick={clearFilters} className="text-purple-700 hover:text-purple-800">
+                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69] hover:text-[#1e3a52]">
                   Clear Filters
                 </Button>
               )}
@@ -1276,7 +1437,7 @@ export default function EventsPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-purple-200/40 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1 cursor-pointer" onClick={() => openFullPage(item)}>
                     {item.featured_image ? (
                       <div className="relative h-56 overflow-hidden">
                         <img
@@ -1287,7 +1448,7 @@ export default function EventsPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ) : (
-                      <div className="h-56 bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                      <div className="h-56 bg-gradient-to-br from-[#86BBD8]/100 to-blue-500 flex items-center justify-center">
                         <span className="text-6xl opacity-30">{getTypeIcon(item.type)}</span>
                       </div>
                     )}
@@ -1307,7 +1468,7 @@ export default function EventsPage() {
                         {isAdmin && (
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); handleEdit(item, e); }}>
-                              <Pencil className="h-4 w-4 text-purple-700" />
+                              <Pencil className="h-4 w-4 text-[#2A4D69]" />
                             </Button>
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}>
                               <Trash2 className="h-4 w-4 text-red-600" />
@@ -1316,7 +1477,7 @@ export default function EventsPage() {
                         )}
                       </div>
                       
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#2A4D69] transition-colors">
                         {item.title}
                       </h3>
                       
@@ -1326,22 +1487,22 @@ export default function EventsPage() {
                       
                       {item.type === 'event' && item.event_start_date && (
                         <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                          <CalendarIcon className="h-4 w-4 text-purple-600" />
+                          <CalendarIcon className="h-4 w-4 text-[#2A4D69]" />
                           <span>{formatShortDate(item.event_start_date)}</span>
                           {item.location && (
                             <>
                               <span>•</span>
-                              <MapPin className="h-4 w-4 text-purple-600" />
+                              <MapPin className="h-4 w-4 text-[#2A4D69]" />
                               <span className="truncate">{item.location}</span>
                             </>
                           )}
                         </div>
                       )}
                       
-                      <div className="flex items-center justify-between pt-4 border-t border-purple-100">
+                      <div className="flex items-center justify-between pt-4 border-t border-[#86BBD8]/30">
                         <div className="flex items-center gap-3 text-xs text-gray-500">
                           <Avatar className="h-6 w-6">
-                            <AvatarFallback className="bg-purple-100 text-purple-800 text-xs">
+                            <AvatarFallback className="bg-[#86BBD8]/20 text-[#1e3a52] text-xs">
                               {getInitials(item.author_name)}
                             </AvatarFallback>
                           </Avatar>
@@ -1352,7 +1513,7 @@ export default function EventsPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="text-purple-600 hover:text-purple-700 group-hover:translate-x-1 transition-transform"
+                          className="text-[#2A4D69] hover:text-[#2A4D69] group-hover:translate-x-1 transition-transform"
                           onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
                         >
                           Read More
@@ -1377,7 +1538,7 @@ export default function EventsPage() {
               <div className="flex justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-white" />
               </div>
-            ) : regularEvents.length === 0 ? (
+            ) : regularEvents.length === 0 && viewMode !== 'calendar' ? (
               <div className="text-center py-12 bg-white/10 backdrop-blur-sm rounded-xl">
                 <p className="text-white">No events found matching your criteria.</p>
               </div>
@@ -1385,7 +1546,7 @@ export default function EventsPage() {
               /* Grid View */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {regularEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-purple-200/40 overflow-hidden hover:shadow-xl transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-xl transition-all cursor-pointer" onClick={() => openFullPage(item)}>
                     {item.featured_image && (
                       <div className="relative h-48 overflow-hidden">
                         <img
@@ -1407,7 +1568,7 @@ export default function EventsPage() {
                         )}
                       </div>
                       
-                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#2A4D69] transition-colors">
                         {item.title}
                       </h3>
                       
@@ -1417,12 +1578,12 @@ export default function EventsPage() {
                       
                       {item.type === 'event' && item.event_start_date && (
                         <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                          <CalendarIcon className="h-3 w-3 text-purple-600" />
+                          <CalendarIcon className="h-3 w-3 text-[#2A4D69]" />
                           <span>{formatShortDate(item.event_start_date)}</span>
                         </div>
                       )}
                       
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-purple-100">
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#86BBD8]/30">
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <Eye className="h-3 w-3" /> {item.views || 0}
                           {item.type === 'event' && (
@@ -1435,7 +1596,7 @@ export default function EventsPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="text-purple-600 hover:text-purple-700"
+                          className="text-[#2A4D69] hover:text-[#2A4D69]"
                           onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
                         >
                           View
@@ -1446,11 +1607,11 @@ export default function EventsPage() {
                   </Card>
                 ))}
               </div>
-            ) : (
+            ) : viewMode === 'list' ? (
               /* List View */
               <div className="space-y-4">
                 {regularEvents.map((item) => (
-                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-purple-200/40 overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                  <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
                     <div className="flex flex-col md:flex-row">
                       {item.featured_image && (
                         <div className="md:w-48 h-32 md:h-auto relative overflow-hidden">
@@ -1477,28 +1638,28 @@ export default function EventsPage() {
                             </Badge>
                           )}
                         </div>
-                        
-                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">
+
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#2A4D69] transition-colors">
                           {item.title}
                         </h3>
-                        
+
                         {item.excerpt && (
                           <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.excerpt}</p>
                         )}
-                        
+
                         {item.type === 'event' && item.event_start_date && (
                           <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-3">
                             <span className="flex items-center gap-1">
-                              <CalendarIcon className="h-3 w-3 text-purple-600" /> {formatDate(item.event_start_date)}
+                              <CalendarIcon className="h-3 w-3 text-[#2A4D69]" /> {formatDate(item.event_start_date)}
                             </span>
                             {item.location && (
                               <span className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3 text-purple-600" /> {item.location}
+                                <MapPin className="h-3 w-3 text-[#2A4D69]" /> {item.location}
                               </span>
                             )}
                           </div>
                         )}
-                        
+
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-3 text-xs text-gray-500">
                             <Eye className="h-3 w-3" /> {item.views || 0}
@@ -1511,7 +1672,7 @@ export default function EventsPage() {
                           <Button
                             size="sm"
                             variant="link"
-                            className="text-purple-600 hover:text-purple-700"
+                            className="text-[#2A4D69] hover:text-[#2A4D69]"
                             onClick={(e) => { e.stopPropagation(); openFullPage(item); }}
                           >
                             Read More <ArrowRight className="h-3 w-3 ml-1" />
@@ -1521,6 +1682,68 @@ export default function EventsPage() {
                     </div>
                   </Card>
                 ))}
+              </div>
+            ) : (
+              /* Calendar View */
+              <div className="grid md:grid-cols-[360px,1fr] gap-6 items-start">
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-[#86BBD8]/40/40 shadow-lg">
+                  <CalendarComponent
+                    mode="single"
+                    selected={calendarDate}
+                    onSelect={setCalendarDate}
+                    modifiers={{ hasEvent: eventDates }}
+                    modifiersClassNames={{ hasEvent: 'bg-[#86BBD8]/30 text-[#1e3a52] font-bold rounded-full' }}
+                    className="rounded-lg w-full"
+                  />
+                  <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 px-1">
+                    <div className="w-4 h-4 rounded-full bg-[#86BBD8]/30 border border-purple-300 flex-shrink-0" />
+                    <span>Days with events</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-4 drop-shadow">
+                    {calendarDate
+                      ? calendarDate.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                      : 'Select a date to see events'}
+                  </h3>
+                  {selectedDateEvents.length === 0 ? (
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-10 text-center text-white/60 border border-white/15">
+                      <CalendarIcon className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                      <p className="font-medium">No events on this date</p>
+                      <p className="text-xs mt-1 text-white/40">Pick another day on the calendar</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {selectedDateEvents.map(item => (
+                        <Card key={item.id} className="group bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-lg transition-all cursor-pointer" onClick={() => openFullPage(item)}>
+                          <CardContent className="p-4 flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl bg-[#86BBD8]/10`}>
+                              {getTypeIcon(item.type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-bold text-gray-900 truncate group-hover:text-[#2A4D69] transition-colors">{item.title}</h4>
+                              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                                {item.event_start_time && <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{formatTime(item.event_start_time)}</span>}
+                                {item.location && <><span>·</span><span className="truncate flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</span></>}
+                              </div>
+                              {item.excerpt && <p className="text-xs text-gray-400 mt-1 line-clamp-1">{item.excerpt}</p>}
+                            </div>
+                            {isAdmin && (
+                              <div className="flex gap-1 flex-shrink-0">
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => { e.stopPropagation(); handleEdit(item, e); }}>
+                                  <Pencil className="h-3 w-3 text-[#2A4D69]" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={e => { e.stopPropagation(); handleDelete(item.id); }}>
+                                  <Trash2 className="h-3 w-3 text-red-500" />
+                                </Button>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -1534,7 +1757,7 @@ export default function EventsPage() {
                 onClick={() => setCurrentPage(p => p + 1)}
               >
                 Load More Events
-                <ArrowRightIcon className="h-5 w-5 ml-2" />
+                <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </div>
           )}
@@ -1545,7 +1768,7 @@ export default function EventsPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#1e3a52] to-[#556470] bg-clip-text text-transparent">
               {editingEvent ? 'Edit Event' : 'Create New Event'}
             </DialogTitle>
             <DialogDescription>
@@ -1766,85 +1989,102 @@ export default function EventsPage() {
               {/* Media & Author Tab */}
               <TabsContent value="media" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  {/* Featured Image */}
                   <div className="space-y-2 md:col-span-2">
                     <Label>Featured Image</Label>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-start gap-4">
                       {formData.featured_image ? (
                         <div className="relative w-32 h-32">
-                          <img
-                            src={formData.featured_image}
-                            alt="Featured"
-                            className="w-full h-full object-cover rounded-lg border border-gray-200"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
-                            onClick={() => setFormData({ ...formData, featured_image: '' })}
-                          >
+                          <img src={formData.featured_image} alt="Featured" className="w-full h-full object-cover rounded-lg border border-gray-200" />
+                          <Button type="button" variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full" onClick={() => setFormData({ ...formData, featured_image: '' })}>
                             <X className="h-3 w-3" />
                           </Button>
                         </div>
                       ) : (
-                        <div className="flex-1">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            disabled={uploading}
-                            className="cursor-pointer"
-                          />
-                          {uploading && (
-                            <div className="flex items-center gap-2 mt-2">
-                              <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
-                              <p className="text-sm text-gray-500">Uploading...</p>
-                            </div>
-                          )}
-                          <p className="text-xs text-gray-500 mt-1">
-                            Supports: JPG, PNG, GIF, WEBP (max 10MB)
-                          </p>
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="cursor-pointer" />
+                          {uploading && <div className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin text-[#2A4D69]" /><p className="text-sm text-gray-500">Uploading…</p></div>}
+                          <p className="text-xs text-gray-400">JPG, PNG, GIF, WEBP — max 10 MB</p>
                         </div>
+                      )}
+                      {/* Camera capture button */}
+                      {!formData.featured_image && (
+                        <Button type="button" variant="outline" onClick={openCamera} className="flex items-center gap-2 border-[#86BBD8]/40 text-[#2A4D69] hover:bg-[#86BBD8]/10">
+                          <CameraIcon className="h-4 w-4" /> Take Photo
+                        </Button>
                       )}
                     </div>
                   </div>
-                  
+
+                  {/* Audio Recording */}
+                  <div className="space-y-2 md:col-span-2">
+                    <Label>Audio</Label>
+                    <div className="border border-dashed border-gray-300 rounded-lg p-4 space-y-3">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {!isRecording ? (
+                          <Button type="button" onClick={startRecording} variant="outline" className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50">
+                            <Mic className="h-4 w-4" /> Record Audio
+                          </Button>
+                        ) : (
+                          <Button type="button" onClick={stopRecording} variant="outline" className="flex items-center gap-2 border-red-500 bg-red-50 text-red-700 animate-pulse">
+                            <StopCircle className="h-4 w-4" />
+                            Stop · {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
+                          </Button>
+                        )}
+                        <div>
+                          <input type="file" accept="audio/*" onChange={handleAudioUpload} className="hidden" id="audio-file-input" />
+                          <label htmlFor="audio-file-input" className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition">
+                            <Upload className="h-4 w-4" /> Upload Audio File
+                          </label>
+                        </div>
+                      </div>
+                      {audioUrl && (
+                        <div className="space-y-2">
+                          <audio controls src={audioUrl} className="w-full" />
+                          <div className="flex gap-2">
+                            <Button type="button" size="sm" onClick={saveRecording} disabled={uploading} className="bg-[#2A4D69] hover:bg-[#1e3a52] text-white">
+                              {uploading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null}
+                              Save to Event
+                            </Button>
+                            <Button type="button" size="sm" variant="outline" onClick={() => setAudioUrl('')}>Discard</Button>
+                          </div>
+                        </div>
+                      )}
+                      {(formData.gallery_images || []).filter((u: string) => /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(u)).length > 0 && (
+                        <div className="space-y-1 pt-2 border-t border-gray-100">
+                          <p className="text-xs text-gray-400 font-medium">Saved audio files:</p>
+                          {(formData.gallery_images || []).filter((u: string) => /\.(mp3|wav|ogg|webm|m4a|aac)(\?.*)?$/i.test(u)).map((u: string, i: number) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <audio controls src={u} className="flex-1 h-8" style={{ height: '2rem' }} />
+                              <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => setFormData(prev => ({ ...prev, gallery_images: (prev.gallery_images || []).filter((_: string, idx: number) => idx !== i) }))}>
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-400">Audio is saved to the event&apos;s media gallery. MP3, WAV, OGG, WEBM — max 50 MB</p>
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="author_name">Author Name</Label>
-                    <Input
-                      id="author_name"
-                      value={formData.author_name}
-                      onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
-                      placeholder="e.g., Pastor John"
-                    />
+                    <Input id="author_name" value={formData.author_name} onChange={(e) => setFormData({ ...formData, author_name: e.target.value })} placeholder="e.g., Pastor John" />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="author_email">Author Email</Label>
-                    <Input
-                      id="author_email"
-                      type="email"
-                      value={formData.author_email}
-                      onChange={(e) => setFormData({ ...formData, author_email: e.target.value })}
-                      placeholder="pastor@church.org"
-                    />
+                    <Input id="author_email" type="email" value={formData.author_email} onChange={(e) => setFormData({ ...formData, author_email: e.target.value })} placeholder="pastor@church.org" />
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_featured"
-                      checked={formData.is_featured || false}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })}
-                    />
+                    <Checkbox id="is_featured" checked={formData.is_featured || false} onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })} />
                     <Label htmlFor="is_featured">Feature this post</Label>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="is_published"
-                      checked={formData.is_published !== false}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked as boolean })}
-                    />
+                    <Checkbox id="is_published" checked={formData.is_published !== false} onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked as boolean })} />
                     <Label htmlFor="is_published">Published (visible to public)</Label>
                   </div>
                 </div>
@@ -1855,7 +2095,7 @@ export default function EventsPage() {
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+              <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white">
                 {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 {editingEvent ? 'Update' : 'Create'}
               </Button>
@@ -1864,6 +2104,26 @@ export default function EventsPage() {
         </DialogContent>
       </Dialog>
       
+      {/* Camera Overlay */}
+      {showCamera && (
+        <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center p-4">
+          <p className="text-white text-sm mb-4 opacity-70">Point the camera at your subject, then tap Capture</p>
+          <div className="relative w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl">
+            <video ref={videoRef} className="w-full rounded-2xl" autoPlay playsInline muted />
+            <canvas ref={canvasRef} className="hidden" />
+          </div>
+          <div className="flex items-center gap-4 mt-6">
+            <Button type="button" variant="outline" onClick={closeCamera} className="border-white/40 text-white hover:bg-white/10">
+              <X className="h-4 w-4 mr-2" /> Cancel
+            </Button>
+            <Button type="button" onClick={capturePhoto} disabled={uploading} className="bg-white text-black hover:bg-gray-100 font-bold px-10 py-3 text-base rounded-full shadow-2xl">
+              {uploading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <CameraIcon className="h-5 w-5 mr-2" />}
+              Capture
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* RSVP Dialog */}
       <Dialog open={rsvpDialogOpen} onOpenChange={setRsvpDialogOpen}>
         <DialogContent className="max-w-md">
@@ -1933,7 +2193,7 @@ export default function EventsPage() {
               <Button type="button" variant="outline" onClick={() => setRsvpDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving} className="bg-purple-600 hover:bg-purple-700 text-white">
+              <Button type="submit" disabled={saving} className="bg-[#2A4D69] hover:bg-[#1e3a52] text-white">
                 {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 Submit RSVP
               </Button>

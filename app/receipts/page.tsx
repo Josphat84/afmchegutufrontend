@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -38,7 +38,6 @@ import {
   ArrowRight,
   Phone,
   Mail,
-  MapPin as MapPinIcon,
   Building,
   Clock3,
   AlertCircle,
@@ -50,17 +49,14 @@ import {
   Expand,
   Shrink,
   Share,
-  Printer,
   BookmarkPlus,
   ThumbsUp,
   MessageSquare,
-  Calendar,
   List,
   Fullscreen,
   Minimize,
   ArrowLeft,
   Home,
-  Info,
   Award,
   Star,
   Zap,
@@ -77,13 +73,11 @@ import {
   Scan,
   Smartphone,
   Laptop,
-  Printer as PrinterIcon,
   FileDown,
   FileUp,
   Copy,
   Check,
   AlertTriangle,
-  Info as InfoIcon,
   ExternalLink,
   MoreHorizontal,
   Settings,
@@ -97,7 +91,6 @@ import {
   BadgeX,
   BadgePlus,
   BadgeMinus,
-  BadgeDollarSign as BadgeDollar,
 } from 'lucide-react';
 
 // =============== IMPORTED COMPONENTS ===============
@@ -155,7 +148,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const PAYMENT_REASONS = [
   { value: 'tithe', label: 'Tithe', icon: '💰', color: 'bg-green-100 text-green-800 border-green-200' },
   { value: 'offering', label: 'Offering', icon: '🙏', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  { value: 'subscription', label: 'Subscription', icon: '📅', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { value: 'subscription', label: 'Subscription', icon: '📅', color: 'bg-[#86BBD8]/20 text-[#1e3a52] border-[#86BBD8]/40' },
   { value: 'project', label: 'Building/Project', icon: '🏗️', color: 'bg-amber-100 text-amber-800 border-amber-200' },
   { value: 'conference', label: 'Conference Fund', icon: '🎤', color: 'bg-pink-100 text-pink-800 border-pink-200' },
   { value: 'other', label: 'Other', icon: '📌', color: 'bg-gray-100 text-gray-800 border-gray-200' },
@@ -164,7 +157,7 @@ const PAYMENT_REASONS = [
 const PAYMENT_METHODS = [
   { value: 'cash', label: 'Cash', icon: '💵', color: 'bg-green-100 text-green-800' },
   { value: 'bank_transfer', label: 'Bank Transfer', icon: '🏦', color: 'bg-blue-100 text-blue-800' },
-  { value: 'ecocash', label: 'EcoCash', icon: '📱', color: 'bg-purple-100 text-purple-800' },
+  { value: 'ecocash', label: 'EcoCash', icon: '📱', color: 'bg-[#86BBD8]/20 text-[#1e3a52]' },
   { value: 'other_mobile', label: 'Other Mobile', icon: '📲', color: 'bg-amber-100 text-amber-800' },
 ];
 
@@ -652,16 +645,16 @@ const PaymentCard = ({
   onToggleExpand: (id: string) => void;
 }) => {
   return (
-    <Card className="bg-white/90 backdrop-blur-sm border-purple-200/40 overflow-hidden hover:shadow-lg transition-all">
+    <Card className="bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40 overflow-hidden hover:shadow-lg transition-all">
       <CardContent className="p-5">
         {/* Header with expand/collapse button */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-100">
-              <Receipt className="h-5 w-5 text-purple-700" />
+            <div className="p-2 rounded-lg bg-[#86BBD8]/20">
+              <Receipt className="h-5 w-5 text-[#2A4D69]" />
             </div>
             <div>
-              <p className="text-xs text-purple-600 font-mono">{payment.receipt_number}</p>
+              <p className="text-xs text-[#2A4D69] font-mono">{payment.receipt_number}</p>
               <p className="font-medium text-gray-900">{payment.full_name}</p>
             </div>
           </div>
@@ -702,7 +695,7 @@ const PaymentCard = ({
 
         {/* Expanded details */}
         {isExpanded && (
-          <div className="mt-4 pt-4 border-t border-purple-100 space-y-3">
+          <div className="mt-4 pt-4 border-t border-[#86BBD8]/30 space-y-3">
             {/* Payment method and reference */}
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
@@ -767,7 +760,7 @@ const PaymentCard = ({
               </Button>
               <Button
                 size="sm"
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                className="flex-1 bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white"
                 onClick={() => onDownload(payment)}
               >
                 <Download className="h-3 w-3 mr-1" /> PDF
@@ -795,7 +788,7 @@ const PaymentDetailModal = ({ payment, open, onClose, onDownload, onEdit }: {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <Receipt className="h-6 w-6 text-purple-600" />
+            <Receipt className="h-6 w-6 text-[#2A4D69]" />
             Payment Receipt
           </DialogTitle>
           <DialogDescription>
@@ -911,7 +904,7 @@ const PaymentDetailModal = ({ payment, open, onClose, onDownload, onEdit }: {
               Edit
             </Button>
             <Button
-              className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+              className="flex-1 bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white"
               onClick={() => onDownload(payment)}
             >
               <Download className="h-4 w-4 mr-2" />
@@ -1016,8 +1009,8 @@ const PaymentFormModal = ({ open, onClose, onSave, payment }: {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-purple-600" />
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#1e3a52] to-[#556470] bg-clip-text text-transparent flex items-center gap-2">
+            <Wallet className="h-6 w-6 text-[#2A4D69]" />
             {payment ? 'Edit Payment' : 'Record New Payment'}
           </DialogTitle>
           <DialogDescription>
@@ -1235,11 +1228,11 @@ const PaymentFormModal = ({ open, onClose, onSave, payment }: {
                   />
                 </div>
 
-                <div className="md:col-span-2 bg-purple-50 rounded-lg p-4">
+                <div className="md:col-span-2 bg-[#86BBD8]/10 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <Receipt className="h-5 w-5 text-purple-600 mt-0.5" />
+                    <Receipt className="h-5 w-5 text-[#2A4D69] mt-0.5" />
                     <div>
-                      <p className="font-medium text-purple-900">Receipt Preview</p>
+                      <p className="font-medium text-[#0d1f2d]">Receipt Preview</p>
                       <p className="text-sm text-gray-600 mt-1">
                         A receipt will be generated with a unique receipt number and 
                         can be downloaded as PDF after saving.
@@ -1255,7 +1248,7 @@ const PaymentFormModal = ({ open, onClose, onSave, payment }: {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={saving} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+            <Button type="submit" disabled={saving} className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white">
               {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {payment ? 'Update Payment' : 'Save Payment'}
             </Button>
@@ -1293,7 +1286,7 @@ const SimpleDatePicker = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="bg-white/80 border-purple-200">
+        <Button variant="outline" className="bg-white/80 border-[#86BBD8]/40">
           <CalendarIcon className="h-4 w-4 mr-2" />
           {date ? format(date, 'LLL dd, y') : placeholder}
         </Button>
@@ -1325,9 +1318,9 @@ const SimpleDatePicker = ({
                   size="sm"
                   className={`h-8 w-8 p-0 ${
                     isSelected 
-                      ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                      ? 'bg-[#2A4D69] text-white hover:bg-[#1e3a52]' 
                       : isToday 
-                        ? 'border border-purple-200' 
+                        ? 'border border-[#86BBD8]/40' 
                         : ''
                   }`}
                   onClick={() => {
@@ -1560,10 +1553,10 @@ export default function PaymentsPage() {
 
   if (loading && payments.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#86BBD8]/10 to-[#78C0A6]/10">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-          <p className="text-purple-800">Loading payments...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-[#2A4D69]" />
+          <p className="text-[#1e3a52]">Loading payments...</p>
         </div>
       </div>
     );
@@ -1578,7 +1571,7 @@ export default function PaymentsPage() {
       {/* Background */}
       <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/30"
+          className="absolute inset-0 bg-gradient-to-br from-[#0d1f2d]/40 to-blue-900/30"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070')",
             backgroundSize: 'cover',
@@ -1586,7 +1579,7 @@ export default function PaymentsPage() {
             opacity: 0.9,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-blue-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1f2d]/40 via-transparent to-blue-900/30" />
       </div>
       
       <div className="relative z-10 min-h-screen">
@@ -1598,7 +1591,7 @@ export default function PaymentsPage() {
                 <Wallet className="h-10 w-10" />
                 Payments & Offerings
               </h1>
-              <p className="text-lg text-purple-100">
+              <p className="text-lg text-[#c8dff0]">
                 Record and manage tithes, offerings, and donations
               </p>
             </div>
@@ -1608,7 +1601,7 @@ export default function PaymentsPage() {
                   setEditingPayment(null);
                   setFormModalOpen(true);
                 }}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+                className="bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white shadow-lg"
                 size="lg"
               >
                 <Plus className="h-5 w-5 mr-2" />
@@ -1639,15 +1632,15 @@ export default function PaymentsPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="bg-white/90 backdrop-blur-sm border-purple-200/40">
+            <Card className="bg-white/90 backdrop-blur-sm border-[#86BBD8]/40/40">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-500">Total Payments</p>
                     <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
                   </div>
-                  <div className="p-3 rounded-full bg-purple-100">
-                    <Receipt className="h-6 w-6 text-purple-700" />
+                  <div className="p-3 rounded-full bg-[#86BBD8]/20">
+                    <Receipt className="h-6 w-6 text-[#2A4D69]" />
                   </div>
                 </div>
               </CardContent>
@@ -1704,7 +1697,7 @@ export default function PaymentsPage() {
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-purple-200/40 shadow-lg">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-[#86BBD8]/40/40 shadow-lg">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
@@ -1713,7 +1706,7 @@ export default function PaymentsPage() {
                   placeholder="Search by name, receipt number, email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-10 bg-white/80 border-purple-200"
+                  className="pl-10 pr-10 bg-white/80 border-[#86BBD8]/40"
                 />
                 {searchTerm && (
                   <button
@@ -1731,7 +1724,7 @@ export default function PaymentsPage() {
                   variant="outline"
                   size="sm"
                   onClick={expandAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Maximize2 className="h-4 w-4 mr-2" />
                   Expand All
@@ -1740,7 +1733,7 @@ export default function PaymentsPage() {
                   variant="outline"
                   size="sm"
                   onClick={collapseAll}
-                  className="bg-white/80 border-purple-200"
+                  className="bg-white/80 border-[#86BBD8]/40"
                 >
                   <Minimize2 className="h-4 w-4 mr-2" />
                   Collapse All
@@ -1749,7 +1742,7 @@ export default function PaymentsPage() {
 
               {/* Reason Filter */}
               <Select value={selectedReason} onValueChange={setSelectedReason}>
-                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="Reason" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1767,7 +1760,7 @@ export default function PaymentsPage() {
 
               {/* Method Filter */}
               <Select value={selectedMethod} onValueChange={setSelectedMethod}>
-                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-purple-200">
+                <SelectTrigger className="w-full lg:w-[150px] bg-white/80 border-[#86BBD8]/40">
                   <SelectValue placeholder="Method" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1805,7 +1798,7 @@ export default function PaymentsPage() {
                       setStartDate(null);
                       setEndDate(null);
                     }}
-                    className="text-purple-700 hover:text-purple-800"
+                    className="text-[#2A4D69] hover:text-[#1e3a52]"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -1814,7 +1807,7 @@ export default function PaymentsPage() {
 
               {/* Clear Filters */}
               {(searchTerm || selectedReason !== 'all' || selectedMethod !== 'all' || startDate) && (
-                <Button variant="ghost" onClick={clearFilters} className="text-purple-700 hover:text-purple-800">
+                <Button variant="ghost" onClick={clearFilters} className="text-[#2A4D69] hover:text-[#1e3a52]">
                   Clear Filters
                 </Button>
               )}
@@ -1831,7 +1824,7 @@ export default function PaymentsPage() {
                   setEditingPayment(null);
                   setFormModalOpen(true);
                 }}
-                className="mt-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                className="mt-4 bg-gradient-to-r from-[#2A4D69] to-[#6B7B8E] hover:from-[#1e3a52] hover:to-[#556470] text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Record Your First Payment
@@ -1855,10 +1848,10 @@ export default function PaymentsPage() {
             </div>
           ) : (
             /* List View */
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-purple-200/40 overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-[#86BBD8]/40/40 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gradient-to-r from-purple-100/80 to-blue-100/80">
+                  <thead className="bg-gradient-to-r from-[#c8dff0]/80 to-blue-100/80">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Receipt</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Payer</th>
@@ -1871,14 +1864,14 @@ export default function PaymentsPage() {
                   </thead>
                   <tbody className="divide-y divide-purple-100">
                     {payments.map((payment) => (
-                      <tr key={payment.id} className="hover:bg-purple-50/50 transition-colors">
+                      <tr key={payment.id} className="hover:bg-[#86BBD8]/10/50 transition-colors">
                         <td className="px-6 py-4">
-                          <span className="font-mono text-sm text-purple-600">{payment.receipt_number}</span>
+                          <span className="font-mono text-sm text-[#2A4D69]">{payment.receipt_number}</span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <Avatar className="h-8 w-8 mr-3">
-                              <AvatarFallback className="bg-purple-100 text-purple-800">
+                              <AvatarFallback className="bg-[#86BBD8]/20 text-[#1e3a52]">
                                 {getInitials(payment.full_name)}
                               </AvatarFallback>
                             </Avatar>
@@ -1909,17 +1902,17 @@ export default function PaymentsPage() {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleViewPayment(payment)}
-                            className="hover:bg-purple-100"
+                            className="hover:bg-[#86BBD8]/20"
                           >
-                            <Eye className="h-4 w-4 text-purple-700" />
+                            <Eye className="h-4 w-4 text-[#2A4D69]" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => handleEdit(payment)}
-                            className="hover:bg-purple-100"
+                            className="hover:bg-[#86BBD8]/20"
                           >
-                            <Pencil className="h-4 w-4 text-purple-700" />
+                            <Pencil className="h-4 w-4 text-[#2A4D69]" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -1933,9 +1926,9 @@ export default function PaymentsPage() {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDownloadPDF(payment)}
-                            className="hover:bg-purple-100"
+                            className="hover:bg-[#86BBD8]/20"
                           >
-                            <Download className="h-4 w-4 text-purple-700" />
+                            <Download className="h-4 w-4 text-[#2A4D69]" />
                           </Button>
                         </td>
                       </tr>
@@ -1946,7 +1939,7 @@ export default function PaymentsPage() {
               
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-between items-center px-6 py-4 border-t border-purple-100">
+                <div className="flex justify-between items-center px-6 py-4 border-t border-[#86BBD8]/30">
                   <p className="text-sm text-gray-600">
                     Showing {startItem}-{endItem} of {totalCount} payments
                   </p>

@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   Users, 
   Calendar, 
@@ -43,14 +42,6 @@ import {
   Shield,
   Target,
   Lightbulb,
-  Users as UsersIcon,
-  Calendar as CalendarIcon,
-  MapPin as MapPinIcon,
-  Mail as MailIcon,
-  Phone as PhoneIcon,
-  Heart as HeartIcon,
-  Star as StarIcon,
-  BookOpen as BibleIcon,
   TrendingUp,
   DollarSign,
   Briefcase,
@@ -62,7 +53,6 @@ import {
   Car,
   Plane,
   Mountain,
-  Compass as CompassIcon,
 } from 'lucide-react';
 
 // shadcn/ui imports
@@ -104,10 +94,10 @@ const YOUTH_INFO = {
   members: 250,
   meeting_day: 'Friday',
   meeting_time: '6:00 PM - 9:00 PM',
-  location: 'Youth Center, 123 Faith Avenue, Harare',
+  location: 'Youth Centre, AFM Chegutu, Hintonville',
   vision: 'To raise a generation of young people who love God, live purposefully, and lead courageously.',
   mission: 'To connect youth to Christ, help them grow in their faith, discover their purpose, and impact their world.',
-  email: 'youth@gracechurch.org',
+  email: 'youth@afmchegutu.org',
   phone: '+263 242 123 456',
   social: {
     instagram: '@igniteyouth',
@@ -123,7 +113,7 @@ const LEADERSHIP = [
     name: 'Pastor David Okonkwo',
     title: 'Youth Pastor',
     bio: 'Pastor David has a passion for seeing young people discover their identity in Christ and walk in their purpose.',
-    email: 'david.okonkwo@gracechurch.org',
+    email: 'david.okonkwo@afmchegutu.org',
     image: '',
   },
   {
@@ -131,7 +121,7 @@ const LEADERSHIP = [
     name: 'Sarah Moyo',
     title: 'Youth Coordinator',
     bio: 'Sarah oversees youth programs and events, ensuring everything runs smoothly and effectively.',
-    email: 'sarah.moyo@gracechurch.org',
+    email: 'sarah.moyo@afmchegutu.org',
     image: '',
   },
   {
@@ -139,7 +129,7 @@ const LEADERSHIP = [
     name: 'Michael Banda',
     title: 'Worship Leader',
     bio: 'Michael leads the youth worship team, creating an atmosphere for young people to encounter God.',
-    email: 'michael.banda@gracechurch.org',
+    email: 'michael.banda@afmchegutu.org',
     image: '',
   },
   {
@@ -147,7 +137,7 @@ const LEADERSHIP = [
     name: 'Tendai Ncube',
     title: 'Events Coordinator',
     bio: 'Tendai plans and coordinates all youth events, camps, and outreach programs.',
-    email: 'tendai.ncube@gracechurch.org',
+    email: 'tendai.ncube@afmchegutu.org',
     image: '',
   },
 ];
@@ -180,7 +170,7 @@ const EVENTS = [
     id: 3,
     title: 'Leadership Conference',
     date: 'March 8-10, 2025',
-    location: 'Grace Convention Centre',
+    location: 'AFM Chegutu Convention',
     description: 'Equipping young leaders to make an impact in their schools, churches, and communities.',
     image: '',
     spots_left: 100,
@@ -591,7 +581,7 @@ const ProgramCard = ({ program, icon: Icon }: { program: any; icon: any }) => (
 export default function YouthPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [currentWallpaperIndex, setCurrentWallpaperIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('about');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);

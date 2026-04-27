@@ -1,4 +1,4 @@
-// app/men/page.tsx
+﻿// app/men/page.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -213,10 +213,10 @@ const MENS_FELLOWSHIP_INFO = {
   members_count: 120,
   meeting_day: 'Saturday',
   meeting_time: '7:00 AM - 9:00 AM',
-  location: 'Fellowship Hall, Grace Community Church',
+  location: 'Fellowship Hall, AFM Chegutu',
   vision: 'To raise a generation of godly men who lead their families, serve their church, and impact their communities with the love of Christ.',
   mission: 'To disciple men through authentic relationships, biblical teaching, and practical service opportunities.',
-  email: 'men@gracechurch.org',
+  email: 'men@afmchegutu.org',
   phone: '+263 242 123 458',
   verse: 'As iron sharpens iron, so one man sharpens another. - Proverbs 27:17',
 };
@@ -256,7 +256,7 @@ const CORE_VALUES = [
     title: 'Action',
     description: 'Putting faith into practice through service projects and community outreach.',
     icon: Footprints,
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-[#86BBD8]/20 text-[#2A4D69]',
   },
 ];
 
@@ -267,7 +267,7 @@ const LEADERSHIP = [
     name: 'Pastor James Makoni',
     title: 'Men\'s Ministry Director',
     bio: 'James has been leading men\'s ministry for 8 years and has a passion for discipleship and mentorship.',
-    email: 'james.makoni@gracechurch.org',
+    email: 'james.makoni@afmchegutu.org',
     avatar: 'JM',
   },
   {
@@ -275,7 +275,7 @@ const LEADERSHIP = [
     name: 'Elder Tendai Ncube',
     title: 'Discipleship Coordinator',
     bio: 'Tendai leads our small groups and one-on-one mentorship programs.',
-    email: 'tendai.ncube@gracechurch.org',
+    email: 'tendai.ncube@afmchegutu.org',
     avatar: 'TN',
   },
   {
@@ -283,7 +283,7 @@ const LEADERSHIP = [
     name: 'Dr. Samuel Moyo',
     title: 'Teaching Team Lead',
     bio: 'Samuel brings deep biblical insight and practical application to our teaching sessions.',
-    email: 'samuel.moyo@gracechurch.org',
+    email: 'samuel.moyo@afmchegutu.org',
     avatar: 'SM',
   },
   {
@@ -291,7 +291,7 @@ const LEADERSHIP = [
     name: 'Brother Michael Banda',
     title: 'Outreach Coordinator',
     bio: 'Michael organizes our community service projects and men\'s retreats.',
-    email: 'michael.banda@gracechurch.org',
+    email: 'michael.banda@afmchegutu.org',
     avatar: 'MB',
   },
 ];
@@ -353,7 +353,7 @@ const SPECIAL_EVENTS = [
     id: 3,
     title: 'Men\'s Conference',
     date: 'March 14-15, 2025',
-    location: 'Grace Convention Centre',
+    location: 'AFM Chegutu Convention',
     description: 'Powerful speakers, workshops, and worship focused on equipping men for godly leadership.',
     cost: '$35 early bird',
     spots_left: 100,
@@ -427,7 +427,7 @@ const PROGRAMS = [
 const TESTIMONIALS = [
   {
     id: 1,
-    name: 'David Chen',
+    name: 'David Chikwanda',
     years: 3,
     text: 'Men\'s fellowship has been a game-changer for me. I\'ve found brothers who hold me accountable and help me grow in my faith.',
   },
@@ -1600,7 +1600,7 @@ const LightboxModal = ({ image, onClose, onNext, onPrevious, hasNext, hasPreviou
 export default function MensFellowshipPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [currentWallpaperIndex, setCurrentWallpaperIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('about');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
@@ -2195,7 +2195,7 @@ export default function MensFellowshipPage() {
 
         <section className="py-16 px-4">
           <div className="container mx-auto text-center">
-            <Card className="bg-gradient-to-r from-blue-600 via-slate-700 to-blue-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
+            <Card className="bg-gradient-to-r from-blue-600 via-slate-700 to-[#6B7B8E] text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Become the Man God Called You to Be!</h2>
                 <p className="text-white/90 mb-6">

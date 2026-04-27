@@ -1,10 +1,9 @@
-// app/couples/page.tsx
+﻿// app/couples/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { 
+import {
   Users, 
   Calendar, 
   MapPin, 
@@ -124,10 +123,10 @@ const COUPLES_INFO = {
   couples_count: 85,
   meeting_day: 'Friday',
   meeting_time: '6:30 PM - 9:00 PM',
-  location: 'Fellowship Hall, Grace Community Church',
+  location: 'Fellowship Hall, AFM Chegutu',
   vision: 'To see every marriage thrive through Christ-centered relationships, open communication, and unconditional love.',
   mission: 'To equip couples with biblical principles, practical tools, and supportive community for lifelong, joyful marriages.',
-  email: 'couples@gracechurch.org',
+  email: 'couples@afmchegutu.org',
   phone: '+263 242 123 457',
 };
 
@@ -163,7 +162,7 @@ const MARRIAGE_STAGES = [
     years: '20+ years',
     icon: Home,
     description: 'Rediscovering each other, new adventures, and enjoying the fruits of a lifetime together.',
-    color: 'bg-purple-100 text-purple-700',
+    color: 'bg-[#86BBD8]/20 text-[#2A4D69]',
   },
 ];
 
@@ -174,28 +173,28 @@ const LEADERSHIP = [
     name: 'Pastor John & Mary Chikowero',
     title: 'Couples Ministry Directors',
     bio: 'Married for 28 years, John and Mary have a passion for helping couples build Christ-centered marriages. They have 3 children and 2 grandchildren.',
-    email: 'john.mary@gracechurch.org',
+    email: 'john.mary@afmchegutu.org',
   },
   {
     id: 2,
     name: 'Elder Thomas & Grace Moyo',
     title: 'Marriage Mentors',
     bio: 'With 35 years of marriage experience, Thomas and Grace lead our premarital counseling and marriage enrichment programs.',
-    email: 'thomas.grace@gracechurch.org',
+    email: 'thomas.grace@afmchegutu.org',
   },
   {
     id: 3,
     name: 'Dr. Samuel & Ruth Ndlovu',
     title: 'Counseling Coordinators',
     bio: 'Samuel is a licensed Christian counselor and Ruth is a life coach. Together they facilitate our marriage workshops and retreats.',
-    email: 'samuel.ruth@gracechurch.org',
+    email: 'samuel.ruth@afmchegutu.org',
   },
   {
     id: 4,
-    name: 'David & Sarah Chen',
+    name: 'David & Sarah Chikwanda',
     title: 'Young Couples Coordinators',
     bio: 'Married for 6 years with two young children, David and Sarah understand the unique challenges facing young couples today.',
-    email: 'david.sarah@gracechurch.org',
+    email: 'david.sarah@afmchegutu.org',
   },
 ];
 
@@ -245,7 +244,7 @@ const SPECIAL_EVENTS = [
     id: 2,
     title: 'Valentine\'s Dinner & Dance',
     date: 'February 14, 2025',
-    location: 'Grace Convention Centre',
+    location: 'AFM Chegutu Convention',
     description: 'Romantic evening with fine dining, live music, dancing, and a special message on love.',
     cost: '$60 per couple',
     spots_left: 50,
@@ -597,7 +596,7 @@ const DateNightCard = ({ idea }: { idea: any }) => {
 export default function CouplesPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [currentWallpaperIndex, setCurrentWallpaperIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('about');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
@@ -687,7 +686,7 @@ export default function CouplesPage() {
                   <Heart className="h-8 w-8 text-rose-400" />
                 </div>
                 <div className="animate-pulse delay-100">
-                  <Infinity className="h-8 w-8 text-purple-400" />
+                  <Infinity className="h-8 w-8 text-[#86BBD8]/80" />
                 </div>
                 <div className="animate-pulse delay-200">
                   <Gem className="h-8 w-8 text-pink-400" />
@@ -706,7 +705,7 @@ export default function CouplesPage() {
                 {COUPLES_INFO.tagline}
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-700 hover:to-purple-700 text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
+                <Button size="lg" className="bg-gradient-to-r from-rose-600 to-[#2A4D69] hover:from-rose-700 hover:to-[#1e3a52] text-white shadow-lg" onClick={() => setRegisterDialogOpen(true)}>
                   <Heart className="h-5 w-5 mr-2" /> Join Our Community
                 </Button>
                 <Button size="lg" variant="outline" className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30" onClick={() => setActiveTab('events')}>
@@ -758,8 +757,8 @@ export default function CouplesPage() {
                   <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
                     <CardContent className="p-8 text-center">
                       <div className="flex justify-center mb-4">
-                        <div className="p-3 rounded-full bg-purple-100">
-                          <Rocket className="h-8 w-8 text-purple-600" />
+                        <div className="p-3 rounded-full bg-[#86BBD8]/20">
+                          <Rocket className="h-8 w-8 text-[#2A4D69]" />
                         </div>
                       </div>
                       <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
@@ -841,7 +840,7 @@ export default function CouplesPage() {
                   ))}
                 </div>
                 <div className="text-center mt-8">
-                  <Button onClick={() => setRegisterDialogOpen(true)} className="bg-gradient-to-r from-rose-600 to-purple-600">
+                  <Button onClick={() => setRegisterDialogOpen(true)} className="bg-gradient-to-r from-rose-600 to-[#2A4D69]">
                     Find Your Community
                   </Button>
                 </div>
@@ -934,7 +933,7 @@ export default function CouplesPage() {
         {/* CTA Section */}
         <section className="py-16 px-4">
           <div className="container mx-auto text-center">
-            <Card className="bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
+            <Card className="bg-gradient-to-r from-rose-600 via-[#2A4D69] to-pink-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Invest in Your Marriage!</h2>
                 <p className="text-white/90 mb-6">
@@ -1032,7 +1031,7 @@ export default function CouplesPage() {
               <Button type="button" variant="outline" onClick={() => setRegisterDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-rose-600 to-purple-600">Submit</Button>
+              <Button type="submit" className="bg-gradient-to-r from-rose-600 to-[#2A4D69]">Submit</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -1090,7 +1089,7 @@ export default function CouplesPage() {
               <Button type="button" variant="outline" onClick={() => setContactDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-rose-600 to-purple-600">Send Message</Button>
+              <Button type="submit" className="bg-gradient-to-r from-rose-600 to-[#2A4D69]">Send Message</Button>
             </DialogFooter>
           </form>
         </DialogContent>

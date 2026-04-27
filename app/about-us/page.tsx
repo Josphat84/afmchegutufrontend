@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   Church, 
   Heart, 
@@ -86,28 +85,28 @@ import { Footer } from '@/components/Footer';
 
 // =============== EDITABLE CONTENT ===============
 const CHURCH_INFO = {
-  name: 'Grace Community Church',
-  founded: 1985,
-  denomination: 'Non-denominational Christian',
-  members: 1200,
-  location: '123 Faith Avenue, Harare, Zimbabwe',
-  phone: '+263 242 123 456',
-  email: 'info@gracechurch.org',
-  website: 'www.gracechurch.org',
+  name: 'AFM Chegutu Town Assembly',
+  founded: 1990,
+  denomination: 'Apostolic Faith Mission in Zimbabwe',
+  members: 350,
+  location: 'Hintonville, Chegutu, Zimbabwe',
+  phone: '+263 000 000 000',
+  email: 'afmchegutu@example.com',
+  website: 'afmchegutu.org',
   service_times: [
-    { day: 'Sunday', times: ['8:00 AM', '10:00 AM', '5:00 PM'] },
-    { day: 'Wednesday', times: ['6:30 PM'] },
-    { day: 'Friday', times: ['6:00 PM'] },
+    { day: 'Sunday',    times: ['09:00 AM'] },
+    { day: 'Wednesday', times: ['06:00 PM'] },
+    { day: 'Saturday',  times: ['03:00 PM (Choir)'] },
   ],
-  vision: 'To glorify God by making disciples of all nations, demonstrating His love, and transforming communities through the power of the Gospel.',
-  mission: 'To reach people with the love of Christ, grow them in their faith, and send them out to serve others.',
+  vision: 'To see Chegutu and the surrounding region transformed by the power of the Gospel — a Spirit-filled community that reflects the Kingdom of God in every sphere of life.',
+  mission: 'To reach the lost, make disciples and send out believers who carry God\'s presence into their families, workplaces, and communities in the apostolic tradition.',
   core_values: [
-    { icon: Heart, title: 'Love', description: 'We love God and love others unconditionally' },
-    { icon: BookOpen, title: 'Truth', description: 'We are committed to biblical truth and teaching' },
-    { icon: Users, title: 'Community', description: 'We grow together in authentic relationships' },
-    { icon: HandHeart, title: 'Service', description: 'We serve our church and community selflessly' },
-    { icon: Globe, title: 'Outreach', description: 'We share the Gospel locally and globally' },
-    { icon: Star, title: 'Excellence', description: 'We strive for excellence in all we do' },
+    { icon: Heart,      title: 'Prayer',      description: 'We are a house of prayer — intercession is the foundation of all we do.' },
+    { icon: BookOpen,   title: 'The Word',    description: 'We are committed to apostolic doctrine and sound biblical teaching.' },
+    { icon: Users,      title: 'Community',   description: 'We grow together as a family — caring, accountable, and united in Christ.' },
+    { icon: HandHeart,  title: 'Service',     description: 'We serve our congregation and community with sacrificial, Christ-centred love.' },
+    { icon: Globe,      title: 'Outreach',    description: 'We take the Gospel beyond our walls into Chegutu and the surrounding region.' },
+    { icon: Star,       title: 'Excellence',  description: 'We honour God with our best in worship, ministry and administration.' },
   ],
 };
 
@@ -115,56 +114,58 @@ const CHURCH_INFO = {
 const LEADERSHIP_TEAM = [
   {
     id: 1,
-    name: 'Pastor John Smith',
+    name: 'Rev. Lirani',
     title: 'Senior Pastor',
-    bio: 'Pastor John has been serving as Senior Pastor since 2010. He holds a Master of Divinity and has a passion for expository preaching and pastoral care.',
-    email: 'john.smith@gracechurch.org',
+    bio: 'Rev. Lirani has faithfully shepherded AFM Chegutu Town Assembly for many years. His ministry is marked by apostolic boldness, compassionate pastoral care, and a deep commitment to sound biblical teaching.',
+    email: 'afmchegutu@example.com',
     image: '',
   },
   {
     id: 2,
-    name: 'Pastor Sarah Johnson',
-    title: 'Associate Pastor',
-    bio: 'Pastor Sarah oversees women\'s ministry and discipleship programs. She has a heart for helping people grow in their faith journey.',
-    email: 'sarah.johnson@gracechurch.org',
+    name: 'Mrs. Lirani',
+    title: "Pastor's Wife & Women's Ministry Lead",
+    bio: "Mrs. Lirani is a pillar of the congregation, leading the ladies' fellowship and discipleship programmes with grace and wisdom. She has a special heart for young families and women in the church.",
+    email: 'afmchegutu@example.com',
     image: '',
   },
   {
     id: 3,
-    name: 'Elder Michael Chen',
-    title: 'Elder Board Chair',
-    bio: 'Michael has been an elder for 15 years and brings wisdom in church governance and strategic planning.',
-    email: 'michael.chen@gracechurch.org',
+    name: 'Board of Elders',
+    title: 'Church Elders',
+    bio: 'A dedicated team of elders who serve alongside the pastoral leadership, providing oversight, counsel, and care for the congregation in keeping with apostolic church governance.',
+    email: 'afmchegutu@example.com',
     image: '',
   },
   {
     id: 4,
-    name: 'Deaconess Mary Williams',
-    title: 'Deaconess',
-    bio: 'Mary leads our benevolence ministry and coordinates care for families in need within our congregation.',
-    email: 'mary.williams@gracechurch.org',
+    name: 'Deacons & Deaconesses',
+    title: 'Servant Leadership',
+    bio: 'Our deacons and deaconesses faithfully serve the practical and spiritual needs of the congregation — coordinating benevolence, hospitality, and ministry support across all departments.',
+    email: 'afmchegutu@example.com',
     image: '',
   },
 ];
 
 // Editable Ministries
 const MINISTRIES = [
-  { id: 1, name: 'Worship Ministry', leader: 'David Thompson', members: 45, icon: Music },
-  { id: 2, name: 'Children\'s Ministry', leader: 'Lisa Anderson', members: 30, icon: Home },
-  { id: 3, name: 'Youth Ministry', leader: 'Mark Roberts', members: 65, icon: Users },
-  { id: 4, name: 'Women\'s Ministry', leader: 'Sarah Johnson', members: 120, icon: Heart },
-  { id: 5, name: 'Men\'s Ministry', leader: 'James Wilson', members: 85, icon: Shield },
-  { id: 6, name: 'Outreach Ministry', leader: 'Peter Okonkwo', members: 40, icon: Globe },
+  { id: 1, name: "Choir & Worship",      leader: "Choir Director",      members: 45,  icon: Music },
+  { id: 2, name: "Children's Ministry",  leader: "Children's Lead",     members: 60,  icon: Home },
+  { id: 3, name: "Youth Ministry",       leader: "Youth Pastor",        members: 80,  icon: Users },
+  { id: 4, name: "Ladies' Fellowship",   leader: "Mrs. Lirani",         members: 120, icon: Heart },
+  { id: 5, name: "Men's Fellowship",     leader: "Men's Coordinator",   members: 85,  icon: Shield },
+  { id: 6, name: "Prayer Team",          leader: "Prayer Coordinator",  members: 35,  icon: HandHeart },
+  { id: 7, name: "Couples Ministry",     leader: "Couples Lead",        members: 50,  icon: HeartHandshake },
+  { id: 8, name: "Kingdom Projects",     leader: "Projects Committee",  members: 20,  icon: Globe },
 ];
 
 // Editable Milestones/History
 const MILESTONES = [
-  { id: 1, year: 1985, event: 'Church Founded', description: 'Grace Community Church began with 25 members meeting in a school hall.' },
-  { id: 2, year: 1990, event: 'First Building', description: 'Purchased our first permanent facility on Faith Avenue.' },
-  { id: 3, year: 2000, event: 'Sanctuary Expansion', description: 'Completed major sanctuary renovation and expansion.' },
-  { id: 4, year: 2010, event: 'New Leadership', description: 'Pastor John Smith became Senior Pastor.' },
-  { id: 5, year: 2015, event: 'Missions Launch', description: 'Launched our first international mission partnership.' },
-  { id: 6, year: 2020, event: 'Online Ministry', description: 'Expanded digital presence and online services.' },
+  { id: 1, year: 1990, event: 'Assembly Established', description: 'AFM Chegutu Town Assembly was planted and began meeting in Hintonville, Chegutu, as part of the Apostolic Faith Mission in Zimbabwe.' },
+  { id: 2, year: 1995, event: 'Permanent Home', description: 'The congregation secured a permanent place of worship in Hintonville, providing a stable base for growing ministries.' },
+  { id: 3, year: 2000, event: 'Ministry Expansion', description: 'Launched structured departments including Youth, Ladies\' Fellowship, Men\'s Fellowship and the Choir — growing the assembly into a full-ministry church.' },
+  { id: 4, year: 2008, event: 'Kingdom Projects', description: 'Initiated community development and kingdom project initiatives to bless Chegutu and the surrounding region beyond the church walls.' },
+  { id: 5, year: 2015, event: 'Pastoral Leadership', description: 'Rev. Lirani took the helm as Senior Pastor, ushering in a new season of growth, discipleship and apostolic ministry.' },
+  { id: 6, year: 2024, event: 'Digital Ministry', description: 'Launched digital platforms and online tools to strengthen member connection, resource sharing, and community engagement.' },
 ];
 
 // Editable Beliefs
@@ -268,7 +269,7 @@ const MinistryCard = ({ ministry }: { ministry: any }) => {
 export default function AboutPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [currentWallpaperIndex, setCurrentWallpaperIndex] = useState(0);
 
   // Rotating wallpaper
@@ -301,9 +302,9 @@ export default function AboutPage() {
 
   const statsData = [
     { icon: Church, value: CHURCH_INFO.founded.toString(), label: "Year Founded" },
-    { icon: Users, value: CHURCH_INFO.members.toLocaleString(), label: "Members" },
-    { icon: Globe, value: "15+", label: "Countries Reached" },
-    { icon: Heart, value: "30+", label: "Ministries" },
+    { icon: Users, value: CHURCH_INFO.members.toLocaleString() + '+', label: "Members" },
+    { icon: Calendar, value: "35+", label: "Years of Ministry" },
+    { icon: Heart, value: "8", label: "Active Ministries" },
   ];
 
   return (
@@ -342,12 +343,16 @@ export default function AboutPage() {
                 A community of faith, hope, and love dedicated to glorifying God and serving our neighbors.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                  Our Beliefs
-                </Button>
-                <Button size="lg" variant="outline" className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30">
-                  Plan a Visit
-                </Button>
+                <a href="#beliefs">
+                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100 font-semibold shadow-lg">
+                    Our Beliefs
+                  </Button>
+                </a>
+                <a href="#contact">
+                  <Button size="lg" variant="outline" className="bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25 font-semibold">
+                    Get In Touch
+                  </Button>
+                </a>
               </div>
             </div>
           </div>
@@ -413,7 +418,7 @@ export default function AboutPage() {
         </section>
 
         {/* What We Believe */}
-        <section className="py-12 px-4">
+        <section id="beliefs" className="py-12 px-4">
           <div className="container mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">What We Believe</h2>
@@ -540,7 +545,7 @@ export default function AboutPage() {
         </section>
 
         {/* Location & Contact */}
-        <section className="py-12 px-4 bg-white/5 backdrop-blur-sm">
+        <section id="contact" className="py-12 px-4 bg-white/5 backdrop-blur-sm">
           <div className="container mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">

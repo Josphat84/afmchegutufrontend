@@ -1,4 +1,4 @@
-// app/projects/page.tsx
+﻿// app/projects/page.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -93,7 +93,6 @@ import {
   PaintBucket,
   Brush,
   Droplets,
-  Sun as SunIcon,
   Wind,
   Zap,
   Globe,
@@ -215,7 +214,7 @@ const PROJECTS_INFO = {
   volunteers: 85,
   vision: 'To create sustainable, income-generating projects that support the church\'s mission, empower our members, and bless our community.',
   mission: 'To equip and empower every member to use their God-given talents in productive ventures that generate resources for Kingdom work.',
-  email: 'projects@gracechurch.org',
+  email: 'projects@afmchegutu.org',
   phone: '+263 242 123 460',
   verse: 'Whatever you do, work at it with all your heart, as working for the Lord. - Colossians 3:23',
 };
@@ -225,7 +224,7 @@ const PROJECT_CATEGORIES = [
   { id: 'agriculture', name: 'Agriculture & Farming', icon: Tractor, color: 'bg-green-100 text-green-700' },
   { id: 'livestock', name: 'Livestock & Poultry', icon: Egg, color: 'bg-amber-100 text-amber-700' },
   { id: 'manufacturing', name: 'Manufacturing', icon: Factory, color: 'bg-blue-100 text-blue-700' },
-  { id: 'services', name: 'Services', icon: Briefcase, color: 'bg-purple-100 text-purple-700' },
+  { id: 'services', name: 'Services', icon: Briefcase, color: 'bg-[#86BBD8]/20 text-[#2A4D69]' },
   { id: 'education', name: 'Education & Training', icon: School, color: 'bg-indigo-100 text-indigo-700' },
   { id: 'retail', name: 'Retail & Sales', icon: Store, color: 'bg-pink-100 text-pink-700' },
 ];
@@ -235,7 +234,7 @@ const TARGET_GROUPS = [
   { id: 'youth', name: 'Youth Projects', icon: Users, color: 'bg-blue-100 text-blue-700' },
   { id: 'women', name: 'Women\'s Projects', icon: Heart, color: 'bg-pink-100 text-pink-700' },
   { id: 'men', name: 'Men\'s Projects', icon: Briefcase, color: 'bg-slate-100 text-slate-700' },
-  { id: 'all', name: 'All Church', icon: Users2, color: 'bg-purple-100 text-purple-700' },
+  { id: 'all', name: 'All Church', icon: Users2, color: 'bg-[#86BBD8]/20 text-[#2A4D69]' },
   { id: 'community', name: 'Community Outreach', icon: Globe, color: 'bg-emerald-100 text-emerald-700' },
 ];
 
@@ -243,7 +242,7 @@ const TARGET_GROUPS = [
 const mockProjects: Project[] = [
   {
     id: '1',
-    name: 'Grace Community Garden',
+    name: 'AFM Kingdom Garden',
     description: 'A 5-hectare vegetable farm producing tomatoes, onions, cabbages, and leafy greens for sale at local markets and to church members. Profits support the feeding program and building fund.',
     category: 'agriculture',
     targetGroup: 'all',
@@ -280,7 +279,7 @@ const mockProjects: Project[] = [
     startDate: new Date('2023-09-01'),
     leader: 'Mrs. Grace Makoni',
     team: ['Mercy Banda', 'Rutendo Moyo', 'Chipo Ncube', 'Sarah Chen'],
-    location: 'Church Kitchen, Grace Community Church',
+    location: 'Church Kitchen, AFM Chegutu',
     investment: 2500,
     currentIncome: 5200,
     targetIncome: 8000,
@@ -401,7 +400,7 @@ const mockProjects: Project[] = [
 ];
 
 const mockDonations: ProjectDonation[] = [
-  { id: '1', projectId: '1', projectName: 'Grace Community Garden', donorName: 'John & Mary Banda', amount: 500, date: new Date('2024-02-15'), type: 'one-time', message: 'Keep up the great work!' },
+  { id: '1', projectId: '1', projectName: 'AFM Kingdom Garden', donorName: 'John & Mary Banda', amount: 500, date: new Date('2024-02-15'), type: 'one-time', message: 'Keep up the great work!' },
   { id: '2', projectId: '2', projectName: 'Ladies Baking & Catering', donorName: 'Anonymous', amount: 200, date: new Date('2024-03-01'), type: 'materials', message: 'For baking supplies' },
   { id: '3', projectId: '3', projectName: 'Youth Poultry Project', donorName: 'Mr. Thomas Chen', amount: 50, date: new Date('2024-02-20'), type: 'monthly' },
 ];
@@ -1085,7 +1084,7 @@ const DeleteConfirmDialog = ({ open, onOpenChange, onConfirm }: {
 export default function ProjectsPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [churchName, setChurchName] = useState('Grace Community Church');
+  const [churchName, setChurchName] = useState('AFM Chegutu Town Assembly');
   const [activeTab, setActiveTab] = useState('all');
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   

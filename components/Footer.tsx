@@ -45,7 +45,7 @@ export function Footer() {
     <footer className="bg-[#0a1929] border-t border-white/8 mt-auto">
 
       {/* ── Main grid ──────────────────────────────────────────────────────── */}
-      <div className="container mx-auto px-4 pt-14 pb-10">
+      <div className="container mx-auto max-w-5xl px-4 pt-14 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* ── Col 1: Brand ─────────────────────────────────────────────── */}
@@ -159,7 +159,7 @@ export function Footer() {
 
       {/* ── Bottom bar ─────────────────────────────────────────────────────── */}
       <Separator className="bg-white/8"/>
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto max-w-5xl px-4 py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/30 text-xs">
             © {new Date().getFullYear()} Apostolic Faith Mission in Zimbabwe · All rights reserved

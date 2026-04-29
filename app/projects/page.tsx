@@ -1235,7 +1235,7 @@ export default function ProjectsPage() {
         <Header isLoggedIn={isLoggedIn} user={user} churchName={churchName} onLogout={handleLogout} />
 
         <section className="relative py-20 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <div className="max-w-3xl mx-auto">
               <div className="flex justify-center mb-4 gap-2">
                 <div className="animate-pulse">
@@ -1254,10 +1254,10 @@ export default function ProjectsPage() {
               <Badge className="mb-4 bg-white/20 text-white border-0 backdrop-blur-sm">
                 Income Generating Projects • Est. {PROJECTS_INFO.founded}
               </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
                 {PROJECTS_INFO.name}
               </h1>
-              <p className="text-xl text-white/90 mb-4 leading-relaxed">
+              <p className="text-base sm:text-xl text-white/90 mb-4 leading-relaxed">
                 {PROJECTS_INFO.tagline}
               </p>
               <p className="text-lg text-white/70 mb-8 italic">
@@ -1278,7 +1278,7 @@ export default function ProjectsPage() {
         </section>
 
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <StatCard icon={Rocket} value={activeProjects.toString()} label="Active Projects" color="bg-emerald-100 text-emerald-700" />
               <StatCard icon={DollarSign} value={`$${totalRaised.toLocaleString()}`} label="Total Raised" color="bg-teal-100 text-teal-700" />
@@ -1289,7 +1289,7 @@ export default function ProjectsPage() {
         </section>
 
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-4 mb-8 bg-white/10 backdrop-blur-sm">
                 <TabsTrigger value="all">All Projects</TabsTrigger>
@@ -1361,7 +1361,7 @@ export default function ProjectsPage() {
         </section>
 
         <section className="py-16 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <Card className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Partner With Us!</h2>

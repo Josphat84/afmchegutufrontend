@@ -133,10 +133,10 @@ export default function ChoirWorshipPage() {
           <Badge className={`mb-5 ${accent.badge} text-[10px] uppercase tracking-widest font-bold`}>
             Worship Ministry
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 tracking-tight">
             Choir &amp; Worship
           </h1>
-          <p className="text-lg md:text-xl text-white/75 max-w-xl leading-relaxed mb-8 font-light">
+          <p className="text-base md:text-xl text-white/75 max-w-xl leading-relaxed mb-8 font-light">
             "Sing to the LORD a new song; sing to the LORD, all the earth."
             <span className="block text-amber-300/80 text-sm mt-1 font-normal">— Psalm 96:1</span>
           </p>

@@ -3,81 +3,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  Church, 
-  Heart, 
-  Users, 
-  Target, 
-  BookOpen, 
-  Globe,
-  Calendar,
-  MapPin,
-  Phone,
-  Mail,
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-  Linkedin,
-  Award,
-  HandHeart,
-  Lightbulb,
-  Sparkles,
-  Shield,
-  Star,
-  Cross,
-  Music,
-  Home,
-  User,
-  Clock,
-  Coffee,
-  Gift,
-  TreePine,
-  Mountain,
-  Sun,
-  Moon,
-  Cloud,
-  Waves,
-  Flower2,
-  HeartHandshake,
-  Handshake,
-  Trophy,
-  Medal,
-  Crown,
-  Gem,
-  Compass,
-  Map,
-  Navigation,
-  Building,
-  Edit2,
-  Save,
-  X,
-  Plus,
-  Trash2,
+import {
+  Church, Heart, Users, Target, BookOpen, Globe,
+  Calendar, MapPin, Phone, Mail, HandHeart,
+  Shield, Star, Cross, Music, Home, HeartHandshake,
 } from 'lucide-react';
 
 // shadcn/ui imports
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 // Import Header and Footer
 import { Header } from '@/components/Header';
@@ -331,15 +269,15 @@ export default function AboutPage() {
 
         {/* Hero Section */}
         <section className="relative py-20 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <div className="max-w-3xl mx-auto">
               <Badge className="mb-4 bg-white/20 text-white border-0 backdrop-blur-sm">
                 {CHURCH_INFO.founded} • Established
               </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
                 About {CHURCH_INFO.name}
               </h1>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              <p className="text-base sm:text-xl text-white/90 mb-8 leading-relaxed">
                 A community of faith, hope, and love dedicated to glorifying God and serving our neighbors.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
@@ -360,7 +298,7 @@ export default function AboutPage() {
 
         {/* Stats Section */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {statsData.map((stat, index) => (
                 <StatCard key={index} icon={stat.icon} value={stat.value} label={stat.label} />
@@ -371,7 +309,7 @@ export default function AboutPage() {
 
         {/* Vision & Mission */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-xl">
                 <CardContent className="p-8 text-center">
@@ -402,7 +340,7 @@ export default function AboutPage() {
 
         {/* Core Values */}
         <section className="py-12 px-4 bg-white/5 backdrop-blur-sm">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">Our Core Values</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -419,7 +357,7 @@ export default function AboutPage() {
 
         {/* What We Believe */}
         <section id="beliefs" className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">What We Believe</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -447,7 +385,7 @@ export default function AboutPage() {
 
         {/* Our History / Timeline */}
         <section className="py-12 px-4 bg-white/5 backdrop-blur-sm">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">Our Journey</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -483,7 +421,7 @@ export default function AboutPage() {
 
         {/* Service Times */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">Service Times</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -512,7 +450,7 @@ export default function AboutPage() {
 
         {/* Leadership Team */}
         <section className="py-12 px-4 bg-white/5 backdrop-blur-sm">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">Our Leadership</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -529,7 +467,7 @@ export default function AboutPage() {
 
         {/* Ministries */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white mb-3">Our Ministries</h2>
               <p className="text-white/80 max-w-2xl mx-auto">
@@ -546,7 +484,7 @@ export default function AboutPage() {
 
         {/* Location & Contact */}
         <section id="contact" className="py-12 px-4 bg-white/5 backdrop-blur-sm">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
@@ -588,7 +526,7 @@ export default function AboutPage() {
 
         {/* Call to Action */}
         <section className="py-16 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <Card className="bg-gradient-to-r from-primary/90 to-primary/70 text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Join Our Family</h2>

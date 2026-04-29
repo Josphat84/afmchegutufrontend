@@ -638,7 +638,7 @@ export default function EquipmentPage() {
       </div>
 
       <div className="relative z-10 min-h-screen">
-        <main className="container mx-auto py-10 px-4">
+        <main className="container mx-auto max-w-6xl py-10 px-4">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>

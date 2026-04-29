@@ -127,10 +127,10 @@ export default function PrayerTeamPage() {
           <Badge className={`mb-5 ${accent.badge} text-[10px] uppercase tracking-widest font-bold`}>
             Intercessory Ministry
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight mb-4 tracking-tight">
             Prayer Team
           </h1>
-          <p className="text-lg md:text-xl text-white/75 max-w-xl leading-relaxed mb-8 font-light">
+          <p className="text-base md:text-xl text-white/75 max-w-xl leading-relaxed mb-8 font-light">
             "The effectual fervent prayer of a righteous man availeth much."
             <span className="block text-indigo-300/80 text-sm mt-1 font-normal">— James 5:16</span>
           </p>

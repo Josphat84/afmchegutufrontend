@@ -411,7 +411,7 @@ const AudioPlayer = ({ fileUrl, title, speaker, thumbnail, onClose }: {
         onEnded={() => setIsPlaying(false)}
       />
       
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto max-w-6xl px-4 py-3">
         <div className="flex items-center gap-4">
           {thumbnail && (
             <img src={thumbnail} alt={title} className="w-10 h-10 rounded object-cover hidden sm:block" />
@@ -1059,7 +1059,7 @@ export default function MediaPage() {
       <div className="relative z-10">
         <Header isLoggedIn={isLoggedIn} user={user} churchName={churchName} onLogout={handleLogout} />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto max-w-6xl px-4 py-8">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>

@@ -680,7 +680,7 @@ export default function ChildrenPage() {
 
         {/* Hero Section */}
         <section className="relative py-20 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <div className="max-w-3xl mx-auto">
               <div className="flex justify-center mb-4 gap-2">
                 <div className="animate-bounce">
@@ -699,10 +699,10 @@ export default function ChildrenPage() {
               <Badge className="mb-4 bg-white/20 text-white border-0 backdrop-blur-sm">
                 Children's Ministry • Est. {CHILDREN_INFO.founded}
               </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
                 {CHILDREN_INFO.name}
               </h1>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              <p className="text-base sm:text-xl text-white/90 mb-8 leading-relaxed">
                 {CHILDREN_INFO.tagline}
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
@@ -719,7 +719,7 @@ export default function ChildrenPage() {
 
         {/* Stats Section */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {statsData.map((stat, index) => (
                 <StatCard key={index} icon={stat.icon} value={stat.value} label={stat.label} />
@@ -730,16 +730,18 @@ export default function ChildrenPage() {
 
         {/* Main Content Tabs */}
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-6 mb-8 bg-white/10 backdrop-blur-sm">
-                <TabsTrigger value="about">About</TabsTrigger>
-                <TabsTrigger value="agegroups">Age Groups</TabsTrigger>
-                <TabsTrigger value="programs">Programs</TabsTrigger>
-                <TabsTrigger value="events">Events</TabsTrigger>
-                <TabsTrigger value="safety">Safety</TabsTrigger>
-                <TabsTrigger value="parents">Parents</TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto pb-1 mb-8 -mx-1">
+                <TabsList className="inline-flex min-w-full sm:w-full sm:grid sm:grid-cols-6 h-11 bg-white/15 backdrop-blur-sm rounded-xl p-1 gap-0.5">
+                  <TabsTrigger value="about" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">About</TabsTrigger>
+                  <TabsTrigger value="agegroups" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Age Groups</TabsTrigger>
+                  <TabsTrigger value="programs" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Programs</TabsTrigger>
+                  <TabsTrigger value="events" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Events</TabsTrigger>
+                  <TabsTrigger value="safety" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Safety</TabsTrigger>
+                  <TabsTrigger value="parents" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Parents</TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* About Tab */}
               <TabsContent value="about" className="space-y-8">
@@ -961,7 +963,7 @@ export default function ChildrenPage() {
 
         {/* CTA Section */}
         <section className="py-16 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <Card className="bg-gradient-to-r from-pink-600 via-[#2A4D69] to-[#6B7B8E] text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Join Our Children's Ministry!</h2>

@@ -262,7 +262,7 @@ export default function BlogPage() {
 
         {/* Filter bar */}
         <div className="bg-white border-b border-[#86BBD8]/20 shadow-sm sticky top-[72px] z-30">
-          <div className="container mx-auto px-4 py-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <div className="container mx-auto max-w-6xl px-4 py-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <div className="flex gap-1.5 flex-wrap flex-1">
               {CATEGORIES.map(c => (
                 <button key={c} onClick={() => setCategory(c)}

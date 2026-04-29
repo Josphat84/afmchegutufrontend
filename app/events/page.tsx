@@ -589,7 +589,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
         </div>
         
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="flex flex-wrap gap-2 mb-4">
               <Badge className={`${getTypeColor(event.type)} text-sm py-1 px-3`}>
                 {getTypeIcon(event.type)} {EVENT_TYPES.find(t => t.value === event.type)?.label}
@@ -600,7 +600,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
                 </Badge>
               )}
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 max-w-4xl">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 max-w-4xl leading-tight">
               {event.title}
             </h1>
             <div className="flex items-center gap-4 text-white/80">
@@ -621,7 +621,7 @@ const EventDetailPage = ({ event, onBack, onEdit, onDelete, onRSVP, isAdmin }: {
         </div>
       </div>
       
-      <div className="container mx-auto py-12 px-4">
+      <div className="container mx-auto max-w-5xl py-12 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             {event.excerpt && (
@@ -1237,10 +1237,10 @@ export default function EventsPage() {
       </div>
       
       <div className="relative z-10 min-h-screen">
-        <main className="container mx-auto py-10 px-4">
+        <main className="container mx-auto max-w-5xl py-10 px-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
                 Events & Notices
               </h1>
               <p className="text-lg text-[#c8dff0]">

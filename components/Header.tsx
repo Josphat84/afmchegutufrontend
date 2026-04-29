@@ -122,7 +122,7 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
       {/* Backdrop */}
       <div className="absolute inset-0 bg-[#0d1f2d]/85 backdrop-blur-xl border-b border-white/8"/>
 
-      <div className="relative container mx-auto px-4">
+      <div className="relative container mx-auto max-w-5xl px-4">
         <div className="flex h-[4.25rem] items-center gap-4">
 
           {/* ── Logo ─────────────────────────────────────────────────────── */}
@@ -270,7 +270,7 @@ export function Header({ isLoggedIn, user, churchName, onLogout }: HeaderProps) 
       {/* ── Mobile menu ─────────────────────────────────────────────────────── */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-white/8 bg-[#0a1929]/97 backdrop-blur-xl">
-          <div className="container mx-auto px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
+          <div className="container mx-auto max-w-5xl px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
 
             <Link href="/" onClick={() => setMobileOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:text-white hover:bg-white/8 text-sm font-medium transition-colors">

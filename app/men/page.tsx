@@ -1839,7 +1839,7 @@ export default function MensFellowshipPage() {
         <Header isLoggedIn={isLoggedIn} user={user} churchName={churchName} onLogout={handleLogout} />
 
         <section className="relative py-20 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <div className="max-w-3xl mx-auto">
               <div className="flex justify-center mb-4 gap-2">
                 <div className="animate-pulse">
@@ -1858,10 +1858,10 @@ export default function MensFellowshipPage() {
               <Badge className="mb-4 bg-white/20 text-white border-0 backdrop-blur-sm">
                 Men's Fellowship • Est. {MENS_FELLOWSHIP_INFO.founded}
               </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg leading-tight">
                 {MENS_FELLOWSHIP_INFO.name}
               </h1>
-              <p className="text-xl text-white/90 mb-4 leading-relaxed">
+              <p className="text-base sm:text-xl text-white/90 mb-4 leading-relaxed">
                 {MENS_FELLOWSHIP_INFO.tagline}
               </p>
               <p className="text-lg text-white/70 mb-8 italic">
@@ -1880,7 +1880,7 @@ export default function MensFellowshipPage() {
         </section>
 
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {statsData.map((stat, index) => (
                 <StatCard key={index} icon={stat.icon} value={stat.value} label={stat.label} />
@@ -1890,17 +1890,19 @@ export default function MensFellowshipPage() {
         </section>
 
         <section className="py-12 px-4">
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-5xl">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-7 mb-8 bg-white/10 backdrop-blur-sm">
-                <TabsTrigger value="about">About</TabsTrigger>
-                <TabsTrigger value="blog">Blog</TabsTrigger>
-                <TabsTrigger value="audio">Audio</TabsTrigger>
-                <TabsTrigger value="gallery">Gallery</TabsTrigger>
-                <TabsTrigger value="events">Events</TabsTrigger>
-                <TabsTrigger value="programs">Programs</TabsTrigger>
-                <TabsTrigger value="resources">Resources</TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto pb-1 mb-8 -mx-1">
+                <TabsList className="inline-flex min-w-full sm:w-full sm:grid sm:grid-cols-7 h-11 bg-white/15 backdrop-blur-sm rounded-xl p-1 gap-0.5">
+                  <TabsTrigger value="about" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">About</TabsTrigger>
+                  <TabsTrigger value="blog" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Blog</TabsTrigger>
+                  <TabsTrigger value="audio" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Audio</TabsTrigger>
+                  <TabsTrigger value="gallery" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Gallery</TabsTrigger>
+                  <TabsTrigger value="events" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Events</TabsTrigger>
+                  <TabsTrigger value="programs" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Programs</TabsTrigger>
+                  <TabsTrigger value="resources" className="text-xs sm:text-sm rounded-lg whitespace-nowrap text-white/80 data-[state=active]:bg-white data-[state=active]:text-[#2A4D69] data-[state=active]:shadow-sm">Resources</TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="about" className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
@@ -2194,7 +2196,7 @@ export default function MensFellowshipPage() {
         </section>
 
         <section className="py-16 px-4">
-          <div className="container mx-auto text-center">
+          <div className="container mx-auto max-w-5xl text-center">
             <Card className="bg-gradient-to-r from-blue-600 via-slate-700 to-[#6B7B8E] text-white border-0 shadow-2xl max-w-3xl mx-auto">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold mb-4">Become the Man God Called You to Be!</h2>

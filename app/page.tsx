@@ -177,7 +177,7 @@ function BackgroundSlideshow() {
 function LifeGallery() {
   const n = GALLERY.length;
   const [state, setState] = useState({ curr:0, key:0, dir:'fwd' as 'fwd'|'back' });
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const timerRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
